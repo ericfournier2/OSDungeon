@@ -1,4 +1,4 @@
-#include "LabyrinthEditView.h"
+#include "labyrinth_edit_view.h"
 
 LabyrinthEditView::LabyrinthEditView(sf::RenderWindow& window_init, Labyrinth& labyrinth_init)
 	: labyrinth(labyrinth_init), window(window_init), grid_spacing(10.0f), grid_origin_x(10.0f), grid_origin_y(10.0f)
@@ -90,8 +90,8 @@ void LabyrinthEditView::drawPOV() {
 		right_point.position = top_right;
 		break;
 	case SOUTH:
-		bottom_point.position = middle_down;
-		top_point.position = middle_up;
+		top_point.position = middle_down;
+		bottom_point.position = middle_up;
 		left_point.position = bottom_right;
 		right_point.position = bottom_left;
 		break;
@@ -102,8 +102,8 @@ void LabyrinthEditView::drawPOV() {
 		right_point.position = bottom_right;
 		break;
 	case WEST:
-		bottom_point.position = middle_left;
-		top_point.position = middle_right;
+		top_point.position = middle_left;
+		bottom_point.position = middle_right;
 		left_point.position = bottom_left;
 		right_point.position = top_left;
 		break;
