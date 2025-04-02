@@ -9,13 +9,13 @@ Labyrinth getTestLabyrinth();
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode({ 800, 600 }), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode({ 400, 300 }), "Maze!");
 
     sf::Font font;
     font.openFromFile("LEMONMILK - Regular.otf");
 
     Labyrinth test = getTestLabyrinth();
-    LabyrinthView lv = LabyrinthView(test, window, font, 800, 600);
+    LabyrinthView lv = LabyrinthView(test, window, font, 400, 300);
 
     while (window.isOpen())
     {
