@@ -2,6 +2,7 @@
 #include <iostream>
 #include "labyrinth.h";
 #include "labyrinth_view.h"
+#include "labyrinth_edit_view.h"
 
 void labyrinthTestSymmetric();
 void labyrinthTestAssymmetric();
@@ -16,6 +17,7 @@ int main()
 
     Labyrinth test = getTestLabyrinth();
     LabyrinthView lv = LabyrinthView(test, window, font, 400, 300);
+    LabyrinthEditView lve = LabyrinthEditView(window, test);
 
     while (window.isOpen())
     {
@@ -39,7 +41,8 @@ int main()
 
         window.clear();
         std::cout << test.printToString();
-        lv.render();
+        //lv.render();
+        lve.render();
         window.display();
         std::cout << "Done with frame.";
     }

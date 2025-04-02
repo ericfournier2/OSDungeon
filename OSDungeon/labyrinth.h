@@ -31,7 +31,10 @@ public:
 
 	unsigned int getPovX() const { return pov_x; }
 	unsigned int getPovY() const { return pov_y; }
-	unsigned int getPovDirection() const { return pov_direction; }
+	CardinalDirection getPovDirection() const { return pov_direction; }
+
+	unsigned int getSizeX() const { return x_size; }
+	unsigned int getSizeY() const { return y_size; }
 
 	GroundTypeId getGroundAbs(int x, int y) const;
 	WallTypeId getWallAbs(int x, int y, Direction d) const;
