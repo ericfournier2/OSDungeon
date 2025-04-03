@@ -19,6 +19,13 @@ struct RenderStep {
 typedef std::queue<RenderStep> RenderQueueStd;
 typedef std::set<RenderStep> RenderSetStd;
 
+enum TextureType {
+	FRONT_WALL_TEXTURE,
+	LEFT_WALL_TEXTURE,
+	RIGHT_WALL_TEXTURE,
+	GROUND_TEXTURE
+};
+
 class RenderQueue {
 public:
 	RenderQueue();
@@ -43,7 +50,7 @@ private:
 	CoordF mapCoordToProjection(float x, float y, float d) const;
 	bool renderGround(RenderStep step);
 	bool renderWall(RenderStep step);
-	void drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf::Color color, const sf::Texture* texture, bool outline = false);
+	void drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf::Color color, const sf::Texture* texture, TextureType texture_type, bool outline = false);
 	void handleKeyPress(const sf::Event::KeyPressed* keyPressed);
 	Labyrinth& labyrinth;
 	sf::RenderWindow window;

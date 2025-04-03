@@ -34,11 +34,11 @@ LabyrinthView::LabyrinthView(Labyrinth& labyrinth_init, const sf::Font& font_ini
 	float camera_distance_init)
 	: labyrinth(labyrinth_init), window(sf::VideoMode({ 400, 300 }), "Maze 1st person view"), font(font_init), x_size(x_size_init), y_size(y_size_init), max_depth(max_depth_init), camera_distance(camera_distance_init)
 {
-	if (!ground_texture.loadFromFile("Ground and sky.png")) {
+	if (!ground_texture.loadFromFile("Ground2.png")) {
 		assert("Texture failed to load.");
 	}
 
-	if (!wall0_texture.loadFromFile("FrontWall.png")) {
+	if (!wall0_texture.loadFromFile("BigBricks0.png")) {
 		assert("Texture failed to load.");
 	}
 }
@@ -107,17 +107,39 @@ CoordF LabyrinthView::mapCoordToProjection(float x, float y, float d) const {
 	return CoordF({ x0 + (x * x_scale), y0 + (y * y_scale) });
 }
 
-void LabyrinthView::drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf::Color color, const sf::Texture* texture, bool outline) {
+void LabyrinthView::drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf::Color color, const sf::Texture* texture, TextureType texture_type, bool outline) {
 	sf::ConvexShape shape;
 	shape.setPointCount(4);
 	if (texture) {
 		shape.setTexture(texture);
-		int min_x = std::min({ p1.x, p2.x, p3.x, p4.x });
-		int min_y = std::min({ p1.y, p2.y, p3.y, p4.y });
-		int max_x = std::max({ p1.x, p2.x, p3.x, p4.x });
-		int max_y = std::max({ p1.y, p2.y, p3.y, p4.y });
 
-		shape.setTextureRect(sf::IntRect({ min_x, min_y }, { max_x - min_x, max_y - min_y }));
+		if (texture_type == TextureType::GROUND_TEXTURE) {
+			int min_x = std::min({ p1.x, p2.x, p3.x, p4.x });
+			int min_y = std::min({ p1.y, p2.y, p3.y, p4.y });
+			int max_x = std::max({ p1.x, p2.x, p3.x, p4.x });
+			int max_y = std::max({ p1.y, p2.y, p3.y, p4.y });
+			shape.setTextureRect(sf::IntRect({ min_x, min_y }, { max_x - min_x, max_y - min_y }));
+		}
+		else if (texture_type == TextureType::FRONT_WALL_TEXTURE) {
+			CoordF wall1 = mapCoordToProjection(0.0f, 0.0f, camera_distance);
+			CoordF wall3 = mapCoordToProjection(1.0f, 1.0f, camera_distance);
+			shape.setTextureRect(sf::IntRect({ (int)wall1.x, (int)wall1.y}, { (int)(wall3.x - wall1.x), (int)(wall3.y - wall1.y) }));
+		}
+		else if (texture_type == TextureType::LEFT_WALL_TEXTURE) {
+			CoordF wall1 = mapCoordToProjection(0.0f, 0.0f, 0.0f);
+			CoordF wall2 = mapCoordToProjection(0.0f, 0.0f, camera_distance);
+			CoordF wall4 = mapCoordToProjection(0.0f, 1.0f, 0.0f);
+			shape.setTextureRect(sf::IntRect({ (int)wall1.x, (int)wall1.y }, { (int) (wall2.x - wall1.x), (int)(wall4.y - wall1.y) }));
+		}
+		else if (texture_type == TextureType::RIGHT_WALL_TEXTURE) {
+			CoordF wall1 = mapCoordToProjection(1.0f, 0.0f, 0.0f);
+			CoordF wall2 = mapCoordToProjection(1.0f, 0.0f, camera_distance);
+			CoordF wall3 = mapCoordToProjection(1.0f, 1.0f, camera_distance);
+			CoordF wall4 = mapCoordToProjection(1.0f, 1.0f, 0.0f);
+
+			shape.setTextureRect(sf::IntRect({ (int)wall3.x, (int)wall1.y }, { (int)(wall1.x - wall3.x), (int)(wall4.y - wall1.y) }));
+		}
+		
 	}
 
 	shape.setPoint(0, { p1.x, p1.y });
@@ -158,14 +180,14 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	CoordF ceil3 = mapCoordToProjection(step.x_offset + 1, 0.0f, far_y);
 	CoordF ceil4 = mapCoordToProjection(step.x_offset, 0.0f, far_y);
 
-	drawPrimitive(ceil1, ceil2, ceil3, ceil4, sf::Color::Blue, &ground_texture, true);
+	drawPrimitive(ceil1, ceil2, ceil3, ceil4, sf::Color(0, 148, 255), &ground_texture, GROUND_TEXTURE, true);
 
 	CoordF ground1 = mapCoordToProjection(step.x_offset, 1.0f, close_y);
 	CoordF ground2 = mapCoordToProjection(step.x_offset + 1, 1.0f, close_y);
 	CoordF ground3 = mapCoordToProjection(step.x_offset + 1, 1.0f, far_y);
 	CoordF ground4 = mapCoordToProjection(step.x_offset, 1.0f, far_y);
 
-	drawPrimitive(ground1, ground2, ground3, ground4, sf::Color::Green, &ground_texture, true);
+	drawPrimitive(ground1, ground2, ground3, ground4, sf::Color(127, 51, 0), &ground_texture, GROUND_TEXTURE, true);
 
 	return true;
 }
@@ -183,14 +205,17 @@ bool LabyrinthView::renderWall(RenderStep step) {
 	}
 	
 	float front_x = 0.0f;
+	TextureType texture_type = TextureType::LEFT_WALL_TEXTURE;
 	if (step.direction == FRONT) {
 		close_y = far_y;
 		front_x = 1.0f;
+		texture_type = TextureType::FRONT_WALL_TEXTURE;
 	}
 
 	float right_offset = 0.0f;
 	if (step.direction == RIGHT) {
 		right_offset = 1.0f;
+		texture_type = TextureType::RIGHT_WALL_TEXTURE;
 	}
 
 	CoordF wall1 = mapCoordToProjection(step.x_offset + right_offset, 0.0f, close_y);
@@ -198,7 +223,7 @@ bool LabyrinthView::renderWall(RenderStep step) {
 	CoordF wall3 = mapCoordToProjection(step.x_offset + right_offset + front_x, 1.0f, far_y);
 	CoordF wall4 = mapCoordToProjection(step.x_offset + right_offset, 1.0f, close_y);
 
-	drawPrimitive(wall1, wall2, wall3, wall4, sf::Color::White, &wall0_texture, true);
+	drawPrimitive(wall1, wall2, wall3, wall4, sf::Color(128, 128, 128), &wall0_texture, texture_type, true);
 
 	return true;
 }
