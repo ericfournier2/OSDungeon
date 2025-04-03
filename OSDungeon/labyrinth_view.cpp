@@ -30,9 +30,9 @@ void RenderStep::print() const {
 	std::cout << "(" << x_offset << "," << y_offset << ") " << (ground_render ? "Ground" : "Wall") << " " << direction << std::endl;
 }
 
-LabyrinthView::LabyrinthView(const Labyrinth& labyrinth_init, sf::RenderWindow& window_init, const sf::Font& font_init, int x_size_init, int y_size_init, int max_depth_init,
+LabyrinthView::LabyrinthView(Labyrinth& labyrinth_init, const sf::Font& font_init, int x_size_init, int y_size_init, int max_depth_init,
 	float camera_distance_init)
-	: labyrinth(labyrinth_init), window(window_init), font(font_init), x_size(x_size_init), y_size(y_size_init), max_depth(max_depth_init), camera_distance(camera_distance_init)
+	: labyrinth(labyrinth_init), window(sf::VideoMode({ 400, 300 }), "Maze 1st person view"), font(font_init), x_size(x_size_init), y_size(y_size_init), max_depth(max_depth_init), camera_distance(camera_distance_init)
 {
 	if (!ground_texture.loadFromFile("Ground and sky.png")) {
 		assert("Texture failed to load.");
@@ -204,7 +204,7 @@ bool LabyrinthView::renderWall(RenderStep step) {
 }
 
 bool LabyrinthView::render() {
-
+	window.clear();
 	std::stack<RenderStep> drawStack;
 	render_queue.reset();
 	while (!render_queue.empty()) {
@@ -265,5 +265,37 @@ bool LabyrinthView::render() {
 		}
 	}
 
+	window.display();
 	return true;
+}
+
+void LabyrinthView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) {
+	if (keyPressed->scancode == sf::Keyboard::Scancode::Left) {
+		labyrinth.turnPovRel(LEFT);
+	}
+	else if (keyPressed->scancode == sf::Keyboard::Scancode::Up) {
+		labyrinth.advance();
+	}
+	else if (keyPressed->scancode == sf::Keyboard::Scancode::Right) {
+		labyrinth.turnPovRel(RIGHT);
+	}
+	else if (keyPressed->scancode == sf::Keyboard::Scancode::Down) {
+		labyrinth.moveBack();
+	}
+}
+
+bool LabyrinthView::processEvents()
+{
+	while (const std::optional event = window.pollEvent()) {
+
+		if (event->is<sf::Event::Closed>()) {
+			window.close();
+			return true;
+		}
+		else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+			handleKeyPress(keyPressed);
+		}
+	}
+
+	return false;
 }

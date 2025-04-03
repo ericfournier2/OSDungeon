@@ -17,7 +17,7 @@ int main()
 
     //Labyrinth test = getTestLabyrinth();
     Labyrinth test = Labyrinth(10, 10);
-    //LabyrinthView lv = LabyrinthView(test, window, font, 400, 300);
+    LabyrinthView lv = LabyrinthView(test, font, 400, 300);
     LabyrinthEditView lve = LabyrinthEditView(test);
     bool closed = false;
     while (!closed)
@@ -50,7 +50,8 @@ int main()
         //window.clear();
         std::cout << test.printToString();
         closed = lve.processEvents();
-        //lv.render();
+        closed = lv.processEvents() | closed;
+        lv.render();
         lve.render();
         //window.display();
         std::cout << "Done with frame.";

@@ -132,12 +132,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="labyrinth.cpp" />
+    <ClCompile Include="labyrinth_edit_view.cpp" />
     <ClCompile Include="labyrinth_test.cpp" />
     <ClCompile Include="labyrinth_view.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="common.h" />
     <ClInclude Include="labyrinth.h" />
+    <ClInclude Include="labyrinth_edit_view.h" />
     <ClInclude Include="labyrinth_view.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
