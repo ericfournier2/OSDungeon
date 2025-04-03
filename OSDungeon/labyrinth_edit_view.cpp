@@ -171,6 +171,12 @@ void LabyrinthEditView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) 
 	else if (keyPressed->scancode == sf::Keyboard::Scancode::Down) {
 		labyrinth.moveBack();
 	}
+	else if (keyPressed->scancode == sf::Keyboard::Scancode::S) {
+		labyrinth.writeToFile("current.labyrinth");
+	}
+	else if (keyPressed->scancode == sf::Keyboard::Scancode::L) {
+		labyrinth.loadFromFile("current.labyrinth");
+	}
 }
 
 void LabyrinthEditView::handleMouseDown(const sf::Event::MouseButtonPressed* mouseButtonPressed) {

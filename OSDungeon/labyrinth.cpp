@@ -1,5 +1,7 @@
 #include "labyrinth.h"
 #include <cassert>
+#include <fstream>
+
 
 int Labyrinth::getAbsXFromPovX(int x_offset, int y_offset) const {
 	int final_offset_x = pov_x;
@@ -309,4 +311,56 @@ std::string Labyrinth::printToString() const {
 		retVal.append(printXLineToString(y));
 	}
 	return retVal;
+}
+
+const char file_identifier[] = "OSDUNGEON0.0";
+
+bool Labyrinth::writeToFile(const std::string& filename) const {
+	std::ofstream stream;
+	stream.open(filename, std::ofstream::out | std::ofstream::binary);
+	if (stream.fail()) {
+		return false;
+	}
+	else {
+		stream << file_identifier << '\0';
+		stream.write(reinterpret_cast<const char*>(&x_size), sizeof(x_size));
+		stream.write(reinterpret_cast<const char*>(&y_size), sizeof(y_size));
+		stream.write(reinterpret_cast<const char*>(walls.data()), walls.size() * sizeof(WallTypeId));
+		stream.write(reinterpret_cast<const char*>(ground.data()), ground.size() * sizeof(GroundTypeId));
+	}
+}
+
+bool Labyrinth::loadFromFile(const std::string& filename) {
+	std::ifstream stream;
+	stream.open(filename, std::ifstream::in | std::ifstream::binary);
+	if (!stream.fail()) {
+		char id_string[sizeof(file_identifier)];
+		stream.read(id_string, sizeof(id_string));
+		if (strcmp(file_identifier, id_string) == 0) {
+			unsigned int x_size_read = 0;
+			unsigned int y_size_read = 0;
+			stream.read(reinterpret_cast<char*>(&x_size_read), sizeof(x_size_read));
+			stream.read(reinterpret_cast<char*>(&y_size_read), sizeof(y_size_read));
+			if (x_size_read < MAX_SIZE && y_size_read < MAX_SIZE) {
+				WallVec walls_read = WallVec(vectorSizeFromGridSize(x_size_read, y_size_read), 0);
+				GroundVec ground_read = GroundVec(x_size_read * y_size_read, 0);
+
+				stream.read(reinterpret_cast<char*>(walls_read.data()), walls_read.size() * sizeof(WallTypeId));
+				stream.read(reinterpret_cast<char*>(ground_read.data()), ground_read.size() * sizeof(GroundTypeId));
+
+				if (!stream.fail()) {
+					x_size = x_size_read;
+					y_size = y_size_read;
+					walls = walls_read;
+					ground = ground_read;
+					pov_x = 0;
+					pov_y = 0;
+					pov_direction = CardinalDirection::NORTH;
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
 }

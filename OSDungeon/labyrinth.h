@@ -52,6 +52,9 @@ public:
 	bool advance();
 	bool moveBack();
 
+	bool writeToFile(const std::string& filename) const;
+	bool loadFromFile(const std::string& filename);
+
 	std::string printToString() const;
 private:
 	static unsigned int vectorSizeFromGridSize(unsigned int x_size, unsigned int y_size);

@@ -7,9 +7,11 @@
 void labyrinthTestSymmetric();
 void labyrinthTestAssymmetric();
 Labyrinth getTestLabyrinth();
+void testReadWrite();
 
 int main()
 {
+    //testReadWrite();
     //sf::RenderWindow window(sf::VideoMode({ 400, 300 }), "Maze!");
 
     sf::Font font;

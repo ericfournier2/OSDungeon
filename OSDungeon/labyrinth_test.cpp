@@ -181,3 +181,27 @@ Labyrinth getTestLabyrinth() {
 	
 	return Labyrinth(4, 3, testWalls, testGround);
 }
+
+void testReadWrite() {
+	Labyrinth test = getTestLabyrinth();
+
+	test.writeToFile("test.labyrinth");
+
+	Labyrinth test_read = Labyrinth(0,0);
+	bool read_success = test_read.loadFromFile("test.labyrinth");
+
+	std::cout << test.printToString();
+	std::cout << test_read.printToString();
+
+	assert(test.getSizeX() == test_read.getSizeX());
+	assert(test.getSizeY() == test_read.getSizeY());
+	
+	for (int x = 0; x < test.getSizeX(); ++x) {
+		for (int y = 0; y < test.getSizeY(); ++y) {
+			assert(test.getWallAbs(x, y, Direction::HORIZONTAL) == test_read.getWallAbs(x, y, Direction::HORIZONTAL));
+			assert(test.getWallAbs(x, y, Direction::VERTICAL) == test_read.getWallAbs(x, y, Direction::VERTICAL));
+			assert(test.getGroundAbs(x, y) == test_read.getGroundAbs(x, y));
+		}
+	}
+
+}
