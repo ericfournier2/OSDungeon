@@ -87,6 +87,36 @@ WallTypeId Labyrinth::getWallRel(int x_offset, int y_offset, RelativeDirection d
 	return WallTypeId();
 }
 
+
+
+bool Labyrinth::setWall(int x, int y, Direction d, WallTypeId id)
+{
+	// Determine if it is out of bound
+	if (x < 0 || y < 0 || x >(int) x_size || y >(int) y_size || (x == x_size && d == HORIZONTAL) || (y == y_size && d == VERTICAL)) {
+		return false;
+	}
+	else if (d == HORIZONTAL) {
+		walls[x + y * x_size] = id;
+		return true;
+	} else {
+		unsigned int vertOffset = (y_size + 1) * x_size;
+		walls[vertOffset + y + x * y_size] = id;
+		return true;
+	}
+
+	// Never reached.
+	return false;
+}
+
+bool Labyrinth::addWall(int x, int y, Direction d) {
+	return setWall(x, y, d, 1);
+}
+
+bool Labyrinth::removeWall(int x, int y, Direction d)
+{
+	return setWall(x, y, d, 0);
+}
+
 bool Labyrinth::movePovRel(int x_offset, int y_offset)
 {
 	int new_pov_x = getAbsXFromPovX(x_offset, y_offset);
@@ -153,14 +183,16 @@ unsigned int Labyrinth::vectorSizeFromGridSize(unsigned int x_size, unsigned int
 	return (x_size + 1) * y_size + (y_size + 1) * x_size;
 }
 
-Labyrinth::Labyrinth(unsigned int x_size, unsigned int y_size)
+Labyrinth::Labyrinth(unsigned int x_size_init, unsigned int y_size_init)
 	: pov_x(0),
 	  pov_y(0),
 	  pov_direction(NORTH)
 {
+	x_size = x_size_init;
 	if (x_size > MAX_SIZE)
 		x_size = MAX_SIZE;
 
+	y_size = y_size_init;
 	if (y_size > MAX_SIZE)
 		y_size = MAX_SIZE;
 

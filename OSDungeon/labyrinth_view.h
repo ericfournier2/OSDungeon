@@ -3,6 +3,7 @@
 #include <queue>
 #include <SFML/Graphics.hpp>
 #include "labyrinth.h"
+#include "common.h"
 
 struct RenderStep {
 	int x_offset;
@@ -17,16 +18,6 @@ struct RenderStep {
 
 typedef std::queue<RenderStep> RenderQueueStd;
 typedef std::set<RenderStep> RenderSetStd;
-
-struct Coord {
-	int x;
-	int y;
-};
-
-struct CoordF {
-	float x;
-	float y;
-};
 
 class RenderQueue {
 public:

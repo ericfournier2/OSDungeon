@@ -42,6 +42,9 @@ public:
 	GroundTypeId getGroundRel(int x_offset, int y_offset) const;
 	WallTypeId getWallRel(int x_offset, int y_offset, RelativeDirection direction) const;
 	
+	bool addWall(int x_offset, int y_offset, Direction d);
+	bool removeWall(int x_offset, int y_offset, Direction d);
+
 	bool setPov(unsigned int x, unsigned int y, CardinalDirection direction);
 	bool movePovRel(int x_offset, int y_offset);
 	void turnPovRel(RelativeDirection direction);
@@ -55,6 +58,8 @@ private:
 
 	int getAbsXFromPovX(int x_offset, int y_offset) const;
 	int getAbsYFromPovY(int x_offset, int y_offset) const;
+
+	bool setWall(int x, int y, Direction d, WallTypeId id);
 
 	std::string printXLineToString(unsigned int y) const;
 	std::string printGroundTileToString(unsigned int x, unsigned int y) const;

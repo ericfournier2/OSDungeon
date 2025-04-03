@@ -10,18 +10,19 @@ Labyrinth getTestLabyrinth();
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode({ 400, 300 }), "Maze!");
+    //sf::RenderWindow window(sf::VideoMode({ 400, 300 }), "Maze!");
 
     sf::Font font;
     font.openFromFile("LEMONMILK - Regular.otf");
 
-    Labyrinth test = getTestLabyrinth();
-    LabyrinthView lv = LabyrinthView(test, window, font, 400, 300);
-    LabyrinthEditView lve = LabyrinthEditView(window, test);
-
-    while (window.isOpen())
+    //Labyrinth test = getTestLabyrinth();
+    Labyrinth test = Labyrinth(10, 10);
+    //LabyrinthView lv = LabyrinthView(test, window, font, 400, 300);
+    LabyrinthEditView lve = LabyrinthEditView(test);
+    bool closed = false;
+    while (!closed)
     {
-        while (const std::optional event = window.pollEvent())
+        /*while (const std::optional event = window.pollEvent())
         {
             if (event->is<sf::Event::Closed>()) {
                 window.close();
@@ -35,15 +36,23 @@ int main()
                 } else if (keyPressed->scancode == sf::Keyboard::Scancode::Down) {
                     test.moveBack();
                 }
+            } else if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
+                if (mouseButtonPressed->button == sf::Mouse::Button::Right)
+                {
+                    std::cout << "the right button was pressed" << std::endl;
+                    std::cout << "mouse x: " << mouseButtonPressed->position.x << std::endl;
+                    std::cout << "mouse y: " << mouseButtonPressed->position.y << std::endl;
+                }
             }
 
         }
-
-        window.clear();
+        */
+        //window.clear();
         std::cout << test.printToString();
+        closed = lve.processEvents();
         //lv.render();
         lve.render();
-        window.display();
+        //window.display();
         std::cout << "Done with frame.";
     }
 }
