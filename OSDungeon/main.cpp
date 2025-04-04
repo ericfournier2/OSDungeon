@@ -18,7 +18,8 @@ int main()
     font.openFromFile("LEMONMILK - Regular.otf");
 
     //Labyrinth test = getTestLabyrinth();
-    Labyrinth test = Labyrinth(10, 10);
+    Labyrinth test = Labyrinth(0, 0);
+    test.loadFromFile("current.labyrinth");
     LabyrinthView lv = LabyrinthView(test, font, 400, 300);
     LabyrinthEditView lve = LabyrinthEditView(test);
     bool closed = false;

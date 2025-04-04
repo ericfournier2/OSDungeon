@@ -38,7 +38,7 @@ LabyrinthView::LabyrinthView(Labyrinth& labyrinth_init, const sf::Font& font_ini
 		assert("Texture failed to load.");
 	}
 
-	if (!wall0_texture.loadFromFile("BigBricks0.png")) {
+	if (!wall0_texture.loadFromFile("BigBricksTexture20.png")) {
 		assert("Texture failed to load.");
 	}
 }
