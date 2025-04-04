@@ -42,11 +42,11 @@ private:
 
 class LabyrinthView {
 public:
-	LabyrinthView(Labyrinth& labyrinth, const sf::Font& font, int x_size=400, int y_size=300, int max_depth=4, float camera_distance=0.7);
+	LabyrinthView(Labyrinth& labyrinth, const sf::Font& font, int x_size=400, int y_size=300, int max_depth=5, float camera_distance=0.7f);
 	bool render();
 	bool processEvents();
 private:
-	unsigned int depthOffset(float depth, bool x, bool left) const;
+	float depthOffset(float depth, bool x, bool left) const;
 	CoordF mapCoordToProjection(float x, float y, float d) const;
 	bool renderGround(RenderStep step);
 	bool renderWall(RenderStep step);
@@ -55,11 +55,12 @@ private:
 	Labyrinth& labyrinth;
 	sf::RenderWindow window;
 	const sf::Font& font;
-	int x_size;
-	int y_size;
-	int max_depth;
-	float camera_distance;
+	int x_size = 400;
+	int y_size = 300;
+	int max_depth = 5;
+	float camera_distance = 0.7f;
 	RenderQueue render_queue;
 	sf::Texture ground_texture;
 	sf::Texture wall0_texture;
+	bool verbose = false;
 };

@@ -57,8 +57,8 @@ void LabyrinthEditView::drawPOV() {
 	float pos_x = grid_origin_x + grid_spacing * labyrinth.getPovX();
 	float pos_y = grid_origin_y + grid_spacing * labyrinth.getSizeY() - grid_spacing * labyrinth.getPovY();
 
-	float spacing_body_factor = 0.1;
-	float spacing_head_factor = 0.25;
+	float spacing_body_factor = 0.1f;
+	float spacing_head_factor = 0.25f;
 
 	float half_spacing = grid_spacing / 2;
 	float spacing_body = grid_spacing * spacing_body_factor;
@@ -183,8 +183,8 @@ void LabyrinthEditView::handleMouseDown(const sf::Event::MouseButtonPressed* mou
 	std::optional<CoordF> closest = findClosestGridPoint(mouseButtonPressed->position.x, mouseButtonPressed->position.y);
 	if (closest) {
 		button_down_pos = closest.value();
-		mouse_x = mouseButtonPressed->position.x;
-		mouse_y = mouseButtonPressed->position.y;
+		mouse_x = static_cast<float>(mouseButtonPressed->position.x);
+		mouse_y = static_cast<float>(mouseButtonPressed->position.y);
 		mouse_down = true;
 		if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
 			mouse_down_adding = true;
@@ -199,8 +199,8 @@ std::optional<Coord> LabyrinthEditView::getMapCoordFromScreenCoord(float x, floa
 	std::optional<CoordF> closest = findClosestGridPoint(static_cast<int>(x), static_cast<int>(y));
 
 	if (closest) {
-		int x = std::roundl((closest.value().x - grid_origin_x) / grid_spacing);
-		int y = labyrinth.getSizeY() - std::roundl((closest.value().y - grid_origin_y) / grid_spacing);
+		int x = std::lround((closest.value().x - grid_origin_x) / grid_spacing);
+		int y = labyrinth.getSizeY() - std::lround((closest.value().y - grid_origin_y) / grid_spacing);
 		return Coord(x, y);
 	}
 	
@@ -209,7 +209,7 @@ std::optional<Coord> LabyrinthEditView::getMapCoordFromScreenCoord(float x, floa
 
 
 void LabyrinthEditView::handleMouseUp(const sf::Event::MouseButtonReleased* mouseButtonReleased) {
-	std::optional<Coord> closest_map = getMapCoordFromScreenCoord(mouseButtonReleased->position.x, mouseButtonReleased->position.y);
+	std::optional<Coord> closest_map = getMapCoordFromScreenCoord(static_cast<float>(mouseButtonReleased->position.x), static_cast<float>(mouseButtonReleased->position.y));
 	std::optional<Coord> initial_map = getMapCoordFromScreenCoord(button_down_pos.x, button_down_pos.y);
 	if (initial_map && closest_map) {
 		int extent_x = closest_map.value().x - initial_map.value().x;
@@ -262,8 +262,8 @@ bool LabyrinthEditView::processEvents()
 			handleMouseUp(mouseButtonReleased);
 		}
 		else if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
-			mouse_x = mouseMoved->position.x;
-			mouse_y = mouseMoved->position.y;
+			mouse_x = static_cast<float>(mouseMoved->position.x);
+			mouse_y = static_cast<float>(mouseMoved->position.y);
 		}
 	}
 

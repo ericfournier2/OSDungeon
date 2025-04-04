@@ -25,16 +25,16 @@ enum RelativeDirection {
 
 class Labyrinth {
 public:
-	Labyrinth(unsigned int x_size, unsigned int y_size);
-	Labyrinth(unsigned int x_size, unsigned int y_size, WallVec initWalls, GroundVec initGround,
-		      unsigned int pov_x_init = 0, unsigned int pov_y_init = 0, CardinalDirection pov_direction_init = NORTH);
+	Labyrinth(int x_size, int y_size);
+	Labyrinth(int x_size, int y_size, WallVec initWalls, GroundVec initGround,
+		      int pov_x_init = 0, int pov_y_init = 0, CardinalDirection pov_direction_init = NORTH);
 
-	unsigned int getPovX() const { return pov_x; }
-	unsigned int getPovY() const { return pov_y; }
+	int getPovX() const { return pov_x; }
+	int getPovY() const { return pov_y; }
 	CardinalDirection getPovDirection() const { return pov_direction; }
 
-	unsigned int getSizeX() const { return x_size; }
-	unsigned int getSizeY() const { return y_size; }
+	int getSizeX() const { return x_size; }
+	int getSizeY() const { return y_size; }
 
 	GroundTypeId getGroundAbs(int x, int y) const;
 	WallTypeId getWallAbs(int x, int y, Direction d) const;
@@ -45,7 +45,7 @@ public:
 	bool addWall(int x_offset, int y_offset, Direction d);
 	bool removeWall(int x_offset, int y_offset, Direction d);
 
-	bool setPov(unsigned int x, unsigned int y, CardinalDirection direction);
+	bool setPov(int x, int y, CardinalDirection direction);
 	bool movePovRel(int x_offset, int y_offset);
 	void turnPovRel(RelativeDirection direction);
 
@@ -57,7 +57,7 @@ public:
 
 	std::string printToString() const;
 private:
-	static unsigned int vectorSizeFromGridSize(unsigned int x_size, unsigned int y_size);
+	static int vectorSizeFromGridSize(int x_size, int y_size);
 
 	int getAbsXFromPovX(int x_offset, int y_offset) const;
 	int getAbsYFromPovY(int x_offset, int y_offset) const;
@@ -68,12 +68,11 @@ private:
 	std::string printGroundTileToString(unsigned int x, unsigned int y) const;
 	std::string printYLineToString(unsigned int y) const;
 
-	unsigned int x_size;
-	unsigned int y_size;
-	WallVec walls;
-	GroundVec ground;
-	unsigned int pov_x;
-	unsigned int pov_y;
-	CardinalDirection pov_direction;
-
+	int x_size = 0;
+	int y_size = 0;
+	WallVec walls = {};
+	GroundVec ground = {};
+	int pov_x = 0;
+	int pov_y = 0;
+	CardinalDirection pov_direction = CardinalDirection::NORTH;
 };

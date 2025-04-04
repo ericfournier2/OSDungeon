@@ -169,9 +169,9 @@ void Labyrinth::turnPovRel(RelativeDirection direction)
 	}
 }
 
-bool Labyrinth::setPov(unsigned int x, unsigned int y, CardinalDirection direction)
+bool Labyrinth::setPov(int x, int y, CardinalDirection direction)
 {
-	if (x >= x_size || y >= y_size)
+	if (x >= x_size || y >= y_size || x < 0 || y < 0)
 		return false;
 
 	pov_x = x;
@@ -181,29 +181,33 @@ bool Labyrinth::setPov(unsigned int x, unsigned int y, CardinalDirection directi
 	return true;
 }
 
-unsigned int Labyrinth::vectorSizeFromGridSize(unsigned int x_size, unsigned int y_size) {
+int Labyrinth::vectorSizeFromGridSize(int x_size, int y_size) {
 	return (x_size + 1) * y_size + (y_size + 1) * x_size;
 }
 
-Labyrinth::Labyrinth(unsigned int x_size_init, unsigned int y_size_init)
-	: pov_x(0),
-	  pov_y(0),
-	  pov_direction(NORTH)
+Labyrinth::Labyrinth(int x_size_init, int y_size_init)
 {
 	x_size = x_size_init;
 	if (x_size > MAX_SIZE)
 		x_size = MAX_SIZE;
 
+	if (x_size < 0)
+		x_size = 0;
+
 	y_size = y_size_init;
 	if (y_size > MAX_SIZE)
 		y_size = MAX_SIZE;
+	
+	if (y_size < 0)
+		y_size = 0;
+
 
 	walls = WallVec(vectorSizeFromGridSize(x_size, y_size), 0);
 	ground = GroundVec(x_size * y_size, 0);
 }
 
-Labyrinth::Labyrinth(unsigned int x_size_init, unsigned int y_size_init, WallVec initWalls, GroundVec initGround,
-	                 unsigned int pov_x_init, unsigned int pov_y_init, CardinalDirection pov_direction_init)
+Labyrinth::Labyrinth(int x_size_init, int y_size_init, WallVec initWalls, GroundVec initGround,
+	                 int pov_x_init, int pov_y_init, CardinalDirection pov_direction_init)
  : x_size(x_size_init),
    y_size(y_size_init),
    walls(initWalls),
@@ -212,6 +216,21 @@ Labyrinth::Labyrinth(unsigned int x_size_init, unsigned int y_size_init, WallVec
    pov_y(pov_y_init),
    pov_direction(pov_direction_init)
 {
+	// Sanitize our inputs.
+	if (x_size > MAX_SIZE || y_size > MAX_SIZE || x_size < 0 || y_size < 0 ||
+		walls.size() != vectorSizeFromGridSize(x_size, y_size) ||
+		ground.size() != x_size * y_size) {
+		x_size = 0;
+		y_size = 0;
+		walls = {};
+		ground = {};
+	}
+
+	if (pov_x < 0 || pov_x > x_size || pov_y < 0 || pov_y > y_size) {
+		pov_x = 0;
+		pov_y = 0;
+	}
+
 	assert(walls.size() == vectorSizeFromGridSize(x_size_init, y_size_init));
 	assert(ground.size() == x_size * y_size);
 }
@@ -242,7 +261,7 @@ GroundTypeId Labyrinth::getGroundAbs(int x, int y) const
 
 std::string Labyrinth::printXLineToString(unsigned int y) const {
 	std::string retVal;
-	for (unsigned int x = 0; x < x_size; ++x) {
+	for (int x = 0; x < x_size; ++x) {
 		retVal.append("+");
 		if (getWallAbs(x, y, HORIZONTAL)) {
 			retVal.append("-");
@@ -289,7 +308,7 @@ std::string Labyrinth::printGroundTileToString(unsigned int x, unsigned int y) c
 
 std::string Labyrinth::printYLineToString(unsigned int y) const {
 	std::string retVal;
-	for (unsigned int x = 0; x < x_size + 1; ++x) {
+	for (int x = 0; x < x_size + 1; ++x) {
 		if (getWallAbs(x, y, VERTICAL)) {
 			retVal.append("|");
 		}
@@ -318,16 +337,15 @@ const char file_identifier[] = "OSDUNGEON0.0";
 bool Labyrinth::writeToFile(const std::string& filename) const {
 	std::ofstream stream;
 	stream.open(filename, std::ofstream::out | std::ofstream::binary);
-	if (stream.fail()) {
-		return false;
-	}
-	else {
+	if (!stream.fail()) {
 		stream << file_identifier << '\0';
 		stream.write(reinterpret_cast<const char*>(&x_size), sizeof(x_size));
 		stream.write(reinterpret_cast<const char*>(&y_size), sizeof(y_size));
 		stream.write(reinterpret_cast<const char*>(walls.data()), walls.size() * sizeof(WallTypeId));
 		stream.write(reinterpret_cast<const char*>(ground.data()), ground.size() * sizeof(GroundTypeId));
 	}
+
+	return !stream.fail();
 }
 
 bool Labyrinth::loadFromFile(const std::string& filename) {

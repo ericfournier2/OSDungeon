@@ -43,7 +43,7 @@ LabyrinthView::LabyrinthView(Labyrinth& labyrinth_init, const sf::Font& font_ini
 	}
 }
 
-unsigned int LabyrinthView::depthOffset(float depth, bool x, bool left) const {
+float LabyrinthView::depthOffset(float depth, bool x, bool left) const {
 	unsigned int size = x ? x_size : y_size;
 	double retVal = double(size) / 2;
 	// Don't let depth be negative.
@@ -59,7 +59,7 @@ unsigned int LabyrinthView::depthOffset(float depth, bool x, bool left) const {
 		retVal = retVal + offset;
 	}
 
-	return std::lround(retVal);
+	return static_cast<float>(retVal);
 }
 
 RenderQueue::RenderQueue() { 
@@ -89,7 +89,7 @@ RenderStep RenderQueue::pop() {
 }
 
 int RenderQueue::size() const {
-	return queue.size();
+	return static_cast<int>(queue.size());
 }
 
 bool RenderQueue::empty() const {
@@ -101,10 +101,10 @@ CoordF LabyrinthView::mapCoordToProjection(float x, float y, float d) const {
 	float x0 = depthOffset(d, true, true);
 	float y0 = depthOffset(d, false, true);
 
-	float x_scale = x_size / pow(2, d);
-	float y_scale = y_size / pow(2, d);
+	double x_scale = x_size / pow(2, d);
+	double y_scale = y_size / pow(2, d);
 
-	return CoordF({ x0 + (x * x_scale), y0 + (y * y_scale) });
+	return CoordF({ static_cast<float>(x0 + (x * x_scale)), static_cast<float>(y0 + (y * y_scale)) });
 }
 
 void LabyrinthView::drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf::Color color, const sf::Texture* texture, TextureType texture_type, bool outline) {
@@ -114,10 +114,10 @@ void LabyrinthView::drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf
 		shape.setTexture(texture);
 
 		if (texture_type == TextureType::GROUND_TEXTURE) {
-			int min_x = std::min({ p1.x, p2.x, p3.x, p4.x });
-			int min_y = std::min({ p1.y, p2.y, p3.y, p4.y });
-			int max_x = std::max({ p1.x, p2.x, p3.x, p4.x });
-			int max_y = std::max({ p1.y, p2.y, p3.y, p4.y });
+			int min_x = static_cast<int>(std::min({ p1.x, p2.x, p3.x, p4.x }));
+			int min_y = static_cast<int>(std::min({ p1.y, p2.y, p3.y, p4.y }));
+			int max_x = static_cast<int>(std::max({ p1.x, p2.x, p3.x, p4.x }));
+			int max_y = static_cast<int>(std::max({ p1.y, p2.y, p3.y, p4.y }));
 			shape.setTextureRect(sf::IntRect({ min_x, min_y }, { max_x - min_x, max_y - min_y }));
 		}
 		else if (texture_type == TextureType::FRONT_WALL_TEXTURE) {
@@ -165,8 +165,8 @@ void LabyrinthView::drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf
 }
 
 bool LabyrinthView::renderGround(RenderStep step) {
-	std::cout << "Currently rendering: ";
-	step.print();
+	//std::cout << "Currently rendering: ";
+	//step.print();
 
 	float close_y = 0.0f;
 	float far_y = camera_distance;
@@ -175,17 +175,17 @@ bool LabyrinthView::renderGround(RenderStep step) {
 		far_y = camera_distance + step.y_offset;
 	}
 
-	CoordF ceil1 = mapCoordToProjection(step.x_offset, 0.0f, close_y);
-	CoordF ceil2 = mapCoordToProjection(step.x_offset + 1, 0.0f, close_y);
-	CoordF ceil3 = mapCoordToProjection(step.x_offset + 1, 0.0f, far_y);
-	CoordF ceil4 = mapCoordToProjection(step.x_offset, 0.0f, far_y);
+	CoordF ceil1 = mapCoordToProjection(static_cast<float>(step.x_offset), 0.0f, close_y);
+	CoordF ceil2 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 0.0f, close_y);
+	CoordF ceil3 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 0.0f, far_y);
+	CoordF ceil4 = mapCoordToProjection(static_cast<float>(step.x_offset), 0.0f, far_y);
 
 	drawPrimitive(ceil1, ceil2, ceil3, ceil4, sf::Color(0, 148, 255), &ground_texture, GROUND_TEXTURE, true);
 
-	CoordF ground1 = mapCoordToProjection(step.x_offset, 1.0f, close_y);
-	CoordF ground2 = mapCoordToProjection(step.x_offset + 1, 1.0f, close_y);
-	CoordF ground3 = mapCoordToProjection(step.x_offset + 1, 1.0f, far_y);
-	CoordF ground4 = mapCoordToProjection(step.x_offset, 1.0f, far_y);
+	CoordF ground1 = mapCoordToProjection(static_cast<float>(step.x_offset), 1.0f, close_y);
+	CoordF ground2 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 1.0f, close_y);
+	CoordF ground3 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 1.0f, far_y);
+	CoordF ground4 = mapCoordToProjection(static_cast<float>(step.x_offset), 1.0f, far_y);
 
 	drawPrimitive(ground1, ground2, ground3, ground4, sf::Color(127, 51, 0), &ground_texture, GROUND_TEXTURE, true);
 
@@ -193,8 +193,8 @@ bool LabyrinthView::renderGround(RenderStep step) {
 }
 
 bool LabyrinthView::renderWall(RenderStep step) {
-	std::cout << "Currently rendering: ";
-	step.print();
+	//std::cout << "Currently rendering: ";
+	//step.print();
 
 	//WallTypeId wall_id = labyrinth.getWallRel(step.x_offset, step.y_offset, step.direction);
 	float close_y = 0.0f;
@@ -234,8 +234,8 @@ bool LabyrinthView::render() {
 	render_queue.reset();
 	while (!render_queue.empty()) {
 		RenderStep current_step = render_queue.pop();
-		std::cout << "Queue is processing:";
-		current_step.print();
+		//std::cout << "Queue is processing:";
+		//current_step.print();
 		if (current_step.ground_render) {
 			// Do actual ground drawing. If we get here, the ground is always shown.
 			//renderGround(current_step);
