@@ -1,11 +1,11 @@
 #pragma once
-//#include <SFML/Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include "common.h"
 
 class Labyrinth;
 class Entity {
 public:
-	Entity(Labyrinth* labyrinth, int x, int y, CardinalDirection direction, float x_size, float y_size, float x_offset, float y_offset);
+	Entity(Labyrinth* labyrinth, sf::Texture* texture, int x, int y, CardinalDirection direction, float x_size, float y_size, float x_offset, float y_offset);
 	int getX() const { return x_pos; }
 	int getY() const { return y_pos; }
 	float getXOffset() const { return x_offset; }
@@ -13,6 +13,7 @@ public:
 	float getXSize() const { return x_size; }
 	float getYSize() const { return y_size; }
 	void setLabyrinth(Labyrinth* labyrinth_init) { labyrinth = labyrinth_init; }
+	sf::Texture* getTexture() { return texture;  }
 protected:
 	int x_pos = 0;
 	int y_pos = 0;
@@ -22,5 +23,5 @@ protected:
 	float x_offset = 0.0f;
 	float y_offset = 0.0f;
 	Labyrinth* labyrinth;
-	//sf::Texture texture;
+	sf::Texture* texture;
 };

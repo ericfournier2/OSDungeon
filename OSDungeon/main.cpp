@@ -16,9 +16,11 @@ int main()
     if (!font.openFromFile("LEMONMILK - Regular.otf")) {
         assert("Font failed to load.");
     }
+    sf::Texture chest;
+    chest.loadFromFile("Sprite.png");
 
     Labyrinth test = Labyrinth(0, 0);
-    Entity ent1 = Entity(&test, 5, 5, CardinalDirection::NORTH, 105.0f, 83.0f, -52.5f, -60.0f);
+    Entity ent1 = Entity(&test, &chest, 5, 5, CardinalDirection::NORTH, 105.0f, 83.0f, -52.5f, -60.0f);
     test.addEntity(ent1);
 
     test.loadFromFile("current.labyrinth");
