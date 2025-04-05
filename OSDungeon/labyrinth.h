@@ -2,26 +2,14 @@
 
 #include <vector>
 #include <string>
+#include "common.h"
+#include "entity.h"
 
 typedef unsigned int WallTypeId;
 typedef unsigned int GroundTypeId;
 typedef std::vector<WallTypeId> WallVec;
 typedef std::vector<GroundTypeId> GroundVec;
 const unsigned int MAX_SIZE = 100;
-
-enum Direction {
-	HORIZONTAL,
-	VERTICAL
-};
-
-enum CardinalDirection {
-	NORTH, EAST, SOUTH, WEST
-};
-
-enum RelativeDirection {
-	FRONT, RIGHT, BACK, LEFT
-};
-
 
 class Labyrinth {
 public:
@@ -37,13 +25,13 @@ public:
 	int getSizeY() const { return y_size; }
 
 	GroundTypeId getGroundAbs(int x, int y) const;
-	WallTypeId getWallAbs(int x, int y, Direction d) const;
+	WallTypeId getWallAbs(int x, int y, WallOrientation d) const;
 
 	GroundTypeId getGroundRel(int x_offset, int y_offset) const;
 	WallTypeId getWallRel(int x_offset, int y_offset, RelativeDirection direction) const;
 	
-	bool addWall(int x_offset, int y_offset, Direction d);
-	bool removeWall(int x_offset, int y_offset, Direction d);
+	bool addWall(int x_offset, int y_offset, WallOrientation d);
+	bool removeWall(int x_offset, int y_offset, WallOrientation d);
 
 	bool setPov(int x, int y, CardinalDirection direction);
 	bool movePovRel(int x_offset, int y_offset);
@@ -55,14 +43,20 @@ public:
 	bool writeToFile(const std::string& filename) const;
 	bool loadFromFile(const std::string& filename);
 
+	int addEntity(Entity entity);
+	Entity* getEntity(int index);
+	Entity* getEntityAbs(int x, int y);
+	Entity* getEntityRel(int x, int y);
+
 	std::string printToString() const;
 private:
 	static int vectorSizeFromGridSize(int x_size, int y_size);
 
 	int getAbsXFromPovX(int x_offset, int y_offset) const;
 	int getAbsYFromPovY(int x_offset, int y_offset) const;
+	CardinalDirection getAbsDirectionFromRelativeDirection(RelativeDirection direction) const;
 
-	bool setWall(int x, int y, Direction d, WallTypeId id);
+	bool setWall(int x, int y, WallOrientation d, WallTypeId id);
 
 	std::string printXLineToString(unsigned int y) const;
 	std::string printGroundTileToString(unsigned int x, unsigned int y) const;
@@ -75,4 +69,6 @@ private:
 	int pov_x = 0;
 	int pov_y = 0;
 	CardinalDirection pov_direction = CardinalDirection::NORTH;
+
+	std::vector<Entity> entities;
 };
