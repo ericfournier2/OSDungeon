@@ -34,11 +34,11 @@ LabyrinthView::LabyrinthView(Labyrinth& labyrinth_init, const sf::Font& font_ini
 	float camera_distance_init)
 	: labyrinth(labyrinth_init), window(sf::VideoMode({ 400, 300 }), "Maze 1st person view"), font(font_init), x_size(x_size_init), y_size(y_size_init), max_depth(max_depth_init), camera_distance(camera_distance_init)
 {
-	if (!ground_texture.loadFromFile("Ground2.png")) {
+	if (!ground_texture.loadFromFile("Elora.png")) {
 		assert("Texture failed to load.");
 	}
 
-	if (!wall0_texture.loadFromFile("BigBricksTexture20.png")) {
+	if (!wall0_texture.loadFromFile("Coralie.png")) {
 		assert("Texture failed to load.");
 	}
 }
@@ -180,14 +180,31 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	CoordF ceil3 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 0.0f, far_y);
 	CoordF ceil4 = mapCoordToProjection(static_cast<float>(step.x_offset), 0.0f, far_y);
 
-	drawPrimitive(ceil1, ceil2, ceil3, ceil4, sf::Color(0, 148, 255), &ground_texture, GROUND_TEXTURE, true);
+	//drawPrimitive(ceil1, ceil2, ceil3, ceil4, sf::Color(0, 148, 255), &ground_texture, GROUND_TEXTURE, true);
+	drawPrimitive(ceil1, ceil2, ceil3, ceil4, sf::Color::White, &ground_texture, GROUND_TEXTURE, true);
 
 	CoordF ground1 = mapCoordToProjection(static_cast<float>(step.x_offset), 1.0f, close_y);
 	CoordF ground2 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 1.0f, close_y);
 	CoordF ground3 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 1.0f, far_y);
 	CoordF ground4 = mapCoordToProjection(static_cast<float>(step.x_offset), 1.0f, far_y);
 
-	drawPrimitive(ground1, ground2, ground3, ground4, sf::Color(127, 51, 0), &ground_texture, GROUND_TEXTURE, true);
+	//drawPrimitive(ground1, ground2, ground3, ground4, sf::Color(127, 51, 0), &ground_texture, GROUND_TEXTURE, true);
+	drawPrimitive(ground1, ground2, ground3, ground4, sf::Color::White, &ground_texture, GROUND_TEXTURE, true);
+
+	if (Entity * ent = labyrinth.getEntityRel(step.x_offset, step.y_offset)) {
+		float scale_factor = static_cast<float>(pow(2, step.y_offset));
+		float final_x_size = ent->getXSize() / scale_factor;
+		float final_y_size = ent->getYSize() / scale_factor;
+
+		sf::RectangleShape rect = sf::RectangleShape({ final_x_size, final_y_size });
+		float tile_center_x = (ground1.x + ground2.x) / 2.0f;
+		float tile_center_y = (ground1.y + ground3.y) / 2.0f;
+		float final_x_offset = tile_center_x + (ent->getXOffset() / scale_factor);
+		float final_y_offset = tile_center_y + (ent->getYOffset() / scale_factor);
+		rect.setPosition({ final_x_offset, final_y_offset });
+		rect.setFillColor(sf::Color::White);
+		window.draw(rect);
+	}
 
 	return true;
 }
@@ -223,7 +240,8 @@ bool LabyrinthView::renderWall(RenderStep step) {
 	CoordF wall3 = mapCoordToProjection(step.x_offset + right_offset + front_x, 1.0f, far_y);
 	CoordF wall4 = mapCoordToProjection(step.x_offset + right_offset, 1.0f, close_y);
 
-	drawPrimitive(wall1, wall2, wall3, wall4, sf::Color(128, 128, 128), &wall0_texture, texture_type, true);
+	//drawPrimitive(wall1, wall2, wall3, wall4, sf::Color(128, 128, 128), &wall0_texture, texture_type, true);
+	drawPrimitive(wall1, wall2, wall3, wall4, sf::Color::White, &wall0_texture, texture_type, true);
 
 	return true;
 }

@@ -198,8 +198,8 @@ void testReadWrite() {
 	
 	for (int x = 0; x < test.getSizeX(); ++x) {
 		for (int y = 0; y < test.getSizeY(); ++y) {
-			assert(test.getWallAbs(x, y, Direction::HORIZONTAL) == test_read.getWallAbs(x, y, Direction::HORIZONTAL));
-			assert(test.getWallAbs(x, y, Direction::VERTICAL) == test_read.getWallAbs(x, y, Direction::VERTICAL));
+			assert(test.getWallAbs(x, y, WallOrientation::HORIZONTAL) == test_read.getWallAbs(x, y, WallOrientation::HORIZONTAL));
+			assert(test.getWallAbs(x, y, WallOrientation::VERTICAL) == test_read.getWallAbs(x, y, WallOrientation::VERTICAL));
 			assert(test.getGroundAbs(x, y) == test_read.getGroundAbs(x, y));
 		}
 	}

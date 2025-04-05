@@ -45,14 +45,7 @@ int Labyrinth::getAbsYFromPovY(int x_offset, int y_offset) const {
 	return final_offset_y;
 }
 
-
-GroundTypeId Labyrinth::getGroundRel(int x_offset, int y_offset) const
-{
-	return getGroundAbs(getAbsXFromPovX(x_offset, y_offset), getAbsYFromPovY(x_offset, y_offset));
-}
-
-WallTypeId Labyrinth::getWallRel(int x_offset, int y_offset, RelativeDirection direction) const
-{
+CardinalDirection Labyrinth::getAbsDirectionFromRelativeDirection(RelativeDirection direction) const {
 	int cardinal_offset = 0;
 
 	switch (direction) {
@@ -67,7 +60,17 @@ WallTypeId Labyrinth::getWallRel(int x_offset, int y_offset, RelativeDirection d
 		break;
 	}
 
-	CardinalDirection abs_direction = (CardinalDirection)(((int)pov_direction + cardinal_offset) % 4);
+	return static_cast<CardinalDirection>((static_cast<int>(pov_direction) + cardinal_offset) % 4);
+}
+
+GroundTypeId Labyrinth::getGroundRel(int x_offset, int y_offset) const
+{
+	return getGroundAbs(getAbsXFromPovX(x_offset, y_offset), getAbsYFromPovY(x_offset, y_offset));
+}
+
+WallTypeId Labyrinth::getWallRel(int x_offset, int y_offset, RelativeDirection direction) const
+{
+	CardinalDirection abs_direction = getAbsDirectionFromRelativeDirection(direction);
 	int abs_x_offset = getAbsXFromPovX(x_offset, y_offset);
 	int abs_y_offset = getAbsYFromPovY(x_offset, y_offset);
 
@@ -91,7 +94,7 @@ WallTypeId Labyrinth::getWallRel(int x_offset, int y_offset, RelativeDirection d
 
 
 
-bool Labyrinth::setWall(int x, int y, Direction d, WallTypeId id)
+bool Labyrinth::setWall(int x, int y, WallOrientation d, WallTypeId id)
 {
 	// Determine if it is out of bound
 	if (x < 0 || y < 0 || x >(int) x_size || y >(int) y_size || (x == x_size && d == HORIZONTAL) || (y == y_size && d == VERTICAL)) {
@@ -110,11 +113,11 @@ bool Labyrinth::setWall(int x, int y, Direction d, WallTypeId id)
 	return false;
 }
 
-bool Labyrinth::addWall(int x, int y, Direction d) {
+bool Labyrinth::addWall(int x, int y, WallOrientation d) {
 	return setWall(x, y, d, 1);
 }
 
-bool Labyrinth::removeWall(int x, int y, Direction d)
+bool Labyrinth::removeWall(int x, int y, WallOrientation d)
 {
 	return setWall(x, y, d, 0);
 }
@@ -235,7 +238,7 @@ Labyrinth::Labyrinth(int x_size_init, int y_size_init, WallVec initWalls, Ground
 	assert(ground.size() == x_size * y_size);
 }
 
-WallTypeId Labyrinth::getWallAbs(int x, int y, Direction d) const{
+WallTypeId Labyrinth::getWallAbs(int x, int y, WallOrientation d) const{
 	// Determine if it is out of bound
 	if (x < 0 || y < 0 || x > (int) x_size || y > (int) y_size || (x == x_size && d == HORIZONTAL) || (y == y_size && d == VERTICAL)) {
 		return 0;
@@ -381,4 +384,41 @@ bool Labyrinth::loadFromFile(const std::string& filename) {
 	}
 
 	return false;
+}
+
+int Labyrinth::addEntity(Entity entity)
+{
+	entities.push_back(entity);
+	return entities.size();
+}
+
+Entity* Labyrinth::getEntity(int index) {
+	if (index < entities.size() - 1) {
+		return &entities[index];
+	} else {
+		return nullptr;
+	}
+}
+
+Entity* Labyrinth::getEntityAbs(int x, int y) {
+	for (int i = 0; i < entities.size(); ++i) {
+		if (entities[i].getX() == x && entities[i].getY() == y) {
+			return &entities[i];
+		}
+	}
+	
+	return nullptr;
+}
+
+Entity* Labyrinth::getEntityRel(int x, int y) {
+	int abs_x_offset = getAbsXFromPovX(x, y);
+	int abs_y_offset = getAbsYFromPovY(x, y);
+
+	for (int i = 0; i < entities.size(); ++i) {
+		if (entities[i].getX() == abs_x_offset && entities[i].getY() == abs_y_offset) {
+			return &entities[i];
+		}
+	}
+
+	return nullptr;
 }

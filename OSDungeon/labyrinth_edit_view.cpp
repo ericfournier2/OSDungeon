@@ -31,8 +31,8 @@ void LabyrinthEditView::drawWalls() {
 
 	for (int x = 0; x < labyrinth.getSizeX() + 1; ++x) {
 		for (int y = 0; y < labyrinth.getSizeY() + 1; ++y) {
-			WallTypeId h_wall = labyrinth.getWallAbs(x, y, Direction::HORIZONTAL);
-			WallTypeId v_wall = labyrinth.getWallAbs(x, y, Direction::VERTICAL);
+			WallTypeId h_wall = labyrinth.getWallAbs(x, y, WallOrientation::HORIZONTAL);
+			WallTypeId v_wall = labyrinth.getWallAbs(x, y, WallOrientation::VERTICAL);
 
 			float pos_x = grid_origin_x + grid_spacing * x;
 			float pos_y = grid_origin_y + grid_spacing * labyrinth.getSizeY() - grid_spacing * y;
@@ -221,22 +221,22 @@ void LabyrinthEditView::handleMouseUp(const sf::Event::MouseButtonReleased* mous
 		}
 
 		while (extent_x > 0 && extent_y == 0) {
-			labyrinth.addWall(initial_map.value().x + extent_x - 1, initial_map.value().y, Direction::HORIZONTAL);
+			labyrinth.addWall(initial_map.value().x + extent_x - 1, initial_map.value().y, WallOrientation::HORIZONTAL);
 			--extent_x;
 		}
 
 		while (extent_x < 0 && extent_y == 0) {
-			labyrinth.addWall(initial_map.value().x + extent_x, initial_map.value().y, Direction::HORIZONTAL);
+			labyrinth.addWall(initial_map.value().x + extent_x, initial_map.value().y, WallOrientation::HORIZONTAL);
 			++extent_x;
 		}
 
 		while (extent_y > 0 && extent_x == 0) {
-			labyrinth.addWall(initial_map.value().x, initial_map.value().y + extent_y - 1, Direction::VERTICAL);
+			labyrinth.addWall(initial_map.value().x, initial_map.value().y + extent_y - 1, WallOrientation::VERTICAL);
 			--extent_y;
 		}
 
 		while (extent_y < 0 && extent_x == 0) {
-			labyrinth.addWall(initial_map.value().x, initial_map.value().y + extent_y, Direction::VERTICAL);
+			labyrinth.addWall(initial_map.value().x, initial_map.value().y + extent_y, WallOrientation::VERTICAL);
 			++extent_y;
 		}
 	}
