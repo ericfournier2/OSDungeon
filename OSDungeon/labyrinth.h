@@ -30,7 +30,7 @@ public:
 	GroundTypeId getGroundRel(int x_offset, int y_offset) const;
 	WallTypeId getWallRel(int x_offset, int y_offset, RelativeDirection direction) const;
 	
-	bool addWall(int x_offset, int y_offset, WallOrientation d);
+	bool addWall(int x_offset, int y_offset, WallOrientation d, WallTypeId id=0);
 	bool removeWall(int x_offset, int y_offset, WallOrientation d);
 
 	bool setPov(int x, int y, CardinalDirection direction);

@@ -1,10 +1,22 @@
+#include <SFML/System/Clock.hpp>
+#include "imgui/imgui.h"
+#include "imgui/imgui-SFML.h"
+
+
 #include "labyrinth_edit_view.h"
 
+
 LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init)
-	: labyrinth(labyrinth_init), window(sf::VideoMode({ 400, 300 }), "Edit maze"),
+	: labyrinth(labyrinth_init), window(sf::VideoMode({ 800, 600 }), "Edit maze"),
 	grid_spacing(10.0f), grid_origin_x(10.0f), grid_origin_y(10.0f),
 	mouse_down(false)
 {
+	ImGui::SFML::Init(window);
+}
+
+LabyrinthEditView::~LabyrinthEditView()
+{
+	ImGui::SFML::Shutdown();
 }
 
 void LabyrinthEditView::drawGrid()
@@ -149,12 +161,29 @@ void LabyrinthEditView::drawEditLine() {
 	}
 }
 
+void LabyrinthEditView::drawWallBrushInfo() {
+	ImGui::Begin("Wall brush");
+	int slider_value = static_cast<int>(wall_brush);
+	if (ImGui::SliderInt("ID", &slider_value, 0, 5)) {
+		wall_brush = slider_value;
+	}
+	ImGui::End();
+
+}
+
 void LabyrinthEditView::render() {
+	ImGui::SFML::Update(window, deltaClock.restart());
+
+	ImGui::ShowDemoWindow();
+
+
 	window.clear();
 	drawGrid();
 	drawWalls();
 	drawPOV();
 	drawEditLine();
+	drawWallBrushInfo();
+	ImGui::SFML::Render(window);
 	window.display();
 }
 
@@ -221,22 +250,22 @@ void LabyrinthEditView::handleMouseUp(const sf::Event::MouseButtonReleased* mous
 		}
 
 		while (extent_x > 0 && extent_y == 0) {
-			labyrinth.addWall(initial_map.value().x + extent_x - 1, initial_map.value().y, WallOrientation::HORIZONTAL);
+			labyrinth.addWall(initial_map.value().x + extent_x - 1, initial_map.value().y, WallOrientation::HORIZONTAL, wall_brush);
 			--extent_x;
 		}
 
 		while (extent_x < 0 && extent_y == 0) {
-			labyrinth.addWall(initial_map.value().x + extent_x, initial_map.value().y, WallOrientation::HORIZONTAL);
+			labyrinth.addWall(initial_map.value().x + extent_x, initial_map.value().y, WallOrientation::HORIZONTAL, wall_brush);
 			++extent_x;
 		}
 
 		while (extent_y > 0 && extent_x == 0) {
-			labyrinth.addWall(initial_map.value().x, initial_map.value().y + extent_y - 1, WallOrientation::VERTICAL);
+			labyrinth.addWall(initial_map.value().x, initial_map.value().y + extent_y - 1, WallOrientation::VERTICAL, wall_brush);
 			--extent_y;
 		}
 
 		while (extent_y < 0 && extent_x == 0) {
-			labyrinth.addWall(initial_map.value().x, initial_map.value().y + extent_y, WallOrientation::VERTICAL);
+			labyrinth.addWall(initial_map.value().x, initial_map.value().y + extent_y, WallOrientation::VERTICAL, wall_brush);
 			++extent_y;
 		}
 	}
@@ -247,7 +276,7 @@ void LabyrinthEditView::handleMouseUp(const sf::Event::MouseButtonReleased* mous
 bool LabyrinthEditView::processEvents()
 {
 	while (const std::optional event = window.pollEvent()) {
-
+		ImGui::SFML::ProcessEvent(window, *event);
 		if (event->is<sf::Event::Closed>()) {
 			window.close();
 			return true;

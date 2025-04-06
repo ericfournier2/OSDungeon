@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+
 #include "labyrinth.h"
 #include "labyrinth_view.h"
 #include "labyrinth_edit_view.h"

@@ -113,8 +113,8 @@ bool Labyrinth::setWall(int x, int y, WallOrientation d, WallTypeId id)
 	return false;
 }
 
-bool Labyrinth::addWall(int x, int y, WallOrientation d) {
-	return setWall(x, y, d, 1);
+bool Labyrinth::addWall(int x, int y, WallOrientation d, WallTypeId id) {
+	return setWall(x, y, d, id);
 }
 
 bool Labyrinth::removeWall(int x, int y, WallOrientation d)

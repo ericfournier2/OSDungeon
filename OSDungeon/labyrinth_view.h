@@ -2,6 +2,7 @@
 #include <set>
 #include <queue>
 #include <SFML/Graphics.hpp>
+
 #include "labyrinth.h"
 #include "common.h"
 
