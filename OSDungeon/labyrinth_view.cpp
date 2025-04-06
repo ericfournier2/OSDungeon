@@ -195,8 +195,8 @@ bool LabyrinthView::renderGround(RenderStep step) {
 		float scale_factor = static_cast<float>(pow(2, step.y_offset));
 		float final_x_size = ent->getXSize() / scale_factor;
 		float final_y_size = ent->getYSize() / scale_factor;
-		float tile_center_x = (ground1.x + ground2.x) / 2.0f;
-		float tile_center_y = (ground1.y + ground3.y) / 2.0f;
+		float tile_center_x = (ground1.x + ground2.x + ground3.x + ground4.x) / 4.0f;
+		float tile_center_y = (ground1.y + ground2.y + ground3.y + ground4.y) / 4.0f;
 		float final_x_offset = tile_center_x + (ent->getXOffset() / scale_factor);
 		float final_y_offset = tile_center_y + (ent->getYOffset() / scale_factor);
 
