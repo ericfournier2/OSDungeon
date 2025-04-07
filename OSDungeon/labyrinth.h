@@ -4,9 +4,8 @@
 #include <string>
 #include "common.h"
 #include "entity.h"
+#include "databases.h"
 
-typedef unsigned int WallTypeId;
-typedef unsigned int GroundTypeId;
 typedef std::vector<WallTypeId> WallVec;
 typedef std::vector<GroundTypeId> GroundVec;
 const unsigned int MAX_SIZE = 100;
@@ -71,4 +70,6 @@ private:
 	CardinalDirection pov_direction = CardinalDirection::NORTH;
 
 	std::vector<Entity> entities;
+	WallDb wall_db;
+	GroundDb ground_db;
 };
