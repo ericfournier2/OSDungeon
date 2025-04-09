@@ -30,9 +30,11 @@ void RenderStep::print() const {
 	std::cout << "(" << x_offset << "," << y_offset << ") " << (ground_render ? "Ground" : "Wall") << " " << direction << std::endl;
 }
 
-LabyrinthView::LabyrinthView(Labyrinth& labyrinth_init, const sf::Font& font_init, int x_size_init, int y_size_init, int max_depth_init,
-	float camera_distance_init)
-	: labyrinth(labyrinth_init), window(sf::VideoMode({ 400, 300 }), "Maze 1st person view"), font(font_init), x_size(x_size_init), y_size(y_size_init), max_depth(max_depth_init), camera_distance(camera_distance_init)
+LabyrinthView::LabyrinthView(Labyrinth& labyrinth_init, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, 
+							 const sf::Font& font_init, int x_size_init, int y_size_init, int max_depth_init, float camera_distance_init)
+	: labyrinth(labyrinth_init), ground_db(ground_db_init), wall_db(wall_db_init), texture_db(texture_db_init),
+	  window(sf::VideoMode({ 400, 300 }), "Maze 1st person view"), font(font_init), x_size(x_size_init), y_size(y_size_init), 
+	  max_depth(max_depth_init), camera_distance(camera_distance_init)
 {
 	if (!ground_texture.loadFromFile("Elora.png")) {
 		assert("Texture failed to load.");
@@ -181,7 +183,10 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	CoordF ceil4 = mapCoordToProjection(static_cast<float>(step.x_offset), 0.0f, far_y);
 
 	//drawPrimitive(ceil1, ceil2, ceil3, ceil4, sf::Color(0, 148, 255), &ground_texture, GROUND_TEXTURE, true);
-	drawPrimitive(ceil1, ceil2, ceil3, ceil4, sf::Color::White, &ground_texture, GROUND_TEXTURE, true);
+	GroundInfo ground_info = ground_db.getElement(step.ground_id);
+	TextureInfo texture_info = texture_db.getTexture(ground_info.texture);
+
+	drawPrimitive(ceil1, ceil2, ceil3, ceil4, ground_info.color, texture_info.texture.get(), GROUND_TEXTURE, true);
 
 	CoordF ground1 = mapCoordToProjection(static_cast<float>(step.x_offset), 1.0f, close_y);
 	CoordF ground2 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 1.0f, close_y);
@@ -189,7 +194,7 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	CoordF ground4 = mapCoordToProjection(static_cast<float>(step.x_offset), 1.0f, far_y);
 
 	//drawPrimitive(ground1, ground2, ground3, ground4, sf::Color(127, 51, 0), &ground_texture, GROUND_TEXTURE, true);
-	drawPrimitive(ground1, ground2, ground3, ground4, sf::Color::White, &ground_texture, GROUND_TEXTURE, true);
+	drawPrimitive(ground1, ground2, ground3, ground4, ground_info.color, texture_info.texture.get(), GROUND_TEXTURE, true);
 
 	if (Entity * ent = labyrinth.getEntityRel(step.x_offset, step.y_offset)) {
 		float scale_factor = static_cast<float>(pow(2, step.y_offset));
@@ -240,8 +245,11 @@ bool LabyrinthView::renderWall(RenderStep step) {
 	CoordF wall3 = mapCoordToProjection(step.x_offset + right_offset + front_x, 1.0f, far_y);
 	CoordF wall4 = mapCoordToProjection(step.x_offset + right_offset, 1.0f, close_y);
 
+	WallInfo wall_info = wall_db.getElement(step.wall_id);
+	TextureInfo texture_info = texture_db.getTexture(wall_info.texture);
+
 	//drawPrimitive(wall1, wall2, wall3, wall4, sf::Color(128, 128, 128), &wall0_texture, texture_type, true);
-	drawPrimitive(wall1, wall2, wall3, wall4, sf::Color::White, &wall0_texture, texture_type, true);
+	drawPrimitive(wall1, wall2, wall3, wall4, wall_info.color, texture_info.texture.get(), texture_type, true);
 
 	return true;
 }
@@ -255,6 +263,8 @@ bool LabyrinthView::render() {
 		//std::cout << "Queue is processing:";
 		//current_step.print();
 		if (current_step.ground_render) {
+			GroundTypeId ground_id = labyrinth.getGroundRel(current_step.x_offset, current_step.y_offset);
+			current_step.ground_id = ground_id;
 			// Do actual ground drawing. If we get here, the ground is always shown.
 			//renderGround(current_step);
 			drawStack.push(current_step);
@@ -275,6 +285,7 @@ bool LabyrinthView::render() {
 		else {
 			
 			WallTypeId wall_id = labyrinth.getWallRel(current_step.x_offset, current_step.y_offset, current_step.direction);
+			current_step.wall_id = wall_id;
 			if (wall_id) {
 				// There's an actual wall, so let's draw it.
 				// renderWall(current_step);

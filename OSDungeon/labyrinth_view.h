@@ -11,7 +11,8 @@ struct RenderStep {
 	int y_offset;
 	bool ground_render;
 	RelativeDirection direction;
-
+	GroundTypeId ground_id;
+	WallTypeId wall_id;
 
 	bool operator<(const RenderStep& rs) const;
 	void print() const;
@@ -43,7 +44,8 @@ private:
 
 class LabyrinthView {
 public:
-	LabyrinthView(Labyrinth& labyrinth, const sf::Font& font, int x_size=400, int y_size=300, int max_depth=5, float camera_distance=0.7f);
+	LabyrinthView(Labyrinth& labyrinth, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, 
+				  const sf::Font& font, int x_size=400, int y_size=300, int max_depth=5, float camera_distance=0.7f);
 	bool render();
 	bool processEvents();
 private:
@@ -64,4 +66,8 @@ private:
 	sf::Texture ground_texture;
 	sf::Texture wall0_texture;
 	bool verbose = false;
+
+	GroundDb& ground_db;
+	WallDb& wall_db;
+	TextureDb& texture_db;
 };

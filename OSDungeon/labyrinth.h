@@ -70,6 +70,4 @@ private:
 	CardinalDirection pov_direction = CardinalDirection::NORTH;
 
 	std::vector<Entity> entities;
-	WallDb wall_db;
-	GroundDb ground_db;
 };
