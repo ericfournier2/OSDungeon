@@ -6,8 +6,9 @@
 #include "labyrinth_edit_view.h"
 
 
-LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init)
-	: labyrinth(labyrinth_init), window(sf::VideoMode({ 800, 600 }), "Edit maze"),
+LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init)
+	: labyrinth(labyrinth_init), ground_db(ground_db_init), wall_db(wall_db_init), texture_db(texture_db_init),
+	window(sf::VideoMode({ 800, 600 }), "Edit maze"),
 	grid_spacing(10.0f), grid_origin_x(10.0f), grid_origin_y(10.0f),
 	mouse_down(false)
 {
@@ -17,6 +18,60 @@ LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init)
 LabyrinthEditView::~LabyrinthEditView()
 {
 	ImGui::SFML::Shutdown();
+}
+
+std::optional<Coord> LabyrinthEditView::getMapGroundCoordFromScreenCoord(float x, float y) {
+	float map_x = (mouse_x - grid_origin_x) / grid_spacing;
+	float map_y = labyrinth.getSizeY() - (mouse_y - grid_origin_y) / grid_spacing;
+	
+	if (map_x > 0 && map_y > 0 && map_x < labyrinth.getSizeX() && map_y < labyrinth.getSizeY()) {
+		return Coord({ static_cast<int>(map_x),static_cast<int>(map_y) });
+	}
+	else {
+		return std::nullopt;
+	}
+}
+
+sf::Color LabyrinthEditView::groundDrawColor(GroundTypeId id) {
+	if (id == 0) {
+		return sf::Color::Black;
+	}
+	else {
+		return ground_db.getElement(id).ground_color;
+	}
+}
+
+sf::RectangleShape LabyrinthEditView::groundRectangle(int x, int y, GroundTypeId id) {
+	sf::Color current_color = groundDrawColor(id);
+	sf::RectangleShape ground_rect({ grid_spacing, grid_spacing });
+	float rect_x = grid_origin_x + grid_spacing * x;
+	float rect_y = grid_origin_y + ((labyrinth.getSizeY() - y - 1) * grid_spacing);
+	ground_rect.setPosition({ rect_x, rect_y });
+	ground_rect.setFillColor(current_color);
+
+	return ground_rect;
+}
+
+void LabyrinthEditView::drawGround() {
+	for (int x = 0; x < labyrinth.getSizeX(); ++x) {
+		for (int y = 0; y < labyrinth.getSizeY(); ++y) {
+			GroundTypeId current_id = labyrinth.getGroundAbs(x, y);
+			sf::RectangleShape ground_rect = groundRectangle(x, y, current_id);
+
+			window.draw(ground_rect);
+		}
+	}
+}
+
+void LabyrinthEditView::drawGroundCursor() {
+	std::optional<Coord> ground_coord_opt = getMapGroundCoordFromScreenCoord(mouse_x, mouse_y);
+
+	if (ground_coord_opt) {
+		sf::RectangleShape ground_cursor_rect = groundRectangle(ground_coord_opt.value().x, ground_coord_opt.value().y, wall_brush);
+		window.draw(ground_cursor_rect);
+	}
+	//float cursor_x = (mouse_x - grid_origin_x) / grid_spacing;
+	//float cursor_y = labyrinth.getSizeY() - (mouse_y - grid_origin_y) / grid_spacing;
 }
 
 void LabyrinthEditView::drawGrid()
@@ -176,8 +231,9 @@ void LabyrinthEditView::render() {
 
 	ImGui::ShowDemoWindow();
 
-
 	window.clear();
+	drawGround();
+	drawGroundCursor();
 	drawGrid();
 	drawWalls();
 	drawPOV();
@@ -208,23 +264,25 @@ void LabyrinthEditView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) 
 	}
 }
 
-void LabyrinthEditView::handleMouseDown(const sf::Event::MouseButtonPressed* mouseButtonPressed) {
+void LabyrinthEditView::handleMouseLeftDown(const sf::Event::MouseButtonPressed* mouseButtonPressed) {
 	std::optional<CoordF> closest = findClosestGridPoint(mouseButtonPressed->position.x, mouseButtonPressed->position.y);
 	if (closest) {
 		button_down_pos = closest.value();
 		mouse_x = static_cast<float>(mouseButtonPressed->position.x);
 		mouse_y = static_cast<float>(mouseButtonPressed->position.y);
 		mouse_down = true;
-		if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
-			mouse_down_adding = true;
-		}
-		else {
-			mouse_down_adding = false;
-		}
+		mouse_down_adding = true;
 	}
 }
 
-std::optional<Coord> LabyrinthEditView::getMapCoordFromScreenCoord(float x, float y) {
+void LabyrinthEditView::handleMouseRightDown(const sf::Event::MouseButtonPressed* mouseButtonPressed) {
+	std::optional<Coord> ground_coord_opt = getMapGroundCoordFromScreenCoord(mouse_x, mouse_y);
+	if (ground_coord_opt) {
+		labyrinth.setGround(ground_coord_opt.value().x, ground_coord_opt.value().y, wall_brush);
+	} 
+}
+
+std::optional<Coord> LabyrinthEditView::getMapWallCoordFromScreenCoord(float x, float y) {
 	std::optional<CoordF> closest = findClosestGridPoint(static_cast<int>(x), static_cast<int>(y));
 
 	if (closest) {
@@ -237,9 +295,9 @@ std::optional<Coord> LabyrinthEditView::getMapCoordFromScreenCoord(float x, floa
 }
 
 
-void LabyrinthEditView::handleMouseUp(const sf::Event::MouseButtonReleased* mouseButtonReleased) {
-	std::optional<Coord> closest_map = getMapCoordFromScreenCoord(static_cast<float>(mouseButtonReleased->position.x), static_cast<float>(mouseButtonReleased->position.y));
-	std::optional<Coord> initial_map = getMapCoordFromScreenCoord(button_down_pos.x, button_down_pos.y);
+void LabyrinthEditView::handleMouseLeftUp(const sf::Event::MouseButtonReleased* mouseButtonReleased) {
+	std::optional<Coord> closest_map = getMapWallCoordFromScreenCoord(static_cast<float>(mouseButtonReleased->position.x), static_cast<float>(mouseButtonReleased->position.y));
+	std::optional<Coord> initial_map = getMapWallCoordFromScreenCoord(button_down_pos.x, button_down_pos.y);
 	if (initial_map && closest_map) {
 		int extent_x = closest_map.value().x - initial_map.value().x;
 		int extent_y = closest_map.value().y - initial_map.value().y;
@@ -272,6 +330,8 @@ void LabyrinthEditView::handleMouseUp(const sf::Event::MouseButtonReleased* mous
 	mouse_down = false;
 }
 
+void LabyrinthEditView::handleMouseRightUp(const sf::Event::MouseButtonReleased* mouseButtonReleased) {
+}
 
 bool LabyrinthEditView::processEvents()
 {
@@ -285,10 +345,18 @@ bool LabyrinthEditView::processEvents()
 			handleKeyPress(keyPressed);
 		}
 		else if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
-			handleMouseDown(mouseButtonPressed);
+			if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
+				handleMouseLeftDown(mouseButtonPressed);
+			} else if (mouseButtonPressed->button == sf::Mouse::Button::Right) {
+				handleMouseRightDown(mouseButtonPressed);
+			}
 		}
 		else if (const auto* mouseButtonReleased = event->getIf<sf::Event::MouseButtonReleased>()) {
-			handleMouseUp(mouseButtonReleased);
+			if (mouseButtonReleased->button == sf::Mouse::Button::Left) {
+				handleMouseLeftUp(mouseButtonReleased);
+			} else if (mouseButtonReleased->button == sf::Mouse::Button::Right) {
+				handleMouseRightUp(mouseButtonReleased);
+			}
 		}
 		else if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
 			mouse_x = static_cast<float>(mouseMoved->position.x);

@@ -122,6 +122,11 @@ bool Labyrinth::removeWall(int x, int y, WallOrientation d)
 	return setWall(x, y, d, 0);
 }
 
+void Labyrinth::setGround(int x, int y, GroundTypeId id)
+{
+	ground[y * x_size + x] = id;
+}
+
 bool Labyrinth::movePovRel(int x_offset, int y_offset)
 {
 	int new_pov_x = getAbsXFromPovX(x_offset, y_offset);
@@ -373,7 +378,21 @@ bool Labyrinth::loadFromFile(const std::string& filename) {
 					x_size = x_size_read;
 					y_size = y_size_read;
 					walls = walls_read;
+					for (int i = 0; i < walls.size(); ++i) {
+						if (walls[i]) {
+							walls[i] = (i % 3) + 1;
+						} 
+					}
 					ground = ground_read;
+					for (int i = 0; i < ground.size(); ++i) {
+						if ((i / x_size) % 2 == 0) {
+							ground[i] = (i % 2) + 1;
+						}
+						else {
+							ground[i] = ((i + 1) % 2) + 1;
+						}
+						
+					}
 					pov_x = 0;
 					pov_y = 0;
 					pov_direction = CardinalDirection::NORTH;

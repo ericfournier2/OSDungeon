@@ -31,6 +31,8 @@ public:
 	
 	bool addWall(int x_offset, int y_offset, WallOrientation d, WallTypeId id=0);
 	bool removeWall(int x_offset, int y_offset, WallOrientation d);
+	void setGround(int x, int y, GroundTypeId id = 0);
+
 
 	bool setPov(int x, int y, CardinalDirection direction);
 	bool movePovRel(int x_offset, int y_offset);

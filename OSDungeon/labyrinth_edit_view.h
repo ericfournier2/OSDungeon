@@ -1,24 +1,33 @@
 #include <SFML/Graphics.hpp>
 #include "labyrinth.h"
 #include "common.h"
+#include "databases.h"
 
 #pragma once
 class LabyrinthEditView
 {
 public:
-	LabyrinthEditView(Labyrinth& labyrinth);
+	LabyrinthEditView(Labyrinth& labyrinth, GroundDb& ground_db, WallDb& wall_db, TextureDb& texture_db);
 	~LabyrinthEditView();
+
 	void render();
 	
 	bool processEvents();
 private:
+	sf::Color groundDrawColor(GroundTypeId id);
+	sf::RectangleShape groundRectangle(int x, int y, GroundTypeId id);
+	void drawGround();
+	void drawGroundCursor();
 	void drawGrid();
 	void drawWalls();
 	void drawPOV();
 	void handleKeyPress(const sf::Event::KeyPressed* keyPressed);
-	void handleMouseDown(const sf::Event::MouseButtonPressed* mouseButtonPressed);
-	std::optional<Coord> getMapCoordFromScreenCoord(float x, float y);
-	void handleMouseUp(const sf::Event::MouseButtonReleased* mouseButtonReleased);
+	void handleMouseLeftDown(const sf::Event::MouseButtonPressed* mouseButtonPressed);
+	void handleMouseRightDown(const sf::Event::MouseButtonPressed* mouseButtonPressed);
+	std::optional<Coord> getMapWallCoordFromScreenCoord(float x, float y);
+	std::optional<Coord> getMapGroundCoordFromScreenCoord(float x, float y);
+	void handleMouseLeftUp(const sf::Event::MouseButtonReleased* mouseButtonReleased);
+	void handleMouseRightUp(const sf::Event::MouseButtonReleased* mouseButtonReleased);
 	std::optional<CoordF> findClosestGridPoint(int x, int y) const;
 	void drawEditLine();
 	void drawWallBrushInfo();
@@ -34,5 +43,8 @@ private:
 	float mouse_x = 0.0f;
 	float mouse_y = 0.0f;
 	sf::Clock deltaClock;
+	GroundDb& ground_db;
+	WallDb& wall_db;
+	TextureDb& texture_db;
 };
 

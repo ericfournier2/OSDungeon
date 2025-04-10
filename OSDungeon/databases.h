@@ -4,21 +4,23 @@
 #include <optional>
 #include <fstream>
 #include <memory>
+#include <vector>
 
 typedef unsigned int WallTypeId;
 typedef unsigned int GroundTypeId;
 typedef unsigned int TextureId;
 
 struct WallInfo {
-	WallTypeId id;
-	sf::Color color;
-	TextureId texture;
+	WallTypeId id = 0;
+	sf::Color color = sf::Color::White;
+	TextureId texture = 0;
 };
 
 struct GroundInfo {
-	GroundTypeId id;
-	sf::Color color;
-	TextureId texture;
+	GroundTypeId id = 0;
+	sf::Color ground_color = sf::Color::White;
+	sf::Color ceiling_color = sf::Color::White;
+	TextureId texture = 0;
 };
 
 template <typename TId, typename TInfo>
@@ -35,7 +37,8 @@ public:
 		}
 		return !stream.fail();
 	}
-	virtual bool writeToStream(std::ofstream& stream) {
+	
+	bool writeToStream(std::ofstream& stream) {
 		auto db_size = db_map.size();
 		stream.write(reinterpret_cast<char*>(&db_size), sizeof(db_size));
 		for (const auto& [key, value] : db_map) {
@@ -43,14 +46,16 @@ public:
 		}
 		return !stream.fail();
 	}
-	std::optional<TInfo> getElement(TId id) {
+	
+	TInfo getElement(TId id) {
 		if (db_map.contains(id)) {
 			return db_map[id];
 		}
 		else {
-			return std::nullopt;
+			return TInfo();
 		}
 	}
+	
 	TId addElement(TInfo info) {
 		// Find a free ID
 		TId i = 1;
@@ -61,6 +66,17 @@ public:
 		db_map.emplace(i, info);
 		return i;
 	}
+	
+	bool updateElement(TInfo info) {
+		if (db_map.contains(info.id)) {
+			db_map[info.id] = info;
+			return false;
+		} else {
+			addElement(info);
+			return true;
+		}
+	}
+
 	bool removeElement(TId id) {
 		if (db_map.contains(id)) {
 			db_map.erase(id);
@@ -68,6 +84,14 @@ public:
 		} else {
 			return false;
 		}
+	}
+	
+	std::vector<TId> getIds() const {
+		auto retVal = std::vector<TId>();
+		for (auto const& imap : db_map) {
+			retVal.push_back(imap.first);
+		}
+		return retVal;
 	}
 private:
 	std::map<TId, TInfo> db_map;
@@ -86,7 +110,9 @@ class TextureDb {
 public:
 	TextureDb();
 	TextureId loadNewTexture(TextureId id, const std::string& filename);
-	std::optional<TextureInfo> getTexture(TextureId id);
+	TextureInfo getTexture(TextureId id);
 private:
 	std::map<TextureId, TextureInfo> texture_map;
+	std::shared_ptr<sf::Texture> empty_texture;
+	TextureInfo empty_info;
 };

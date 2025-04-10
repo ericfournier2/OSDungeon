@@ -36,13 +36,13 @@ int main()
     TextureDb texture_db;
 
 
-    Labyrinth test = Labyrinth(0, 0);
+    Labyrinth test = Labyrinth(20, 20);
     Entity ent1 = Entity(&test, &chest, 5, 5, CardinalDirection::NORTH, 105.0f, 83.0f, -52.5f, -60.0f);
     test.addEntity(ent1);
 
-    test.loadFromFile("current.labyrinth");
+    //test.loadFromFile("current.labyrinth");
     LabyrinthView lv = LabyrinthView(test, ground_db, wall_db, texture_db, font, 400, 300);
-    LabyrinthEditView lve = LabyrinthEditView(test);
+    LabyrinthEditView lve = LabyrinthEditView(test, ground_db, wall_db, texture_db);
     bool closed = false;
     while (!closed)
     {
