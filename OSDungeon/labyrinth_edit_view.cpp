@@ -275,11 +275,58 @@ void LabyrinthEditView::handleMouseLeftDown(const sf::Event::MouseButtonPressed*
 	}
 }
 
-void LabyrinthEditView::handleMouseRightDown(const sf::Event::MouseButtonPressed* mouseButtonPressed) {
+void LabyrinthEditView::paintEnclosingWall(int x, int y, CardinalDirection d) {
+	int ground_x_offset = 0;
+	int ground_y_offset = 0;
+	int wall_x_offset = 0;
+	int wall_y_offset = 0;
+	WallOrientation orient = WallOrientation::HORIZONTAL;
+
+	switch (d) {
+	case CardinalDirection::EAST:
+		ground_x_offset = 1;
+		wall_x_offset = 1;
+		orient = WallOrientation::VERTICAL;
+		break;
+	case CardinalDirection::NORTH:
+		ground_y_offset = 1;
+		wall_y_offset = 1;
+		break;
+	case CardinalDirection::WEST:
+		ground_x_offset = -1;
+		orient = WallOrientation::VERTICAL;
+		break;
+	case CardinalDirection::SOUTH:
+		ground_y_offset = -1;
+		break;
+	}
+
+	GroundTypeId other_ground = labyrinth.getGroundAbs(x + ground_x_offset, y + ground_y_offset);
+	if ((other_ground == 0 && ground_brush == 0) || (other_ground != 0 && ground_brush != 0)) {
+		labyrinth.removeWall(x + wall_x_offset, y + wall_y_offset, orient);
+	} else {
+		labyrinth.addWall(x + wall_x_offset, y + wall_y_offset, orient, wall_brush);
+	}
+}
+
+void LabyrinthEditView::paintCurrentGroundTile() {
 	std::optional<Coord> ground_coord_opt = getMapGroundCoordFromScreenCoord(mouse_x, mouse_y);
 	if (ground_coord_opt) {
-		labyrinth.setGround(ground_coord_opt.value().x, ground_coord_opt.value().y, wall_brush);
-	} 
+		int x = ground_coord_opt.value().x;
+		int y = ground_coord_opt.value().y;
+		labyrinth.setGround(x, y, ground_brush);
+		if (paint_walls_around_ground) {
+			paintEnclosingWall(x, y, CardinalDirection::NORTH);
+			paintEnclosingWall(x, y, CardinalDirection::EAST);
+			paintEnclosingWall(x, y, CardinalDirection::WEST);
+			paintEnclosingWall(x, y, CardinalDirection::SOUTH);
+		}
+	}
+}
+
+void LabyrinthEditView::handleMouseRightDown(const sf::Event::MouseButtonPressed* mouseButtonPressed) {
+	paintCurrentGroundTile();
+	painting_ground = true;
 }
 
 std::optional<Coord> LabyrinthEditView::getMapWallCoordFromScreenCoord(float x, float y) {
@@ -331,6 +378,7 @@ void LabyrinthEditView::handleMouseLeftUp(const sf::Event::MouseButtonReleased* 
 }
 
 void LabyrinthEditView::handleMouseRightUp(const sf::Event::MouseButtonReleased* mouseButtonReleased) {
+	painting_ground = false;
 }
 
 bool LabyrinthEditView::processEvents()
@@ -361,6 +409,9 @@ bool LabyrinthEditView::processEvents()
 		else if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
 			mouse_x = static_cast<float>(mouseMoved->position.x);
 			mouse_y = static_cast<float>(mouseMoved->position.y);
+			if (painting_ground) {
+				paintCurrentGroundTile();
+			}
 		}
 	}
 

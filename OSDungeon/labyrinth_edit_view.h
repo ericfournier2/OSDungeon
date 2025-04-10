@@ -23,6 +23,8 @@ private:
 	void drawPOV();
 	void handleKeyPress(const sf::Event::KeyPressed* keyPressed);
 	void handleMouseLeftDown(const sf::Event::MouseButtonPressed* mouseButtonPressed);
+	void paintEnclosingWall(int x, int y, CardinalDirection d);
+	void paintCurrentGroundTile();
 	void handleMouseRightDown(const sf::Event::MouseButtonPressed* mouseButtonPressed);
 	std::optional<Coord> getMapWallCoordFromScreenCoord(float x, float y);
 	std::optional<Coord> getMapGroundCoordFromScreenCoord(float x, float y);
@@ -36,6 +38,7 @@ private:
 	float grid_spacing = 10.0f;
 	float grid_origin_x = 10.0f;
 	float grid_origin_y = 10.0f;
+	GroundTypeId ground_brush = 1;
 	WallTypeId wall_brush = 0;
 	bool mouse_down = false;
 	bool mouse_down_adding = true;
@@ -46,5 +49,7 @@ private:
 	GroundDb& ground_db;
 	WallDb& wall_db;
 	TextureDb& texture_db;
+	bool painting_ground = false;
+	bool paint_walls_around_ground = true;
 };
 
