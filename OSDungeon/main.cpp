@@ -23,9 +23,9 @@ int main()
 
     GroundDb ground_db;
     //ground_db.addElement(GroundInfo({ 0, sf::Color::White, 0 }));
-    ground_db.addElement(GroundInfo({ 1, sf::Color::White, 4 }));
-    ground_db.addElement(GroundInfo({ 2, sf::Color::Green, 4 }));
-    ground_db.addElement(GroundInfo({ 3, sf::Color::Red, 4 }));
+    ground_db.addElement(GroundInfo({ 1, sf::Color::White, sf::Color::Blue, 4 }));
+    ground_db.addElement(GroundInfo({ 2, sf::Color::Green, sf::Color::Blue, 4 }));
+    ground_db.addElement(GroundInfo({ 3, sf::Color::Red, sf::Color::Blue, 4 }));
 
     WallDb wall_db;
     //wall_db.addElement(WallInfo({ 0, sf::Color::White, 0 }));

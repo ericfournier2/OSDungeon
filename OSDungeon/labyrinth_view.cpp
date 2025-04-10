@@ -186,7 +186,7 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	GroundInfo ground_info = ground_db.getElement(step.ground_id);
 	TextureInfo texture_info = texture_db.getTexture(ground_info.texture);
 
-	drawPrimitive(ceil1, ceil2, ceil3, ceil4, ground_info.color, texture_info.texture.get(), GROUND_TEXTURE, true);
+	drawPrimitive(ceil1, ceil2, ceil3, ceil4, ground_info.ceiling_color, texture_info.texture.get(), GROUND_TEXTURE, true);
 
 	CoordF ground1 = mapCoordToProjection(static_cast<float>(step.x_offset), 1.0f, close_y);
 	CoordF ground2 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 1.0f, close_y);
@@ -194,7 +194,7 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	CoordF ground4 = mapCoordToProjection(static_cast<float>(step.x_offset), 1.0f, far_y);
 
 	//drawPrimitive(ground1, ground2, ground3, ground4, sf::Color(127, 51, 0), &ground_texture, GROUND_TEXTURE, true);
-	drawPrimitive(ground1, ground2, ground3, ground4, ground_info.color, texture_info.texture.get(), GROUND_TEXTURE, true);
+	drawPrimitive(ground1, ground2, ground3, ground4, ground_info.ground_color, texture_info.texture.get(), GROUND_TEXTURE, true);
 
 	if (Entity * ent = labyrinth.getEntityRel(step.x_offset, step.y_offset)) {
 		float scale_factor = static_cast<float>(pow(2, step.y_offset));
