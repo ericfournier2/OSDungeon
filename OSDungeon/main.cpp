@@ -44,7 +44,7 @@ int main()
     //test.loadFromFile("current.labyrinth");
     LabyrinthView lv = LabyrinthView(test, ground_db, wall_db, texture_db, font, 400, 300);
     LabyrinthEditView lve = LabyrinthEditView(test, ground_db, wall_db, texture_db);
-    WallDbEditor wdbe(wall_db, ground_db, texture_db);
+    DatabaseEditor wdbe(wall_db, ground_db, texture_db);
     bool closed = false;
     while (!closed)
     {

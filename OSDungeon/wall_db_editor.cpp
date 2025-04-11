@@ -2,12 +2,12 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
 
-WallDbEditor::WallDbEditor(WallDb& wall_db_init, GroundDb& ground_db_init, TextureDb& texture_db_init) 
+DatabaseEditor::DatabaseEditor(WallDb& wall_db_init, GroundDb& ground_db_init, TextureDb& texture_db_init) 
  : wall_db(wall_db_init), ground_db(ground_db_init), texture_db(texture_db_init), window(sf::VideoMode({ 800, 400 }), "Databases") {
 	ImGui::SFML::Init(window);
 }
 
-bool WallDbEditor::selectColorButton(sf::Color* initial_color, int object_id, std::string extra_label) {
+bool DatabaseEditor::selectColorButton(sf::Color* initial_color, int object_id, std::string extra_label) {
 	// Get the unsigned integers into equivalent floats.
 	float color[4] = { initial_color->r / 255.0f, initial_color->g / 255.0f, initial_color->b / 255.0f, initial_color->a / 255.0f };
 	
@@ -27,7 +27,7 @@ bool WallDbEditor::selectColorButton(sf::Color* initial_color, int object_id, st
 	return false;
 }
 
-bool WallDbEditor::selectTextureButton(TextureId* texture_id, int object_id, std::string extra_label) {
+bool DatabaseEditor::selectTextureButton(TextureId* texture_id, int object_id, std::string extra_label) {
 	bool retval = false;
 	
 	std::string texture_label = "texture_button###";
@@ -60,7 +60,7 @@ bool WallDbEditor::selectTextureButton(TextureId* texture_id, int object_id, std
 	return retval;
 }
 
-void WallDbEditor::renderWallRow(WallTypeId id) {
+void DatabaseEditor::renderWallRow(WallTypeId id) {
 	ImGui::TableNextRow();
 	ImGui::TableNextColumn();
 	std::string id_str = std::to_string(id);
@@ -78,7 +78,7 @@ void WallDbEditor::renderWallRow(WallTypeId id) {
 	}
 }
 
-void WallDbEditor::renderWallTable() {
+void DatabaseEditor::renderWallTable() {
 	if (ImGui::BeginTable("Wall entries", 3, ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_SizingStretchProp)) {
 		auto all_ids = wall_db.getIds();
 		for (auto id : all_ids) {
@@ -88,7 +88,7 @@ void WallDbEditor::renderWallTable() {
 	}
 }
 
-void WallDbEditor::renderGroundRow(GroundTypeId id) {
+void DatabaseEditor::renderGroundRow(GroundTypeId id) {
 	ImGui::TableNextRow();
 	ImGui::TableNextColumn();
 	std::string id_str = std::to_string(id);
@@ -111,7 +111,7 @@ void WallDbEditor::renderGroundRow(GroundTypeId id) {
 	}
 }
 
-void WallDbEditor::renderGroundTable() {
+void DatabaseEditor::renderGroundTable() {
 	if (ImGui::BeginTable("Ground entries", 4, ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_SizingStretchProp)) {
 		auto all_ids = ground_db.getIds();
 		for (auto id : all_ids) {
@@ -121,7 +121,7 @@ void WallDbEditor::renderGroundTable() {
 	}
 }
 
-void WallDbEditor::render() {
+void DatabaseEditor::render() {
 	window.clear();
 	ImGui::SFML::Update(window, deltaClock.restart());
 
@@ -149,7 +149,7 @@ void WallDbEditor::render() {
 	window.display();
 }
 
-bool WallDbEditor::processEvents() {
+bool DatabaseEditor::processEvents() {
 	while (const std::optional event = window.pollEvent()) {
 		ImGui::SFML::ProcessEvent(window, *event);
 		if (event->is<sf::Event::Closed>()) {

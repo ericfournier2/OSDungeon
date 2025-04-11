@@ -2,9 +2,9 @@
 
 #include "databases.h"
 
-class WallDbEditor {
+class DatabaseEditor {
 public:
-	WallDbEditor(WallDb& wall_db, GroundDb& ground_db, TextureDb& texture_db);
+	DatabaseEditor(WallDb& wall_db, GroundDb& ground_db, TextureDb& texture_db);
 	void render();
 	bool processEvents();
 private:
