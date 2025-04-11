@@ -131,6 +131,7 @@ public:
 	TextureDb();
 	TextureId loadNewTexture(TextureId id, const std::string& filename);
 	TextureInfo getTexture(TextureId id);
+	std::vector<TextureId> getIds() const;
 	bool writeToFile(const std::string& filename) const;
 	bool readFromFile(const std::string& filename);
 	bool writeToStream(std::ofstream& stream) const;

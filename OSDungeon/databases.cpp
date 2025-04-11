@@ -21,6 +21,14 @@ TextureId TextureDb::loadNewTexture(TextureId id, const std::string& filename) {
 	return id;
 }
 
+std::vector<TextureId> TextureDb::getIds() const {
+	auto retVal = std::vector<TextureId>();
+	for (auto const& imap : texture_map) {
+		retVal.push_back(imap.first);
+	}
+	return retVal;
+}
+
 TextureInfo TextureDb::getTexture(TextureId id) {
 	if (texture_map.contains(id)) {
 		return texture_map[id];

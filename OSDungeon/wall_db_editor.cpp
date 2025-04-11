@@ -42,25 +42,32 @@ void WallDbEditor::render() {
 			}
 
 			ImGui::TableNextColumn();
+			std::string texture_label = "Wall texture###";
+			texture_label.append(std::to_string(id));
+			std::string popup_label = "Wall popup###";
+			popup_label.append(std::to_string(id));
 			sf::Vector2f tex_size = { 100.0f, 100.0f };
-			ImGui::Image(*(texture_db.getTexture(wall_info.texture).texture.get()), tex_size);
+			if (ImGui::ImageButton(texture_label.c_str(), *(texture_db.getTexture(wall_info.texture).texture.get()), tex_size)) {
+				ImGui::OpenPopup(popup_label.c_str());
+			}
+
+			if (ImGui::BeginPopup(popup_label.c_str())) {
+				auto all_ids = texture_db.getIds();
+				for (int i = 0; i < all_ids.size(); ++i) {
+					std::string selectable_label = texture_db.getTexture(all_ids[i]).texture_filename;
+					selectable_label.append("###");
+					selectable_label.append(std::to_string(i));
+					if (ImGui::Selectable(selectable_label.c_str())) {
+						wall_info.texture = all_ids[i];
+						wall_db.updateElement(wall_info);
+					}
+				}
+				ImGui::EndPopup();
+			}
 		}
 		ImGui::EndTable();
 	}
-	/*
-	int slider_value = static_cast<int>(current_id);
-	if (ImGui::SliderInt("ID", &slider_value, 0, 5)) {
-		current_id = slider_value;
-	}
-	float color[4] = { current_color.r, current_color.g, current_color.b, current_color.a };
-	if (ImGui::ColorEdit4("Wall color", color)) {
-		current_color.r = color[0];
-		current_color.g = color[1];
-		current_color.b = color[2];
-		current_color.a = color[3];
 
-		updateWall();
-	};*/
 	ImGui::End();
 	ImGui::SFML::Render(window);
 	window.display();
