@@ -51,5 +51,6 @@ private:
 	TextureDb& texture_db;
 	bool painting_ground = false;
 	bool paint_walls_around_ground = true;
+	float ground_inset = 1.0;
 };
 

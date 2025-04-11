@@ -43,9 +43,9 @@ sf::Color LabyrinthEditView::groundDrawColor(GroundTypeId id) {
 
 sf::RectangleShape LabyrinthEditView::groundRectangle(int x, int y, GroundTypeId id) {
 	sf::Color current_color = groundDrawColor(id);
-	sf::RectangleShape ground_rect({ grid_spacing, grid_spacing });
-	float rect_x = grid_origin_x + grid_spacing * x;
-	float rect_y = grid_origin_y + ((labyrinth.getSizeY() - y - 1) * grid_spacing);
+	sf::RectangleShape ground_rect({ grid_spacing - (2 * ground_inset), grid_spacing - (2 * ground_inset)});
+	float rect_x = grid_origin_x + grid_spacing * x + ground_inset;
+	float rect_y = grid_origin_y + ((labyrinth.getSizeY() - y - 1) * grid_spacing) + ground_inset;
 	ground_rect.setPosition({ rect_x, rect_y });
 	ground_rect.setFillColor(current_color);
 
