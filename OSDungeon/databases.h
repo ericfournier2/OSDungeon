@@ -38,7 +38,17 @@ public:
 		return !stream.fail();
 	}
 	
-	bool writeToStream(std::ofstream& stream) {
+	bool readFromFile(const std::string& filename) {
+		bool success = false;
+		std::ifstream stream;
+		stream.open(filename, std::ifstream::in | std::ifstream::binary);
+		if (!stream.fail()) {
+			success = readFromStream(stream);
+		}
+		return success;
+	}
+
+	bool writeToStream(std::ofstream& stream) const {
 		auto db_size = db_map.size();
 		stream.write(reinterpret_cast<char*>(&db_size), sizeof(db_size));
 		for (const auto& [key, value] : db_map) {
@@ -46,10 +56,20 @@ public:
 		}
 		return !stream.fail();
 	}
+
+	bool writeToFile(const std::string& filename) const {
+		bool success = false;
+		std::ofstream stream;
+		stream.open(filename, std::ofstream::out | std::ofstream::binary);
+		if (!stream.fail()) {
+			success = writeToStream(stream);
+		} 
+		return success;
+	}
 	
-	TInfo getElement(TId id) {
+	TInfo getElement(TId id) const {
 		if (db_map.contains(id)) {
-			return db_map[id];
+			return db_map.at(id);
 		}
 		else {
 			return TInfo();
@@ -111,6 +131,10 @@ public:
 	TextureDb();
 	TextureId loadNewTexture(TextureId id, const std::string& filename);
 	TextureInfo getTexture(TextureId id);
+	bool writeToFile(const std::string& filename) const;
+	bool readFromFile(const std::string& filename);
+	bool writeToStream(std::ofstream& stream) const;
+	bool readFromStream(std::ifstream& stream);
 private:
 	std::map<TextureId, TextureInfo> texture_map;
 	std::shared_ptr<sf::Texture> empty_texture;

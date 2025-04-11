@@ -258,9 +258,17 @@ void LabyrinthEditView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) 
 	}
 	else if (keyPressed->scancode == sf::Keyboard::Scancode::S) {
 		labyrinth.writeToFile("current.labyrinth");
+		ground_db.writeToFile("ground.db");
+		wall_db.writeToFile("wall.db");
+		texture_db.writeToFile("texture.db");
+
 	}
 	else if (keyPressed->scancode == sf::Keyboard::Scancode::L) {
 		labyrinth.loadFromFile("current.labyrinth");
+		ground_db.readFromFile("ground.db");
+		wall_db.readFromFile("wall.db");
+		texture_db.readFromFile("texture.db");
+
 	}
 }
 

@@ -378,21 +378,7 @@ bool Labyrinth::loadFromFile(const std::string& filename) {
 					x_size = x_size_read;
 					y_size = y_size_read;
 					walls = walls_read;
-					for (int i = 0; i < walls.size(); ++i) {
-						if (walls[i]) {
-							walls[i] = (i % 3) + 1;
-						} 
-					}
 					ground = ground_read;
-					for (int i = 0; i < ground.size(); ++i) {
-						if ((i / x_size) % 2 == 0) {
-							ground[i] = (i % 2) + 1;
-						}
-						else {
-							ground[i] = ((i + 1) % 2) + 1;
-						}
-						
-					}
 					pov_x = 0;
 					pov_y = 0;
 					pov_direction = CardinalDirection::NORTH;
