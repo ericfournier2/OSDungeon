@@ -14,6 +14,8 @@ private:
 	void renderWallTable();
 	void renderGroundRow(GroundTypeId id);
 	void renderGroundTable();
+	void renderTextureRow(TextureId id);
+	void renderTextureTable();
 	WallDb& wall_db;
 	GroundDb& ground_db;
 	TextureDb& texture_db;

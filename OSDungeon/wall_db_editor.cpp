@@ -121,6 +121,30 @@ void DatabaseEditor::renderGroundTable() {
 	}
 }
 
+void DatabaseEditor::renderTextureRow(TextureId id) {
+	ImGui::TableNextRow();
+	ImGui::TableNextColumn();
+	std::string id_str = std::to_string(id);
+	ImGui::Text(id_str.c_str());
+
+	ImGui::TableNextColumn();
+	auto texture_info = texture_db.getTexture(id);
+	ImGui::Text(texture_info.texture_filename.c_str());
+
+	ImGui::TableNextColumn();
+	ImGui::Image(*texture_info.texture.get(), { 100.0f, 100.0f });
+}
+
+void DatabaseEditor::renderTextureTable() {
+	if (ImGui::BeginTable("Texture entries", 3, ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_SizingStretchProp)) {
+		auto all_ids = texture_db.getIds();
+		for (auto id : all_ids) {
+			renderTextureRow(id);
+		}
+		ImGui::EndTable();
+	}
+}
+
 void DatabaseEditor::render() {
 	window.clear();
 	ImGui::SFML::Update(window, deltaClock.restart());
@@ -138,7 +162,7 @@ void DatabaseEditor::render() {
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Textures")) {
-			ImGui::Text("This is the Cucumber tab!\nblah blah blah blah blah");
+			renderTextureTable();
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
