@@ -89,10 +89,10 @@
     <ClInclude Include="imgui\imgui-SFML.h">
       <Filter>Fichiers d%27en-tête\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="databases.h">
-      <Filter>Fichiers d%27en-tête\imgui</Filter>
-    </ClInclude>
     <ClInclude Include="wall_db_editor.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="databases.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

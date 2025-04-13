@@ -216,14 +216,50 @@ void LabyrinthEditView::drawEditLine() {
 	}
 }
 
-void LabyrinthEditView::drawWallBrushInfo() {
-	ImGui::Begin("Wall brush");
-	int slider_value = static_cast<int>(wall_brush);
-	if (ImGui::SliderInt("ID", &slider_value, 0, 5)) {
-		wall_brush = slider_value;
-	}
-	ImGui::End();
+sf::Color getTextureButtonColor(WallInfo info) {
+	return info.color;
+}
 
+sf::Color getTextureButtonColor(GroundInfo info) {
+	return info.ground_color;
+}
+
+template <typename TDb>
+auto brushPopUp(const std::string& popup_label, typename TDb::IdType* id, TDb db, TextureDb texture_db) {
+	typename TDb::InfoType info = db.getElement(*id);
+	std::string texture_label = popup_label;
+	texture_label.append("_texture");
+	TextureInfo tex_info = texture_db.getTexture(info.texture);
+	sf::Vector2f tex_size = { 100.0f, 100.0f };
+	if (ImGui::ImageButton(texture_label.c_str(), *(tex_info.texture.get()), tex_size, sf::Color::Black, getTextureButtonColor(info))) {
+		ImGui::OpenPopup(popup_label.c_str());
+	}
+
+	bool retval = false;
+	if (ImGui::BeginPopup(popup_label.c_str())) {
+		auto all_ids = db.getIds();
+		for (int i = 0; i < all_ids.size(); ++i) {
+			std::string selectable_label = std::to_string(db.getElement(all_ids[i]).id);
+			selectable_label.append("###");
+			selectable_label.append(std::to_string(i));
+			if (ImGui::Selectable(selectable_label.c_str())) {
+				*id = all_ids[i];
+				retval = true;
+			}
+		}
+		ImGui::EndPopup();
+	}
+
+	return retval;
+}
+
+void LabyrinthEditView::drawWallBrushInfo() {
+	ImGui::Begin("Brush");
+	ImGui::SeparatorText("Wall");
+	brushPopUp<WallDb>("Wall brush", &wall_brush, wall_db, texture_db);
+	ImGui::SeparatorText("Ground");
+	brushPopUp<GroundDb>("Ground brush", &ground_brush, ground_db, texture_db);
+	ImGui::End();
 }
 
 void LabyrinthEditView::render() {

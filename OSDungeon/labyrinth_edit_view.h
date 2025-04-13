@@ -33,13 +33,14 @@ private:
 	std::optional<CoordF> findClosestGridPoint(int x, int y) const;
 	void drawEditLine();
 	void drawWallBrushInfo();
+
 	Labyrinth& labyrinth;
 	sf::RenderWindow window;
 	float grid_spacing = 10.0f;
 	float grid_origin_x = 10.0f;
 	float grid_origin_y = 10.0f;
 	GroundTypeId ground_brush = 1;
-	WallTypeId wall_brush = 0;
+	WallTypeId wall_brush = 1;
 	bool mouse_down = false;
 	bool mouse_down_adding = true;
 	CoordF button_down_pos;

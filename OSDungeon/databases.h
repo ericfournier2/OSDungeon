@@ -26,6 +26,9 @@ struct GroundInfo {
 template <typename TId, typename TInfo>
 class TemplateDb {
 public:
+	using IdType = typename TId;
+	using InfoType = typename TInfo;
+
 	bool readFromStream(std::ifstream& stream) {
 		db_map.clear();
 		auto db_size = db_map.size();
