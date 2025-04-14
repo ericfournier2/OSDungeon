@@ -10,6 +10,12 @@ typedef std::vector<WallTypeId> WallVec;
 typedef std::vector<GroundTypeId> GroundVec;
 const unsigned int MAX_SIZE = 100;
 
+enum MoveResult {
+	SUCCESS,
+	FAIL_WALL,
+	FAIL_OCCUPIED
+};
+
 class Labyrinth {
 public:
 	Labyrinth(int x_size, int y_size);
@@ -33,13 +39,12 @@ public:
 	bool removeWall(int x_offset, int y_offset, WallOrientation d);
 	void setGround(int x, int y, GroundTypeId id = 0);
 
-
 	bool setPov(int x, int y, CardinalDirection direction);
-	bool movePovRel(int x_offset, int y_offset);
+	MoveResult movePovRel(int x_offset, int y_offset);
 	void turnPovRel(RelativeDirection direction);
 
-	bool advance();
-	bool moveBack();
+	MoveResult advance();
+	MoveResult moveBack();
 
 	bool writeToFile(const std::string& filename) const;
 	bool loadFromFile(const std::string& filename);

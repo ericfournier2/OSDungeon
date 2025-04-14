@@ -328,13 +328,21 @@ void LabyrinthView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) {
 		labyrinth.turnPovRel(LEFT);
 	}
 	else if (keyPressed->scancode == sf::Keyboard::Scancode::Up) {
-		labyrinth.advance();
+		if (labyrinth.advance() == MoveResult::SUCCESS) {
+			footstep.play();
+		} else {
+			thunk.play();
+		}
 	}
 	else if (keyPressed->scancode == sf::Keyboard::Scancode::Right) {
 		labyrinth.turnPovRel(RIGHT);
 	}
 	else if (keyPressed->scancode == sf::Keyboard::Scancode::Down) {
-		labyrinth.moveBack();
+		if(labyrinth.moveBack() == MoveResult::SUCCESS) {
+			footstep.play();
+		} else {
+			thunk.play();
+		}
 	}
 }
 

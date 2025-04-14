@@ -127,38 +127,38 @@ void Labyrinth::setGround(int x, int y, GroundTypeId id)
 	ground[y * x_size + x] = id;
 }
 
-bool Labyrinth::movePovRel(int x_offset, int y_offset)
+MoveResult Labyrinth::movePovRel(int x_offset, int y_offset)
 {
 	int new_pov_x = getAbsXFromPovX(x_offset, y_offset);
 	if (new_pov_x < 0 || new_pov_x >= x_size) {
-		return false;
+		return MoveResult::FAIL_WALL;
 	}
 
 	int new_pov_y = getAbsYFromPovY(x_offset, y_offset);
 	if (new_pov_y < 0 || new_pov_y >= y_size) {
-		return false;
+		return MoveResult::FAIL_WALL;
 	}
 
 	pov_x = new_pov_x;
 	pov_y = new_pov_y;
-	return true;
+	return MoveResult::SUCCESS;
 }
 
-bool Labyrinth::advance() {
+MoveResult Labyrinth::advance() {
 	if (!getWallRel(0, 0, FRONT)) {
 		return movePovRel(0, 1);
 	}
 	else {
-		return false;
+		return MoveResult::FAIL_WALL;
 	}
 }
 
-bool Labyrinth::moveBack() {
+MoveResult Labyrinth::moveBack() {
 	if (!getWallRel(0, 0, BACK)) {
 		return movePovRel(0, -1);
 	}
 	else {
-		return false;
+		return MoveResult::FAIL_WALL;
 	}
 }
 
