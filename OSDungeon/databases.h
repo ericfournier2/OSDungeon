@@ -9,6 +9,7 @@
 typedef unsigned int WallTypeId;
 typedef unsigned int GroundTypeId;
 typedef unsigned int TextureId;
+typedef int EntityTemplateId;
 
 struct WallInfo {
 	WallTypeId id = 0;
@@ -20,6 +21,21 @@ struct GroundInfo {
 	GroundTypeId id = 0;
 	sf::Color ground_color = sf::Color::White;
 	sf::Color ceiling_color = sf::Color::White;
+	TextureId texture = 0;
+};
+
+enum EntityBehaviourType {
+	DOODAD,
+	PICKABLE
+};
+
+struct EntityTemplateInfo {
+	EntityTemplateId id;
+	EntityBehaviourType behaviour;
+	float x_size = 0.0f;
+	float y_size = 0.0f;
+	float x_offset = 0.0f;
+	float y_offset = 0.0f;
 	TextureId texture = 0;
 };
 
@@ -122,6 +138,7 @@ private:
 
 typedef TemplateDb<WallTypeId, WallInfo> WallDb;
 typedef TemplateDb<GroundTypeId, GroundInfo> GroundDb;
+typedef TemplateDb<EntityTemplateId, EntityTemplateInfo> EntityTemplateDb;
 
 struct TextureInfo {
 	TextureId id;

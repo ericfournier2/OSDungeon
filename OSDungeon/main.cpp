@@ -19,8 +19,6 @@ int main()
     if (!font.openFromFile("LEMONMILK - Regular.otf")) {
         assert("Font failed to load.");
     }
-    sf::Texture chest;
-    chest.loadFromFile("Sprite.png");
 
     GroundDb ground_db;
     //ground_db.addElement(GroundInfo({ 0, sf::Color::White, 0 }));
@@ -35,11 +33,27 @@ int main()
     wall_db.addElement(WallInfo({ 3, sf::Color::Red, 3 }));
 
     TextureDb texture_db;
+    texture_db.loadNewTexture(1, "Elora.png");
+    texture_db.loadNewTexture(2, "Coralie.png");
+    texture_db.loadNewTexture(3, "BigBricksTexture20.png");
+    texture_db.loadNewTexture(4, "Ground2.png");
+    texture_db.loadNewTexture(5, "ChestSprite.png");
+    texture_db.loadNewTexture(6, "TreeSprite.png");
 
+    EntityTemplateDb template_db;
+    template_db.addElement({ 1, DOODAD, 105.0f, 83.0f, -52.5f, -60.0f, 5 });
+    template_db.addElement({ 2, DOODAD, 100.0f, 300.0f, -50.0f, -250.0f, 6 });
 
     Labyrinth test = Labyrinth(20, 20);
-    Entity ent1 = Entity(&test, &chest, 5, 5, CardinalDirection::NORTH, 105.0f, 83.0f, -52.5f, -60.0f);
-    test.addEntity(ent1);
+    Entity chest1 = Entity({ 1, 1, 5, 5, CardinalDirection::NORTH }, template_db);
+    Entity chest2 = Entity({ 2, 1, 7, 5, CardinalDirection::NORTH }, template_db);
+    Entity tree1 = Entity({ 3, 2, 5, 7, CardinalDirection::NORTH }, template_db);
+    Entity tree2 = Entity({ 4, 2, 7, 7, CardinalDirection::NORTH }, template_db);
+
+    test.addEntity(chest1);
+    test.addEntity(chest2);
+    test.addEntity(tree1);
+    test.addEntity(tree2);
 
     //test.loadFromFile("current.labyrinth");
     LabyrinthView lv = LabyrinthView(test, ground_db, wall_db, texture_db, font, 400, 300);

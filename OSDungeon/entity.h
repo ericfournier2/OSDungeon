@@ -1,27 +1,35 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "common.h"
+#include "databases.h"
 
 class Labyrinth;
+
+typedef int EntityId;
+struct EntityInfo {
+	EntityId id;
+	EntityTemplateId template_id;
+	int x = 0;
+	int y = 0;
+	CardinalDirection direction = CardinalDirection::NORTH;
+};
+
 class Entity {
 public:
-	Entity(Labyrinth* labyrinth, sf::Texture* texture, int x, int y, CardinalDirection direction, float x_size, float y_size, float x_offset, float y_offset);
-	int getX() const { return x_pos; }
-	int getY() const { return y_pos; }
-	float getXOffset() const { return x_offset; }
-	float getYOffset() const { return y_offset; }
-	float getXSize() const { return x_size; }
-	float getYSize() const { return y_size; }
-	void setLabyrinth(Labyrinth* labyrinth_init) { labyrinth = labyrinth_init; }
-	sf::Texture* getTexture() { return texture;  }
+	Entity(const EntityInfo& info, const EntityTemplateDb& template_db);
+	EntityId getId() const { return info.id; }
+	EntityTemplateId getTemplateId() const { return info.template_id; }
+	int getX() const { return info.x; }
+	int getY() const { return info.y; }
+	float getXOffset() const { return getTemplate().x_offset; }
+	float getYOffset() const { return getTemplate().y_offset; }
+	float getXSize() const { return getTemplate().x_size;; }
+	float getYSize() const { return getTemplate().y_size; }
+	//void setLabyrinth(Labyrinth* labyrinth_init) { labyrinth = labyrinth_init; }
+	TextureId getTexture() { return getTemplate().texture; }
 protected:
-	int x_pos = 0;
-	int y_pos = 0;
-	CardinalDirection direction = CardinalDirection::NORTH;
-	float x_size = 0.0f;
-	float y_size = 0.0f;
-	float x_offset = 0.0f;
-	float y_offset = 0.0f;
-	Labyrinth* labyrinth;
-	sf::Texture* texture;
+	EntityTemplateInfo getTemplate() const { return template_db.getElement(info.template_id); }
+	EntityInfo info;
+	Labyrinth* labyrinth = nullptr;
+	const EntityTemplateDb& template_db;
 };

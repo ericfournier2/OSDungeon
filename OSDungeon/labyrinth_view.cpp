@@ -205,7 +205,7 @@ bool LabyrinthView::renderGround(RenderStep step) {
 		float final_x_offset = tile_center_x + (ent->getXOffset() / scale_factor);
 		float final_y_offset = tile_center_y + (ent->getYOffset() / scale_factor);
 
-		sf::Sprite sprite(*(ent->getTexture()));
+		sf::Sprite sprite(*(texture_db.getTexture(ent->getTexture()).texture));
 		sprite.setPosition({ final_x_offset, final_y_offset });
 		sprite.setScale({ 1/scale_factor, 1/scale_factor });
 		window.draw(sprite);
