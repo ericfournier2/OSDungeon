@@ -39,6 +39,7 @@ bool DatabaseEditor::selectTextureButton(TextureId* texture_id, int object_id, s
 
 	TextureInfo info = texture_db.getTexture(*texture_id);
 	sf::Vector2f tex_size = { 100.0f, 100.0f };
+	
 	if (ImGui::ImageButton(texture_label.c_str(), *(info.texture.get()), tex_size)) {
 		ImGui::OpenPopup(popup_label.c_str());
 	}
@@ -214,18 +215,30 @@ void DatabaseEditor::render() {
 	if (ImGui::BeginTabBar("Databases", ImGuiTabBarFlags_None))
 	{
 		if (ImGui::BeginTabItem("Walls")) {
+			if (ImGui::Button("Add")) {
+				wall_db.addElement(WallInfo());
+			}
 			renderWallTable();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Ground")) {
+			if (ImGui::Button("Add")) {
+				ground_db.addElement(GroundInfo());
+			}
 			renderGroundTable();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Textures")) {
+			if (ImGui::Button("Add")) {
+				//texture_db.addTexture()
+			}
 			renderTextureTable();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Entities")) {
+			if (ImGui::Button("Add")) {
+				template_db.addElement(EntityTemplateInfo());
+			}
 			renderEntityTable();
 			ImGui::EndTabItem();
 		}

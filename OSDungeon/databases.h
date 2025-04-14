@@ -158,6 +158,6 @@ public:
 	bool readFromStream(std::ifstream& stream);
 private:
 	std::map<TextureId, TextureInfo> texture_map;
-	std::shared_ptr<sf::Texture> empty_texture;
+	std::shared_ptr<sf::Texture> empty_texture = std::make_shared<sf::Texture>();
 	TextureInfo empty_info;
 };
