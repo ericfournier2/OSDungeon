@@ -41,12 +41,21 @@ sf::Color LabyrinthEditView::groundDrawColor(GroundTypeId id) {
 	}
 }
 
-sf::RectangleShape LabyrinthEditView::groundRectangle(int x, int y, GroundTypeId id) {
-	sf::Color current_color = groundDrawColor(id);
-	sf::RectangleShape ground_rect({ grid_spacing - (2 * ground_inset), grid_spacing - (2 * ground_inset)});
+CoordF LabyrinthEditView::getGroundScreenSize() const {
+	return { grid_spacing - (2 * ground_inset) , grid_spacing - (2 * ground_inset) };
+}
+
+CoordF LabyrinthEditView::getGroundScreenPositionFromMapPosition(int x, int y) const {
 	float rect_x = grid_origin_x + grid_spacing * x + ground_inset;
 	float rect_y = grid_origin_y + ((labyrinth.getSizeY() - y - 1) * grid_spacing) + ground_inset;
-	ground_rect.setPosition({ rect_x, rect_y });
+
+	return { rect_x, rect_y };
+}
+
+sf::RectangleShape LabyrinthEditView::groundRectangle(int x, int y, GroundTypeId id) {
+	sf::Color current_color = groundDrawColor(id);
+	sf::RectangleShape ground_rect(getGroundScreenSize());
+	ground_rect.setPosition(getGroundScreenPositionFromMapPosition(x, y));
 	ground_rect.setFillColor(current_color);
 
 	return ground_rect;
@@ -70,9 +79,20 @@ void LabyrinthEditView::drawGroundCursor() {
 		sf::RectangleShape ground_cursor_rect = groundRectangle(ground_coord_opt.value().x, ground_coord_opt.value().y, wall_brush);
 		window.draw(ground_cursor_rect);
 	}
-	//float cursor_x = (mouse_x - grid_origin_x) / grid_spacing;
-	//float cursor_y = labyrinth.getSizeY() - (mouse_y - grid_origin_y) / grid_spacing;
 }
+
+void LabyrinthEditView::drawGroundEntities() {
+	const std::vector<Entity>& entities = labyrinth.getEntities();
+	for (auto entity : entities) {
+		CoordF rect_size = getGroundScreenSize();
+		sf::Sprite entity_sprite(*texture_db.getTexture(entity.getTexture()).texture);
+		entity_sprite.setPosition(getGroundScreenPositionFromMapPosition(entity.getX(), entity.getY()));
+		float scale_factor = grid_spacing / std::max(entity.getXSize(), entity.getYSize());
+		entity_sprite.setScale({ scale_factor, scale_factor });
+		window.draw(entity_sprite);
+	}
+}
+
 
 void LabyrinthEditView::drawGrid()
 {
@@ -272,6 +292,7 @@ void LabyrinthEditView::render() {
 	drawGroundCursor();
 	drawGrid();
 	drawWalls();
+	drawGroundEntities();
 	drawPOV();
 	drawEditLine();
 	drawWallBrushInfo();

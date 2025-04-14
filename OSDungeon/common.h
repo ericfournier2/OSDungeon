@@ -1,4 +1,5 @@
 #pragma once
+#include <SFML/Graphics.hpp>
 
 struct Coord {
 	int x;
@@ -8,7 +9,11 @@ struct Coord {
 struct CoordF {
 	float x;
 	float y;
+
+	operator sf::Vector2f() const { return sf::Vector2f(x, y); }
 };
+
+
 
 enum WallOrientation {
 	HORIZONTAL,

@@ -15,9 +15,12 @@ public:
 	bool processEvents();
 private:
 	sf::Color groundDrawColor(GroundTypeId id);
+	CoordF getGroundScreenSize() const;
+	CoordF getGroundScreenPositionFromMapPosition(int x, int y) const;
 	sf::RectangleShape groundRectangle(int x, int y, GroundTypeId id);
 	void drawGround();
 	void drawGroundCursor();
+	void drawGroundEntities();
 	void drawGrid();
 	void drawWalls();
 	void drawPOV();

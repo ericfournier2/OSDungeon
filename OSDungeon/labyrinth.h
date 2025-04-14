@@ -48,6 +48,7 @@ public:
 	Entity* getEntity(int index);
 	Entity* getEntityAbs(int x, int y);
 	Entity* getEntityRel(int x, int y);
+	const std::vector<Entity>& getEntities() const { return entities; }
 
 	std::string printToString() const;
 private:
