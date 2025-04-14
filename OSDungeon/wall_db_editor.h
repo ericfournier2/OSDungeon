@@ -4,7 +4,7 @@
 
 class DatabaseEditor {
 public:
-	DatabaseEditor(WallDb& wall_db, GroundDb& ground_db, TextureDb& texture_db);
+	DatabaseEditor(WallDb& wall_db, GroundDb& ground_db, TextureDb& texture_db, EntityTemplateDb& template_db);
 	void render();
 	bool processEvents();
 private:
@@ -14,11 +14,14 @@ private:
 	void renderWallTable();
 	void renderGroundRow(GroundTypeId id);
 	void renderGroundTable();
+	void renderEntityRow(EntityTemplateId id);
+	void renderEntityTable();
 	void renderTextureRow(TextureId id);
 	void renderTextureTable();
 	WallDb& wall_db;
 	GroundDb& ground_db;
 	TextureDb& texture_db;
+	EntityTemplateDb& template_db;
 	sf::RenderWindow window;
 	sf::Clock deltaClock;
 };

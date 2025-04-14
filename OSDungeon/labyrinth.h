@@ -45,7 +45,7 @@ public:
 	bool loadFromFile(const std::string& filename);
 
 	int addEntity(Entity entity);
-	Entity* getEntity(int index);
+	Entity* getEntity(int id);
 	Entity* getEntityAbs(int x, int y);
 	Entity* getEntityRel(int x, int y);
 	const std::vector<Entity>& getEntities() const { return entities; }

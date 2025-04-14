@@ -2,8 +2,8 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
 
-DatabaseEditor::DatabaseEditor(WallDb& wall_db_init, GroundDb& ground_db_init, TextureDb& texture_db_init) 
- : wall_db(wall_db_init), ground_db(ground_db_init), texture_db(texture_db_init), window(sf::VideoMode({ 800, 400 }), "Databases") {
+DatabaseEditor::DatabaseEditor(WallDb& wall_db_init, GroundDb& ground_db_init, TextureDb& texture_db_init, EntityTemplateDb& template_db_init) 
+ : wall_db(wall_db_init), ground_db(ground_db_init), texture_db(texture_db_init), template_db(template_db_init), window(sf::VideoMode({ 800, 400 }), "Databases") {
 	ImGui::SFML::Init(window);
 }
 
@@ -30,10 +30,10 @@ bool DatabaseEditor::selectColorButton(sf::Color* initial_color, int object_id, 
 bool DatabaseEditor::selectTextureButton(TextureId* texture_id, int object_id, std::string extra_label) {
 	bool retval = false;
 	
-	std::string texture_label = "texture_button###";
+	std::string texture_label = "texture_button##";
 	texture_label.append(std::to_string(object_id));
 	texture_label.append(extra_label);
-	std::string popup_label = "texture_popup###";
+	std::string popup_label = "texture_popup##";
 	popup_label.append(std::to_string(object_id));
 	popup_label.append(extra_label);
 
@@ -47,7 +47,7 @@ bool DatabaseEditor::selectTextureButton(TextureId* texture_id, int object_id, s
 		auto all_ids = texture_db.getIds();
 		for (int i = 0; i < all_ids.size(); ++i) {
 			std::string selectable_label = texture_db.getTexture(all_ids[i]).texture_filename;
-			selectable_label.append("###");
+			selectable_label.append("##");
 			selectable_label.append(std::to_string(i));
 			if (ImGui::Selectable(selectable_label.c_str())) {
 				*texture_id = all_ids[i];
@@ -80,6 +80,10 @@ void DatabaseEditor::renderWallRow(WallTypeId id) {
 
 void DatabaseEditor::renderWallTable() {
 	if (ImGui::BeginTable("Wall entries", 3, ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("id", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Color", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Texture", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableHeadersRow();
 		auto all_ids = wall_db.getIds();
 		for (auto id : all_ids) {
 			renderWallRow(id);
@@ -113,9 +117,65 @@ void DatabaseEditor::renderGroundRow(GroundTypeId id) {
 
 void DatabaseEditor::renderGroundTable() {
 	if (ImGui::BeginTable("Ground entries", 4, ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("id", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Ceiling", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Ground", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Texture", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableHeadersRow();
 		auto all_ids = ground_db.getIds();
 		for (auto id : all_ids) {
 			renderGroundRow(id);
+		}
+		ImGui::EndTable();
+	}
+}
+
+std::string labelWithId(const std::string& label, int id) {
+	std::string retVal = label;
+	retVal.append("##");
+	retVal.append(std::to_string(id));
+	return retVal;
+}
+
+void floatColumn(std::string label, float* val, EntityTemplateId id, EntityTemplateInfo* info, EntityTemplateDb& template_db) {
+	ImGui::TableNextColumn();
+	std::string full_label = labelWithId(label, id);
+	if (ImGui::InputFloat(full_label.c_str(), val)) {
+		template_db.updateElement(*info);
+	}
+
+}
+
+void DatabaseEditor::renderEntityRow(EntityTemplateId id) {
+	ImGui::TableNextRow();
+	ImGui::TableNextColumn();
+	std::string id_str = std::to_string(id);
+	ImGui::Text(id_str.c_str());
+
+	auto template_info = template_db.getElement(id);
+	floatColumn("##x_size", &template_info.x_size, id, &template_info, template_db);
+	floatColumn("##y_size", &template_info.y_size, id, &template_info, template_db);
+	floatColumn("##x_offset", &template_info.x_offset, id, &template_info, template_db);
+	floatColumn("##y_offset", &template_info.y_offset, id, &template_info, template_db);
+
+	ImGui::TableNextColumn();
+	if (selectTextureButton(&(template_info.texture), id)) {
+		template_db.updateElement(template_info);
+	}
+}
+
+void DatabaseEditor::renderEntityTable() {
+	if (ImGui::BeginTable("Entity templates", 7, ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("id", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("x size", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("y size", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("x offset", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("y offset", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Texture", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableHeadersRow();
+		auto all_ids = template_db.getIds();
+		for (auto id : all_ids) {
+			renderEntityRow(id);
 		}
 		ImGui::EndTable();
 	}
@@ -163,6 +223,10 @@ void DatabaseEditor::render() {
 		}
 		if (ImGui::BeginTabItem("Textures")) {
 			renderTextureTable();
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Entities")) {
+			renderEntityTable();
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
