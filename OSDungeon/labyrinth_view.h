@@ -46,7 +46,7 @@ private:
 class LabyrinthView {
 public:
 	LabyrinthView(Labyrinth& labyrinth, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, 
-				  const sf::Font& font, int x_size=400, int y_size=300, int max_depth=5, float camera_distance=0.7f);
+				  int x_size=400, int y_size=300, int max_depth=5, float camera_distance=0.7f);
 	bool render();
 	bool processEvents();
 private:
@@ -58,22 +58,19 @@ private:
 	void handleKeyPress(const sf::Event::KeyPressed* keyPressed);
 	Labyrinth& labyrinth;
 	sf::RenderWindow window;
-	const sf::Font& font;
 	int x_size = 400;
 	int y_size = 300;
 	int max_depth = 5;
 	float camera_distance = 0.7f;
 	RenderQueue render_queue;
-	sf::Texture ground_texture;
-	sf::Texture wall0_texture;
 	bool verbose = false;
 
 	GroundDb& ground_db;
 	WallDb& wall_db;
 	TextureDb& texture_db;
 
-	sf::SoundBuffer footsteps_buffer = sf::SoundBuffer("footstep.wav");
-	sf::SoundBuffer thunk_buffer = sf::SoundBuffer("thunk.wav");
+	sf::SoundBuffer footsteps_buffer = sf::SoundBuffer("assets/sounds/footstep.wav");
+	sf::SoundBuffer thunk_buffer = sf::SoundBuffer("assets/sounds/thunk.wav");
 	sf::Sound footstep = sf::Sound(footsteps_buffer);
 	sf::Sound thunk = sf::Sound(thunk_buffer);
 };

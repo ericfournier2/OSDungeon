@@ -9,6 +9,8 @@ TextureDb::TextureDb() {
 }
 
 TextureId TextureDb::loadNewTexture(TextureId id, const std::string& filename) {
+	std::string full_filename("assets\\textures\\");
+	full_filename.append(filename);
 	auto ptr = std::make_shared<sf::Texture>(filename);
 	TextureInfo info = TextureInfo({ id, filename, ptr });
 	texture_map.emplace(id, info);

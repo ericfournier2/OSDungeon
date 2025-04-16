@@ -47,17 +47,17 @@ void LabyrinthEditView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) 
 		labyrinth.moveBack();
 	}
 	else if (keyPressed->scancode == sf::Keyboard::Scancode::S) {
-		labyrinth.writeToFile("current.labyrinth");
-		ground_db.writeToFile("ground.db");
-		wall_db.writeToFile("wall.db");
-		texture_db.writeToFile("texture.db");
+		labyrinth.writeToFile("assets/save/current.labyrinth");
+		ground_db.writeToFile("assets/save/ground.db");
+		wall_db.writeToFile("assets/save/wall.db");
+		texture_db.writeToFile("assets/save/texture.db");
 
 	}
 	else if (keyPressed->scancode == sf::Keyboard::Scancode::L) {
-		labyrinth.loadFromFile("current.labyrinth");
-		ground_db.readFromFile("ground.db");
-		wall_db.readFromFile("wall.db");
-		texture_db.readFromFile("texture.db");
+		labyrinth.loadFromFile("assets/save/current.labyrinth");
+		ground_db.readFromFile("assets/save/ground.db");
+		wall_db.readFromFile("assets/save/wall.db");
+		texture_db.readFromFile("assets/save/texture.db");
 
 	}
 }
@@ -72,7 +72,6 @@ void LabyrinthEditView::applyBrush() {
 }
 
 void LabyrinthEditView::handleMouseRightDown(const sf::Event::MouseButtonPressed* mouseButtonPressed) {
-	//paintCurrentGroundTile();
 	painting_ground = true;
 	applyBrush();
 }

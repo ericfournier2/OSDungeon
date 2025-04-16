@@ -31,18 +31,11 @@ void RenderStep::print() const {
 }
 
 LabyrinthView::LabyrinthView(Labyrinth& labyrinth_init, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, 
-							 const sf::Font& font_init, int x_size_init, int y_size_init, int max_depth_init, float camera_distance_init)
+							 int x_size_init, int y_size_init, int max_depth_init, float camera_distance_init)
 	: labyrinth(labyrinth_init), ground_db(ground_db_init), wall_db(wall_db_init), texture_db(texture_db_init),
-	  window(sf::VideoMode({ 400, 300 }), "Maze 1st person view"), font(font_init), x_size(x_size_init), y_size(y_size_init), 
+	  window(sf::VideoMode({ 400, 300 }), "Maze 1st person view"), x_size(x_size_init), y_size(y_size_init), 
 	  max_depth(max_depth_init), camera_distance(camera_distance_init)
 {
-	if (!ground_texture.loadFromFile("Elora.png")) {
-		assert("Texture failed to load.");
-	}
-
-	if (!wall0_texture.loadFromFile("Coralie.png")) {
-		assert("Texture failed to load.");
-	}
 }
 
 float LabyrinthView::depthOffset(float depth, bool x, bool left) const {

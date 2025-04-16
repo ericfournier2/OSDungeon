@@ -15,11 +15,6 @@ void testReadWrite();
 
 int main()
 {
-    sf::Font font;
-    if (!font.openFromFile("LEMONMILK - Regular.otf")) {
-        assert("Font failed to load.");
-    }
-
     GroundDb ground_db;
     //ground_db.addElement(GroundInfo({ 0, sf::Color::White, 0 }));
     ground_db.addElement(GroundInfo({ 1, sf::Color::White, sf::Color::Blue, 4 }));
@@ -33,12 +28,12 @@ int main()
     wall_db.addElement(WallInfo({ 3, sf::Color::Red, 3 }));
 
     TextureDb texture_db;
-    texture_db.loadNewTexture(1, "Elora.png");
-    texture_db.loadNewTexture(2, "Coralie.png");
-    texture_db.loadNewTexture(3, "BigBricksTexture20.png");
-    texture_db.loadNewTexture(4, "Ground2.png");
-    texture_db.loadNewTexture(5, "ChestSprite.png");
-    texture_db.loadNewTexture(6, "TreeSprite.png");
+    texture_db.loadNewTexture(1, "assets/textures/Elora.png");
+    texture_db.loadNewTexture(2, "assets/textures/Coralie.png");
+    texture_db.loadNewTexture(3, "assets/textures/BigBricksTexture20.png");
+    texture_db.loadNewTexture(4, "assets/textures/Ground2.png");
+    texture_db.loadNewTexture(5, "assets/textures/ChestSprite.png");
+    texture_db.loadNewTexture(6, "assets/textures/TreeSprite.png");
 
     EntityTemplateDb template_db;
     template_db.addElement({ 1, DOODAD, 105.0f, 83.0f, -52.5f, -60.0f, 5 });
@@ -56,7 +51,7 @@ int main()
     test.addEntity(tree2);
 
     //test.loadFromFile("current.labyrinth");
-    LabyrinthView lv = LabyrinthView(test, ground_db, wall_db, texture_db, font, 400, 300);
+    LabyrinthView lv = LabyrinthView(test, ground_db, wall_db, texture_db, 400, 300);
     LabyrinthEditView lve = LabyrinthEditView(test, ground_db, wall_db, texture_db);
     DatabaseEditor wdbe(wall_db, ground_db, texture_db, template_db);
     bool closed = false;
