@@ -73,11 +73,19 @@ void LabyrinthEditView::drawGround() {
 }
 
 void LabyrinthEditView::drawGroundCursor() {
-	std::optional<Coord> ground_coord_opt = getMapGroundCoordFromScreenCoord(mouse_x, mouse_y);
+	float map_x = (mouse_x - grid_origin_x) / grid_spacing;
+	float map_y = labyrinth.getSizeY() - (mouse_y - grid_origin_y) / grid_spacing;
 
-	if (ground_coord_opt) {
-		sf::RectangleShape ground_cursor_rect = groundRectangle(ground_coord_opt.value().x, ground_coord_opt.value().y, wall_brush);
-		window.draw(ground_cursor_rect);
+	if (map_x > 0 && map_y > 0 && map_x < labyrinth.getSizeX() && map_y < labyrinth.getSizeY()) {
+		BrushPreview preview = brush.preview(labyrinth, map_x, map_y);
+		for (auto const& [key, val] : preview.grounds) {
+			sf::RectangleShape ground_cursor_rect = groundRectangle(key.x, key.y, val);
+			window.draw(ground_cursor_rect);
+		}
+
+		for (auto const& [key, val] : preview.walls) {
+			drawWall(key.x, key.y, key.o, val);
+		}
 	}
 }
 
@@ -112,6 +120,25 @@ void LabyrinthEditView::drawGrid()
 	window.draw(vertex_array);
 }
 
+void LabyrinthEditView::drawWall(int x, int y, WallOrientation o, WallTypeId id) {
+	auto vertex_array = sf::VertexArray(sf::PrimitiveType::Lines, 0);
+	
+	float pos_x = grid_origin_x + grid_spacing * x;
+	float pos_y = grid_origin_y + grid_spacing * labyrinth.getSizeY() - grid_spacing * y;
+
+	sf::Color color = id == 0 ? sf::Color::Black : wall_db.getElement(id).color;
+
+	if (o == WallOrientation::HORIZONTAL) {
+		vertex_array.append(sf::Vertex({ pos_x , pos_y }, color));
+		vertex_array.append(sf::Vertex({ pos_x + grid_spacing, pos_y }, color));
+	}	else {
+		vertex_array.append(sf::Vertex({ pos_x, pos_y }, color));
+		vertex_array.append(sf::Vertex({ pos_x, pos_y - grid_spacing }, color));
+	}
+
+	window.draw(vertex_array);
+}
+
 void LabyrinthEditView::drawWalls() {
 
 	auto vertex_array = sf::VertexArray(sf::PrimitiveType::Lines, 0);
@@ -125,13 +152,15 @@ void LabyrinthEditView::drawWalls() {
 			float pos_y = grid_origin_y + grid_spacing * labyrinth.getSizeY() - grid_spacing * y;
 
 			if (h_wall) {
-				vertex_array.append(sf::Vertex({ pos_x , pos_y }));
-				vertex_array.append(sf::Vertex({ pos_x + grid_spacing, pos_y }));
+				sf::Color color = wall_db.getElement(h_wall).color;
+				vertex_array.append(sf::Vertex({ pos_x , pos_y }, color));
+				vertex_array.append(sf::Vertex({ pos_x + grid_spacing, pos_y }, color));
 			}
 
 			if (v_wall) {
-				vertex_array.append(sf::Vertex({ pos_x, pos_y }));
-				vertex_array.append(sf::Vertex({ pos_x, pos_y - grid_spacing }));
+				sf::Color color = wall_db.getElement(v_wall).color;
+				vertex_array.append(sf::Vertex({ pos_x, pos_y }, color));
+				vertex_array.append(sf::Vertex({ pos_x, pos_y - grid_spacing }, color));
 			}
 		}
 	}
@@ -276,9 +305,15 @@ auto brushPopUp(const std::string& popup_label, typename TDb::IdType* id, TDb db
 void LabyrinthEditView::drawWallBrushInfo() {
 	ImGui::Begin("Brush");
 	ImGui::SeparatorText("Wall");
-	brushPopUp<WallDb>("Wall brush", &wall_brush, wall_db, texture_db);
+	WallTypeId wall_id = brush.getWallId();
+	if (brushPopUp<WallDb>("Wall brush", &wall_id, wall_db, texture_db)) {
+		brush.setWallId(wall_id);
+	}
 	ImGui::SeparatorText("Ground");
-	brushPopUp<GroundDb>("Ground brush", &ground_brush, ground_db, texture_db);
+	GroundTypeId ground_id = brush.getGroundId();
+	if (brushPopUp<GroundDb>("Ground brush", &ground_id, ground_db, texture_db)) {
+		brush.setGroundId(ground_id);
+	}
 	ImGui::End();
 }
 
@@ -340,58 +375,16 @@ void LabyrinthEditView::handleMouseLeftDown(const sf::Event::MouseButtonPressed*
 	}
 }
 
-void LabyrinthEditView::paintEnclosingWall(int x, int y, CardinalDirection d) {
-	int ground_x_offset = 0;
-	int ground_y_offset = 0;
-	int wall_x_offset = 0;
-	int wall_y_offset = 0;
-	WallOrientation orient = WallOrientation::HORIZONTAL;
-
-	switch (d) {
-	case CardinalDirection::EAST:
-		ground_x_offset = 1;
-		wall_x_offset = 1;
-		orient = WallOrientation::VERTICAL;
-		break;
-	case CardinalDirection::NORTH:
-		ground_y_offset = 1;
-		wall_y_offset = 1;
-		break;
-	case CardinalDirection::WEST:
-		ground_x_offset = -1;
-		orient = WallOrientation::VERTICAL;
-		break;
-	case CardinalDirection::SOUTH:
-		ground_y_offset = -1;
-		break;
-	}
-
-	GroundTypeId other_ground = labyrinth.getGroundAbs(x + ground_x_offset, y + ground_y_offset);
-	if ((other_ground == 0 && ground_brush == 0) || (other_ground != 0 && ground_brush != 0)) {
-		labyrinth.removeWall(x + wall_x_offset, y + wall_y_offset, orient);
-	} else {
-		labyrinth.addWall(x + wall_x_offset, y + wall_y_offset, orient, wall_brush);
-	}
-}
-
-void LabyrinthEditView::paintCurrentGroundTile() {
-	std::optional<Coord> ground_coord_opt = getMapGroundCoordFromScreenCoord(mouse_x, mouse_y);
-	if (ground_coord_opt) {
-		int x = ground_coord_opt.value().x;
-		int y = ground_coord_opt.value().y;
-		labyrinth.setGround(x, y, ground_brush);
-		if (paint_walls_around_ground) {
-			paintEnclosingWall(x, y, CardinalDirection::NORTH);
-			paintEnclosingWall(x, y, CardinalDirection::EAST);
-			paintEnclosingWall(x, y, CardinalDirection::WEST);
-			paintEnclosingWall(x, y, CardinalDirection::SOUTH);
-		}
-	}
+void LabyrinthEditView::applyBrush() {
+	float map_x = (mouse_x - grid_origin_x) / grid_spacing;
+	float map_y = labyrinth.getSizeY() - (mouse_y - grid_origin_y) / grid_spacing;
+	brush.apply(labyrinth, map_x, map_y);
 }
 
 void LabyrinthEditView::handleMouseRightDown(const sf::Event::MouseButtonPressed* mouseButtonPressed) {
-	paintCurrentGroundTile();
+	//paintCurrentGroundTile();
 	painting_ground = true;
+	applyBrush();
 }
 
 std::optional<Coord> LabyrinthEditView::getMapWallCoordFromScreenCoord(float x, float y) {
@@ -475,7 +468,7 @@ bool LabyrinthEditView::processEvents()
 			mouse_x = static_cast<float>(mouseMoved->position.x);
 			mouse_y = static_cast<float>(mouseMoved->position.y);
 			if (painting_ground) {
-				paintCurrentGroundTile();
+				applyBrush();
 			}
 		}
 	}

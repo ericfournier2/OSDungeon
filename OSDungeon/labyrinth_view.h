@@ -2,6 +2,7 @@
 #include <set>
 #include <queue>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 #include "labyrinth.h"
 #include "common.h"
@@ -70,4 +71,9 @@ private:
 	GroundDb& ground_db;
 	WallDb& wall_db;
 	TextureDb& texture_db;
+
+	sf::SoundBuffer footsteps_buffer = sf::SoundBuffer("footstep.wav");
+	sf::SoundBuffer thunk_buffer = sf::SoundBuffer("thunk.wav");
+	sf::Sound footstep = sf::Sound(footsteps_buffer);
+	sf::Sound thunk = sf::Sound(thunk_buffer);
 };

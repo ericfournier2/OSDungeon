@@ -63,6 +63,9 @@
     <ClCompile Include="wall_db_editor.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="brush.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="labyrinth.h">
@@ -93,6 +96,9 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="databases.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="brush.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
