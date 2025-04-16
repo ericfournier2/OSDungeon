@@ -8,9 +8,7 @@
 
 LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init)
 	: labyrinth(labyrinth_init), ground_db(ground_db_init), wall_db(wall_db_init), texture_db(texture_db_init),
-	window(sf::VideoMode({ 800, 600 }), "Edit maze"),
-	grid_spacing(10.0f), grid_origin_x(10.0f), grid_origin_y(10.0f),
-	mouse_down(false)
+	window(sf::VideoMode({ 800, 600 }), "Edit maze"), brush_editor(brush, ground_db, wall_db, texture_db)
 {
 	ImGui::SFML::Init(window);
 }
@@ -265,56 +263,8 @@ void LabyrinthEditView::drawEditLine() {
 	}
 }
 
-sf::Color getTextureButtonColor(WallInfo info) {
-	return info.color;
-}
-
-sf::Color getTextureButtonColor(GroundInfo info) {
-	return info.ground_color;
-}
-
-template <typename TDb>
-auto brushPopUp(const std::string& popup_label, typename TDb::IdType* id, TDb db, TextureDb texture_db) {
-	typename TDb::InfoType info = db.getElement(*id);
-	std::string texture_label = popup_label;
-	texture_label.append("_texture");
-	TextureInfo tex_info = texture_db.getTexture(info.texture);
-	sf::Vector2f tex_size = { 100.0f, 100.0f };
-	if (ImGui::ImageButton(texture_label.c_str(), *(tex_info.texture.get()), tex_size, sf::Color::Black, getTextureButtonColor(info))) {
-		ImGui::OpenPopup(popup_label.c_str());
-	}
-
-	bool retval = false;
-	if (ImGui::BeginPopup(popup_label.c_str())) {
-		auto all_ids = db.getIds();
-		for (int i = 0; i < all_ids.size(); ++i) {
-			std::string selectable_label = std::to_string(db.getElement(all_ids[i]).id);
-			selectable_label.append("###");
-			selectable_label.append(std::to_string(i));
-			if (ImGui::Selectable(selectable_label.c_str())) {
-				*id = all_ids[i];
-				retval = true;
-			}
-		}
-		ImGui::EndPopup();
-	}
-
-	return retval;
-}
-
 void LabyrinthEditView::drawWallBrushInfo() {
-	ImGui::Begin("Brush");
-	ImGui::SeparatorText("Wall");
-	WallTypeId wall_id = brush.getWallId();
-	if (brushPopUp<WallDb>("Wall brush", &wall_id, wall_db, texture_db)) {
-		brush.setWallId(wall_id);
-	}
-	ImGui::SeparatorText("Ground");
-	GroundTypeId ground_id = brush.getGroundId();
-	if (brushPopUp<GroundDb>("Ground brush", &ground_id, ground_db, texture_db)) {
-		brush.setGroundId(ground_id);
-	}
-	ImGui::End();
+	brush_editor.render();
 }
 
 void LabyrinthEditView::render() {
@@ -413,22 +363,22 @@ void LabyrinthEditView::handleMouseLeftUp(const sf::Event::MouseButtonReleased* 
 		}
 
 		while (extent_x > 0 && extent_y == 0) {
-			labyrinth.addWall(initial_map.value().x + extent_x - 1, initial_map.value().y, WallOrientation::HORIZONTAL, wall_brush);
+			labyrinth.addWall(initial_map.value().x + extent_x - 1, initial_map.value().y, WallOrientation::HORIZONTAL, brush.getWallId());
 			--extent_x;
 		}
 
 		while (extent_x < 0 && extent_y == 0) {
-			labyrinth.addWall(initial_map.value().x + extent_x, initial_map.value().y, WallOrientation::HORIZONTAL, wall_brush);
+			labyrinth.addWall(initial_map.value().x + extent_x, initial_map.value().y, WallOrientation::HORIZONTAL, brush.getWallId());
 			++extent_x;
 		}
 
 		while (extent_y > 0 && extent_x == 0) {
-			labyrinth.addWall(initial_map.value().x, initial_map.value().y + extent_y - 1, WallOrientation::VERTICAL, wall_brush);
+			labyrinth.addWall(initial_map.value().x, initial_map.value().y + extent_y - 1, WallOrientation::VERTICAL, brush.getWallId());
 			--extent_y;
 		}
 
 		while (extent_y < 0 && extent_x == 0) {
-			labyrinth.addWall(initial_map.value().x, initial_map.value().y + extent_y, WallOrientation::VERTICAL, wall_brush);
+			labyrinth.addWall(initial_map.value().x, initial_map.value().y + extent_y, WallOrientation::VERTICAL, brush.getWallId());
 			++extent_y;
 		}
 	}

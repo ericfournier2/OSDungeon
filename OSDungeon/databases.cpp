@@ -24,9 +24,9 @@ std::vector<TextureId> TextureDb::getIds() const {
 	return retVal;
 }
 
-TextureInfo TextureDb::getTexture(TextureId id) {
+TextureInfo TextureDb::getTexture(TextureId id) const {
 	if (texture_map.contains(id)) {
-		return texture_map[id];
+		return texture_map.at(id);
 	} else {
 		return empty_info;
 	}

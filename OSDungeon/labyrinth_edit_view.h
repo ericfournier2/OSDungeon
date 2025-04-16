@@ -3,6 +3,7 @@
 #include "common.h"
 #include "databases.h"
 #include "brush.h"
+#include "brush_editor.h"
 
 #pragma once
 class LabyrinthEditView
@@ -43,8 +44,6 @@ private:
 	float grid_spacing = 10.0f;
 	float grid_origin_x = 10.0f;
 	float grid_origin_y = 10.0f;
-	GroundTypeId ground_brush = 1;
-	WallTypeId wall_brush = 1;
 	bool mouse_down = false;
 	bool mouse_down_adding = true;
 	CoordF button_down_pos;
@@ -58,5 +57,6 @@ private:
 	bool paint_walls_around_ground = true;
 	float ground_inset = 1.0;
 	Brush brush;
+	BrushEditor brush_editor;
 };
 

@@ -150,7 +150,7 @@ class TextureDb {
 public:
 	TextureDb();
 	TextureId loadNewTexture(TextureId id, const std::string& filename);
-	TextureInfo getTexture(TextureId id);
+	TextureInfo getTexture(TextureId id) const;
 	std::vector<TextureId> getIds() const;
 	bool writeToFile(const std::string& filename) const;
 	bool readFromFile(const std::string& filename);
