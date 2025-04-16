@@ -148,7 +148,7 @@
     <ClCompile Include="labyrinth_view.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="databases.cpp" />
-    <ClCompile Include="wall_db_editor.cpp" />
+    <ClCompile Include="db_editor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="brush.h" />
@@ -163,7 +163,7 @@
     <ClInclude Include="labyrinth_top_view.h" />
     <ClInclude Include="labyrinth_view.h" />
     <ClInclude Include="databases.h" />
-    <ClInclude Include="wall_db_editor.h" />
+    <ClInclude Include="db_editor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

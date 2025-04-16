@@ -6,7 +6,7 @@
 #include "labyrinth_edit_view.h"
 #include "entity.h"
 #include "databases.h"
-#include "wall_db_editor.h"
+#include "db_editor.h"
 
 void labyrinthTestSymmetric();
 void labyrinthTestAssymmetric();
@@ -52,18 +52,15 @@ int main()
 
     //test.loadFromFile("current.labyrinth");
     LabyrinthView lv = LabyrinthView(test, ground_db, wall_db, texture_db, 400, 300);
-    LabyrinthEditView lve = LabyrinthEditView(test, ground_db, wall_db, texture_db);
-    DatabaseEditor wdbe(wall_db, ground_db, texture_db, template_db);
+    LabyrinthEditView lve = LabyrinthEditView(test, ground_db, wall_db, texture_db, template_db);
     bool closed = false;
     while (!closed)
     {
         //std::cout << test.printToString();
         closed = lve.processEvents();
         closed = lv.processEvents() || closed;
-        wdbe.processEvents();
         lv.render();
         lve.render();
-        wdbe.render();
         //std::cout << "Done with frame.";
     }
 }

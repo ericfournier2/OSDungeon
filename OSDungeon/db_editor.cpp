@@ -1,10 +1,10 @@
-#include "wall_db_editor.h"
+#include "db_editor.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
 
-DatabaseEditor::DatabaseEditor(WallDb& wall_db_init, GroundDb& ground_db_init, TextureDb& texture_db_init, EntityTemplateDb& template_db_init) 
- : wall_db(wall_db_init), ground_db(ground_db_init), texture_db(texture_db_init), template_db(template_db_init), window(sf::VideoMode({ 800, 400 }), "Databases") {
-	ImGui::SFML::Init(window);
+DatabaseEditor::DatabaseEditor(GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, EntityTemplateDb& template_db_init)
+ : wall_db(wall_db_init), ground_db(ground_db_init), texture_db(texture_db_init), template_db(template_db_init) 
+{
 }
 
 bool DatabaseEditor::selectColorButton(sf::Color* initial_color, int object_id, std::string extra_label) {
@@ -207,9 +207,6 @@ void DatabaseEditor::renderTextureTable() {
 }
 
 void DatabaseEditor::render() {
-	window.clear();
-	ImGui::SFML::Update(window, deltaClock.restart());
-
 	ImGui::Begin("Database editor");
 	
 	if (ImGui::BeginTabBar("Databases", ImGuiTabBarFlags_None))
@@ -246,16 +243,4 @@ void DatabaseEditor::render() {
 	}
 
 	ImGui::End();
-	ImGui::SFML::Render(window);
-	window.display();
-}
-
-bool DatabaseEditor::processEvents() {
-	while (const std::optional event = window.pollEvent()) {
-		ImGui::SFML::ProcessEvent(window, *event);
-		if (event->is<sf::Event::Closed>()) {
-			window.close();
-			return true;
-		}
-	}
 }

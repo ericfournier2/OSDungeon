@@ -60,7 +60,7 @@
     <ClCompile Include="databases.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="wall_db_editor.cpp">
+    <ClCompile Include="db_editor.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="brush.cpp">
@@ -98,7 +98,7 @@
     <ClInclude Include="imgui\imgui-SFML.h">
       <Filter>Fichiers d%27en-tête\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="wall_db_editor.h">
+    <ClInclude Include="db_editor.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="databases.h">

@@ -4,10 +4,16 @@
 #include "labyrinth_edit_view.h"
 
 
-LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init)
-	: labyrinth(labyrinth_init), ground_db(ground_db_init), wall_db(wall_db_init), texture_db(texture_db_init),
-	window(sf::VideoMode({ 800, 600 }), "Edit maze"), brush_editor(brush, ground_db, wall_db, texture_db),
-	top_view(labyrinth, brush, ground_db, wall_db, texture_db)
+LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, EntityTemplateDb& template_db_init)
+	: labyrinth(labyrinth_init), 
+	  ground_db(ground_db_init), 
+	  wall_db(wall_db_init), 
+	  texture_db(texture_db_init),
+	  template_db(template_db_init),
+	  window(sf::VideoMode({ 1600, 900 }), "Edit maze"), 
+	  brush_editor(brush, ground_db_init, wall_db_init, texture_db_init),
+	  top_view(labyrinth, brush, ground_db_init, wall_db_init, texture_db_init),
+	  db_editor(ground_db_init, wall_db_init, texture_db_init, template_db_init)
 {
 	ImGui::SFML::Init(window);
 }
@@ -29,6 +35,7 @@ void LabyrinthEditView::render() {
 	window.clear();
 	top_view.render(window, mouse_x, mouse_y);
 	drawWallBrushInfo();
+	db_editor.render();
 	ImGui::SFML::Render(window);
 	window.display();
 }

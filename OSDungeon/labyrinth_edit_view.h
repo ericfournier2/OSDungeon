@@ -5,12 +5,13 @@
 #include "brush.h"
 #include "brush_editor.h"
 #include "labyrinth_top_view.h"
+#include "db_editor.h"
 
 #pragma once
 class LabyrinthEditView
 {
 public:
-	LabyrinthEditView(Labyrinth& labyrinth, GroundDb& ground_db, WallDb& wall_db, TextureDb& texture_db);
+	LabyrinthEditView(Labyrinth& labyrinth, GroundDb& ground_db, WallDb& wall_db, TextureDb& texture_db, EntityTemplateDb& template_db);
 	~LabyrinthEditView();
 
 	void render();
@@ -33,9 +34,11 @@ private:
 	GroundDb& ground_db;
 	WallDb& wall_db;
 	TextureDb& texture_db;
+	EntityTemplateDb& template_db;
 	bool painting_ground = false;
 	Brush brush;
 	BrushEditor brush_editor;
 	LabyrinthTopView top_view;
+	DatabaseEditor db_editor;
 };
 
