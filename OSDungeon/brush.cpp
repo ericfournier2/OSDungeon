@@ -10,6 +10,9 @@ BrushPreview Brush::preview(const Labyrinth& labyrinth, float x, float y) const 
 	case BrushShape::BRUSH_SHAPE_POINT:
 		return pointPreview(labyrinth, x, y);
 		break;
+	case BrushShape::BRUSH_SHAPE_WALL:
+		return wallPreview(labyrinth, x, y);
+		break;
 	default:
 		assert(false);
 	}
@@ -93,3 +96,29 @@ void Brush::enclosingWall(BrushPreview& preview, const Labyrinth& labyrinth, Coo
 	}
 }
 
+bool Brush::isMin4(float x, float o1, float o2, float o3) const {
+	return x < o1 && x < 02 && x < o3 && o1 > wall_dead_zone && o2 > wall_dead_zone && o3 > wall_dead_zone;
+}
+
+BrushPreview Brush::wallPreview(const Labyrinth& labyrinth, float x, float y) const {
+	// Find closest wall.
+	float x_left_dist = x - static_cast<int>(x);
+	float y_bottom_dist = y - static_cast<int>(y);
+	float x_right_dist = 1 - x_left_dist;
+	float y_top_dist = 1 - y_bottom_dist;
+
+	BrushPreview retval;
+	int int_x = static_cast<int>(x);
+	int int_y = static_cast<int>(y);
+	if (isMin4(x_left_dist, y_bottom_dist, x_right_dist, y_top_dist)) {
+		retval.walls[{int_x, int_y, WallOrientation::VERTICAL}] = wall_id;
+	} else if (isMin4(y_bottom_dist, x_left_dist, x_right_dist, y_top_dist)) {
+		retval.walls[{int_x, int_y, WallOrientation::HORIZONTAL}] = wall_id;
+	} else if (isMin4(x_right_dist, y_bottom_dist, x_left_dist, y_top_dist)) {
+		retval.walls[{int_x + 1, int_y, WallOrientation::VERTICAL}] = wall_id;
+	} else if (isMin4(y_top_dist, y_bottom_dist, x_right_dist, x_left_dist)) {
+		retval.walls[{int_x, int_y + 1, WallOrientation::HORIZONTAL}] = wall_id;
+	}
+
+	return retval;
+}

@@ -46,6 +46,14 @@ auto brushPopUp(const std::string& popup_label, typename TDb::IdType* id, const 
 
 void BrushEditor::render() {
 	ImGui::Begin("Brush");
+	ImGui::SeparatorText("Shape");
+	BrushShape shape = brush.getBrushShape();
+	if (ImGui::RadioButton("Wall", shape == BrushShape::BRUSH_SHAPE_WALL)) {
+		brush.setBrushShape(BrushShape::BRUSH_SHAPE_WALL);
+	}
+	if (ImGui::RadioButton("Point", shape == BrushShape::BRUSH_SHAPE_POINT)) {
+		brush.setBrushShape(BrushShape::BRUSH_SHAPE_POINT);
+	}
 	ImGui::SeparatorText("Wall");
 	WallTypeId wall_id = brush.getWallId();
 	if (brushPopUp<WallDb>("Wall brush", &wall_id, wall_db, texture_db)) {

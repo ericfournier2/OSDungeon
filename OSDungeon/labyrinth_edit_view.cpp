@@ -1,8 +1,6 @@
 #include <SFML/System/Clock.hpp>
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
-
-
 #include "labyrinth_edit_view.h"
 
 
@@ -16,18 +14,6 @@ LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, GroundDb& ground
 LabyrinthEditView::~LabyrinthEditView()
 {
 	ImGui::SFML::Shutdown();
-}
-
-std::optional<Coord> LabyrinthEditView::getMapGroundCoordFromScreenCoord(float x, float y) {
-	float map_x = (mouse_x - grid_origin_x) / grid_spacing;
-	float map_y = labyrinth.getSizeY() - (mouse_y - grid_origin_y) / grid_spacing;
-	
-	if (map_x > 0 && map_y > 0 && map_x < labyrinth.getSizeX() && map_y < labyrinth.getSizeY()) {
-		return Coord({ static_cast<int>(map_x),static_cast<int>(map_y) });
-	}
-	else {
-		return std::nullopt;
-	}
 }
 
 sf::Color LabyrinthEditView::groundDrawColor(GroundTypeId id) {
@@ -236,33 +222,6 @@ void LabyrinthEditView::drawPOV() {
 	window.draw(vertex_array);
 }
 
-std::optional<CoordF> LabyrinthEditView::findClosestGridPoint(int x_in, int y_in) const {
-	float match_radius = grid_spacing / 2;
-
-	for (int x = 0; x < labyrinth.getSizeX() + 1; ++x) {
-		for (int y = 0; y < labyrinth.getSizeY() + 1; ++y) {
-			float pos_x = grid_origin_x + grid_spacing * x;
-			float pos_y = grid_origin_y + grid_spacing * y;
-
-			if (abs(x_in - pos_x) <= match_radius && abs(y_in - pos_y) <= match_radius) {
-				return CoordF({ pos_x, pos_y });
-			}
-		}
-	}
-
-	return std::nullopt;
-}
-
-void LabyrinthEditView::drawEditLine() {
-	if (mouse_down) {
-		auto vertex_array = sf::VertexArray(sf::PrimitiveType::Lines, 2);
-		vertex_array[0] = sf::Vertex({ button_down_pos.x, button_down_pos.y }, sf::Color::Yellow);
-		vertex_array[1] = sf::Vertex({ mouse_x, mouse_y }, sf::Color::Yellow);
-
-		window.draw(vertex_array);
-	}
-}
-
 void LabyrinthEditView::drawWallBrushInfo() {
 	brush_editor.render();
 }
@@ -315,14 +274,7 @@ void LabyrinthEditView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) 
 }
 
 void LabyrinthEditView::handleMouseLeftDown(const sf::Event::MouseButtonPressed* mouseButtonPressed) {
-	std::optional<CoordF> closest = findClosestGridPoint(mouseButtonPressed->position.x, mouseButtonPressed->position.y);
-	if (closest) {
-		button_down_pos = closest.value();
-		mouse_x = static_cast<float>(mouseButtonPressed->position.x);
-		mouse_y = static_cast<float>(mouseButtonPressed->position.y);
-		mouse_down = true;
-		mouse_down_adding = true;
-	}
+	
 }
 
 void LabyrinthEditView::applyBrush() {
@@ -337,52 +289,8 @@ void LabyrinthEditView::handleMouseRightDown(const sf::Event::MouseButtonPressed
 	applyBrush();
 }
 
-std::optional<Coord> LabyrinthEditView::getMapWallCoordFromScreenCoord(float x, float y) {
-	std::optional<CoordF> closest = findClosestGridPoint(static_cast<int>(x), static_cast<int>(y));
-
-	if (closest) {
-		int x = std::lround((closest.value().x - grid_origin_x) / grid_spacing);
-		int y = labyrinth.getSizeY() - std::lround((closest.value().y - grid_origin_y) / grid_spacing);
-		return Coord(x, y);
-	}
-	
-	return std::nullopt;
-}
-
-
 void LabyrinthEditView::handleMouseLeftUp(const sf::Event::MouseButtonReleased* mouseButtonReleased) {
-	std::optional<Coord> closest_map = getMapWallCoordFromScreenCoord(static_cast<float>(mouseButtonReleased->position.x), static_cast<float>(mouseButtonReleased->position.y));
-	std::optional<Coord> initial_map = getMapWallCoordFromScreenCoord(button_down_pos.x, button_down_pos.y);
-	if (initial_map && closest_map) {
-		int extent_x = closest_map.value().x - initial_map.value().x;
-		int extent_y = closest_map.value().y - initial_map.value().y;
 
-		if (extent_x > 0 && extent_y > 0) {
-			// We won't deal with diagonals.
-			return;
-		}
-
-		while (extent_x > 0 && extent_y == 0) {
-			labyrinth.addWall(initial_map.value().x + extent_x - 1, initial_map.value().y, WallOrientation::HORIZONTAL, brush.getWallId());
-			--extent_x;
-		}
-
-		while (extent_x < 0 && extent_y == 0) {
-			labyrinth.addWall(initial_map.value().x + extent_x, initial_map.value().y, WallOrientation::HORIZONTAL, brush.getWallId());
-			++extent_x;
-		}
-
-		while (extent_y > 0 && extent_x == 0) {
-			labyrinth.addWall(initial_map.value().x, initial_map.value().y + extent_y - 1, WallOrientation::VERTICAL, brush.getWallId());
-			--extent_y;
-		}
-
-		while (extent_y < 0 && extent_x == 0) {
-			labyrinth.addWall(initial_map.value().x, initial_map.value().y + extent_y, WallOrientation::VERTICAL, brush.getWallId());
-			++extent_y;
-		}
-	}
-	mouse_down = false;
 }
 
 void LabyrinthEditView::handleMouseRightUp(const sf::Event::MouseButtonReleased* mouseButtonReleased) {

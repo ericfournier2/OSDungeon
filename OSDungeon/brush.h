@@ -37,8 +37,8 @@ public:
 	WallTypeId getWallId() const { return wall_id; }
 	void setWallId(WallTypeId wall_id_init) { wall_id = wall_id_init; }
 
-	BrushShape getBrushType() const { return brush_type; }
-	void setBrushType(BrushShape type) { brush_type = type; }
+	BrushShape getBrushShape() const { return brush_type; }
+	void setBrushShape(BrushShape type) { brush_type = type; }
 
 	BrushAction getBrushAction() const { return brush_action; }
 	void setBrushAction(BrushAction type) { brush_action = type; }
@@ -51,6 +51,8 @@ private:
 	BrushPreview pointPreview(const Labyrinth& labyrinth, float x, float y) const;
 	void enclosingWall(BrushPreview& preview, const Labyrinth& labyrinth, Coord coord, CardinalDirection d) const;
 
+	BrushPreview wallPreview(const Labyrinth& labyrinth, float x, float y) const;
+	bool isMin4(float x, float o1, float o2, float o3) const;
 
 	BrushShape brush_type = BRUSH_SHAPE_POINT;
 	BrushAction brush_action = BRUSH_ACTION_DRAW;
@@ -58,4 +60,5 @@ private:
 
 	GroundTypeId ground_id = 1;
 	WallTypeId wall_id = 1;
+	float wall_dead_zone = 0.3f;
 };
