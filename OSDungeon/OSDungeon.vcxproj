@@ -142,6 +142,7 @@
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="labyrinth.cpp" />
+    <ClCompile Include="labyrinth_top_view.cpp" />
     <ClCompile Include="labyrinth_edit_view.cpp" />
     <ClCompile Include="labyrinth_test.cpp" />
     <ClCompile Include="labyrinth_view.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="labyrinth.h" />
     <ClInclude Include="labyrinth_edit_view.h" />
+    <ClInclude Include="labyrinth_top_view.h" />
     <ClInclude Include="labyrinth_view.h" />
     <ClInclude Include="databases.h" />
     <ClInclude Include="wall_db_editor.h" />

@@ -4,6 +4,7 @@
 #include "databases.h"
 #include "brush.h"
 #include "brush_editor.h"
+#include "labyrinth_top_view.h"
 
 #pragma once
 class LabyrinthEditView
@@ -16,17 +17,6 @@ public:
 	
 	bool processEvents();
 private:
-	sf::Color groundDrawColor(GroundTypeId id);
-	CoordF getGroundScreenSize() const;
-	CoordF getGroundScreenPositionFromMapPosition(int x, int y) const;
-	sf::RectangleShape groundRectangle(int x, int y, GroundTypeId id);
-	void drawGround();
-	void drawGroundCursor();
-	void drawGroundEntities();
-	void drawGrid();
-	void drawWall(int x, int y, WallOrientation o, WallTypeId id);
-	void drawWalls();
-	void drawPOV();
 	void handleKeyPress(const sf::Event::KeyPressed* keyPressed);
 	void handleMouseLeftDown(const sf::Event::MouseButtonPressed* mouseButtonPressed);
 	void applyBrush();
@@ -37,9 +27,6 @@ private:
 
 	Labyrinth& labyrinth;
 	sf::RenderWindow window;
-	float grid_spacing = 20.0f;
-	float grid_origin_x = 10.0f;
-	float grid_origin_y = 10.0f;
 	float mouse_x = 0.0f;
 	float mouse_y = 0.0f;
 	sf::Clock deltaClock;
@@ -47,8 +34,8 @@ private:
 	WallDb& wall_db;
 	TextureDb& texture_db;
 	bool painting_ground = false;
-	float ground_inset = 1.0;
 	Brush brush;
 	BrushEditor brush_editor;
+	LabyrinthTopView top_view;
 };
 
