@@ -12,7 +12,7 @@ LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, GroundDb& ground
 	  texture_db(texture_db_init),
 	  template_db(template_db_init),
 	  brush(template_db_init),
-	  brush_editor(brush, ground_db_init, wall_db_init, texture_db_init),
+	  brush_editor(brush, ground_db_init, wall_db_init, texture_db_init, template_db_init),
 	  top_view(labyrinth, brush, ground_db_init, wall_db_init, texture_db_init, template_db_init),
 	  db_editor(ground_db_init, wall_db_init, texture_db_init, template_db_init)
 {

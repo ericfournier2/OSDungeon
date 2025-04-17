@@ -40,6 +40,9 @@ public:
 	WallTypeId getWallId() const { return wall_id; }
 	void setWallId(WallTypeId wall_id_init) { wall_id = wall_id_init; }
 
+	EntityTemplateId getEntityId() const { return entity_id; }
+	void setEntityId(EntityTemplateId entity_id_init) { entity_id = entity_id_init; }
+
 	BrushShape getBrushShape() const { return brush_type; }
 	void setBrushShape(BrushShape type) { brush_type = type; }
 
