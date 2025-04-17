@@ -14,10 +14,11 @@ enum BrushAction {
 	BRUSH_ACTION_ERASE
 };
 
-enum BrushFillType {
+enum BrushFill {
 	BRUSH_FILL_GROUND,
 	BRUSH_FILL_WALL,
-	BRUSH_FILL_AREA
+	BRUSH_FILL_AREA,
+	BRUSH_FILL_ENTITY
 };
 
 struct BrushPreview {
@@ -28,6 +29,8 @@ struct BrushPreview {
 
 class Brush {
 public:
+	Brush(const EntityTemplateDb& template_db);
+
 	void apply(Labyrinth& labyrinth, float x, float y) const;
 	BrushPreview preview(const Labyrinth& labyrinth, float x, float y) const;
 
@@ -43,8 +46,8 @@ public:
 	BrushAction getBrushAction() const { return brush_action; }
 	void setBrushAction(BrushAction type) { brush_action = type; }
 
-	BrushFillType getBrushFillType() const { return brush_fill; }
-	void setBrushFillType(BrushFillType type) { brush_fill = type; }
+	BrushFill getBrushFill() const { return brush_fill; }
+	void setBrushFill(BrushFill type) { brush_fill = type; }
 private:
 	void applyPreview(Labyrinth& labyrinth, const BrushPreview& brush_preview) const;
 	
@@ -56,9 +59,12 @@ private:
 
 	BrushShape brush_type = BRUSH_SHAPE_POINT;
 	BrushAction brush_action = BRUSH_ACTION_DRAW;
-	BrushFillType brush_fill = BRUSH_FILL_AREA;
+	BrushFill brush_fill = BRUSH_FILL_AREA;
 
 	GroundTypeId ground_id = 1;
 	WallTypeId wall_id = 1;
+	EntityTemplateId entity_id = 1;
+
+	const EntityTemplateDb& template_db;
 	float wall_dead_zone = 0.3f;
 };

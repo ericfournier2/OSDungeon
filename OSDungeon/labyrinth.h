@@ -8,6 +8,8 @@
 
 typedef std::vector<WallTypeId> WallVec;
 typedef std::vector<GroundTypeId> GroundVec;
+typedef std::vector<Entity> EntityVec;
+typedef std::map<EntityId, Entity> EntityMap;
 const unsigned int MAX_SIZE = 100;
 
 enum MoveResult {
@@ -49,11 +51,13 @@ public:
 	bool writeToFile(const std::string& filename) const;
 	bool loadFromFile(const std::string& filename);
 
-	int addEntity(Entity entity);
-	Entity* getEntity(int id);
-	Entity* getEntityAbs(int x, int y);
-	Entity* getEntityRel(int x, int y);
-	const std::vector<Entity>& getEntities() const { return entities; }
+	EntityId addEntity(Entity entity);
+	void removeEntity(EntityId id);
+	EntityId addEntityFromTemplate(EntityTemplateId template_id, int x, int y, CardinalDirection d, const EntityTemplateDb& template_db);
+	Entity getEntity(EntityId id, const EntityTemplateDb& template_db) const;
+	EntityVec getEntityAbs(int x, int y) const;
+	EntityVec getEntityRel(int x, int y) const;
+	const EntityMap& getAllEntities() const { return entities; }
 
 	std::string printToString() const;
 private:
@@ -77,5 +81,5 @@ private:
 	int pov_y = 0;
 	CardinalDirection pov_direction = CardinalDirection::NORTH;
 
-	std::vector<Entity> entities;
+	EntityMap entities;
 };

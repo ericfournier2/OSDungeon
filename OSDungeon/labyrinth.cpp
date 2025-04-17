@@ -391,39 +391,59 @@ bool Labyrinth::loadFromFile(const std::string& filename) {
 	return false;
 }
 
-int Labyrinth::addEntity(Entity entity)
+EntityId Labyrinth::addEntity(Entity entity)
 {
-	entities.push_back(entity);
-	return entities.size();
+	entities.emplace(entity.getId(), entity);
+	return entity.getId();
 }
 
-Entity* Labyrinth::getEntity(int index) {
-	if (index < entities.size() - 1) {
-		return &entities[index];
+void Labyrinth::removeEntity(EntityId id)
+{
+	entities.erase(id);
+}
+
+EntityId Labyrinth::addEntityFromTemplate(EntityTemplateId template_id, int x, int y, CardinalDirection d, const EntityTemplateDb& template_db) {
+	// Get first free ID
+	EntityId id = 1;
+	while (entities.contains(id)) {
+		++id;
+	}
+
+	// Build the EntityInfo object.
+	EntityInfo info;
+	info.id = id;
+	info.template_id = template_id;
+	info.x = x;
+	info.y = y;
+	info.direction = d;
+	
+	// Add it to the map and return the new id.
+	entities.emplace(id, Entity(info, template_db));
+	return id;
+}
+
+Entity Labyrinth::getEntity(EntityId id, const EntityTemplateDb& template_db) const {
+	if (entities.contains(id)) {
+		return entities.at(id);
 	} else {
-		return nullptr;
+		return Entity(EntityInfo(), template_db);
 	}
 }
 
-Entity* Labyrinth::getEntityAbs(int x, int y) {
-	for (int i = 0; i < entities.size(); ++i) {
-		if (entities[i].getX() == x && entities[i].getY() == y) {
-			return &entities[i];
+EntityVec Labyrinth::getEntityAbs(int x, int y) const {
+	EntityVec retval;
+	for (auto const& [key, val] : entities) {
+		if (val.getX() == x && val.getY() == y) {
+			retval.push_back(val);
 		}
 	}
 	
-	return nullptr;
+	return retval;
 }
 
-Entity* Labyrinth::getEntityRel(int x, int y) {
+EntityVec Labyrinth::getEntityRel(int x, int y) const {
 	int abs_x_offset = getAbsXFromPovX(x, y);
 	int abs_y_offset = getAbsYFromPovY(x, y);
 
-	for (int i = 0; i < entities.size(); ++i) {
-		if (entities[i].getX() == abs_x_offset && entities[i].getY() == abs_y_offset) {
-			return &entities[i];
-		}
-	}
-
-	return nullptr;
+	return getEntityAbs(abs_x_offset, abs_y_offset);
 }

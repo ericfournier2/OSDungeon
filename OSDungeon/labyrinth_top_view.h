@@ -8,7 +8,7 @@
 class LabyrinthTopView
 {
 public:
-	LabyrinthTopView(const Labyrinth& labyrinth, const Brush& brush, const GroundDb& ground_db, const WallDb& wall_db, const TextureDb& texture_db);
+	LabyrinthTopView(const Labyrinth& labyrinth, const Brush& brush, const GroundDb& ground_db, const WallDb& wall_db, const TextureDb& texture_db, const EntityTemplateDb& template_db);
 	~LabyrinthTopView();
 
 	CoordF getMapCoord(float screen_x, float screen_y) const;
@@ -19,6 +19,7 @@ private:
 	CoordF getGroundScreenPositionFromMapPosition(int x, int y) const;
 	sf::RectangleShape groundRectangle(int x, int y, GroundTypeId id) const;
 	void drawWall(sf::RenderTarget& render_target, int x, int y, WallOrientation o, WallTypeId id) const;
+	void drawGroundEntity(sf::RenderTarget& render_target, const Entity& entity) const;
 
 	void drawGround(sf::RenderTarget& render_target) const;
 	void drawBrush(sf::RenderTarget& render_target, float mouse_x, float mouse_y) const;
@@ -32,7 +33,7 @@ private:
 	const GroundDb& ground_db;
 	const WallDb& wall_db;
 	const TextureDb& texture_db;
-
+	const EntityTemplateDb& template_db;
 	float grid_spacing = 20.0f;
 	float grid_origin_x = 10.0f;
 	float grid_origin_y = 10.0f;

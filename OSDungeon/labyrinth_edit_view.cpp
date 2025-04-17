@@ -6,16 +6,18 @@
 
 LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, EntityTemplateDb& template_db_init)
 	: labyrinth(labyrinth_init), 
+	  window(sf::VideoMode({ 1600, 900 }), "Edit maze"),
 	  ground_db(ground_db_init), 
 	  wall_db(wall_db_init), 
 	  texture_db(texture_db_init),
 	  template_db(template_db_init),
-	  window(sf::VideoMode({ 1600, 900 }), "Edit maze"), 
+	  brush(template_db_init),
 	  brush_editor(brush, ground_db_init, wall_db_init, texture_db_init),
-	  top_view(labyrinth, brush, ground_db_init, wall_db_init, texture_db_init),
+	  top_view(labyrinth, brush, ground_db_init, wall_db_init, texture_db_init, template_db_init),
 	  db_editor(ground_db_init, wall_db_init, texture_db_init, template_db_init)
 {
 	ImGui::SFML::Init(window);
+	window.setPosition({ 0,0 });
 }
 
 LabyrinthEditView::~LabyrinthEditView()

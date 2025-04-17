@@ -4,8 +4,8 @@
 #include "labyrinth_top_view.h"
 
 
-LabyrinthTopView::LabyrinthTopView(const Labyrinth& labyrinth_init, const Brush& brush_init, const GroundDb& ground_db_init, const WallDb& wall_db_init, const TextureDb& texture_db_init)
-	: labyrinth(labyrinth_init), brush(brush_init), ground_db(ground_db_init), wall_db(wall_db_init), texture_db(texture_db_init)
+LabyrinthTopView::LabyrinthTopView(const Labyrinth& labyrinth_init, const Brush& brush_init, const GroundDb& ground_db_init, const WallDb& wall_db_init, const TextureDb& texture_db_init, const EntityTemplateDb& template_db_init)
+	: labyrinth(labyrinth_init), brush(brush_init), ground_db(ground_db_init), wall_db(wall_db_init), texture_db(texture_db_init), template_db(template_db_init)
 {
 }
 
@@ -65,18 +65,34 @@ void LabyrinthTopView::drawBrush(sf::RenderTarget& render_target, float mouse_x,
 		for (auto const& [key, val] : preview.walls) {
 			drawWall(render_target, key.x, key.y, key.o, val);
 		}
+
+		for (auto const& [key, val] : preview.entities) {
+			EntityInfo info;
+			info.id = 2000000;
+			info.x = key.x;
+			info.y = key.y;
+			info.direction = CardinalDirection::NORTH;
+			info.template_id = val;
+
+			drawGroundEntity(render_target, Entity(info, template_db));
+		}
 	}
 }
 
+void LabyrinthTopView::drawGroundEntity(sf::RenderTarget& render_target, const Entity& entity) const {
+	CoordF rect_size = getGroundScreenSize();
+	sf::Sprite entity_sprite(*texture_db.getTexture(entity.getTexture()).texture);
+	entity_sprite.setPosition(getGroundScreenPositionFromMapPosition(entity.getX(), entity.getY()));
+	float scale_factor = grid_spacing / std::max(entity.getXSize(), entity.getYSize());
+	entity_sprite.setScale({ scale_factor, scale_factor });
+	render_target.draw(entity_sprite);
+}
+
+
 void LabyrinthTopView::drawGroundEntities(sf::RenderTarget& render_target) const {
-	const std::vector<Entity>& entities = labyrinth.getEntities();
-	for (auto entity : entities) {
-		CoordF rect_size = getGroundScreenSize();
-		sf::Sprite entity_sprite(*texture_db.getTexture(entity.getTexture()).texture);
-		entity_sprite.setPosition(getGroundScreenPositionFromMapPosition(entity.getX(), entity.getY()));
-		float scale_factor = grid_spacing / std::max(entity.getXSize(), entity.getYSize());
-		entity_sprite.setScale({ scale_factor, scale_factor });
-		render_target.draw(entity_sprite);
+	const EntityMap& entities = labyrinth.getAllEntities();
+	for (auto const& [id, entity] : entities) {
+		drawGroundEntity(render_target, entity);
 	}
 }
 

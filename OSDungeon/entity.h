@@ -26,7 +26,7 @@ public:
 	float getXSize() const { return getTemplate().x_size;; }
 	float getYSize() const { return getTemplate().y_size; }
 	//void setLabyrinth(Labyrinth* labyrinth_init) { labyrinth = labyrinth_init; }
-	TextureId getTexture() { return getTemplate().texture; }
+	TextureId getTexture() const { return getTemplate().texture; }
 protected:
 	EntityTemplateInfo getTemplate() const { return template_db.getElement(info.template_id); }
 	EntityInfo info;

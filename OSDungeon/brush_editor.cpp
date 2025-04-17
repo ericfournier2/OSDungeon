@@ -46,14 +46,40 @@ auto brushPopUp(const std::string& popup_label, typename TDb::IdType* id, const 
 
 void BrushEditor::render() {
 	ImGui::Begin("Brush");
+	ImGui::SeparatorText("Action");
+	BrushAction action = brush.getBrushAction();
+	if (ImGui::RadioButton("Draw", action == BrushAction::BRUSH_ACTION_DRAW)) {
+		brush.setBrushAction(BrushAction::BRUSH_ACTION_DRAW);
+	}
+	if (ImGui::RadioButton("Erase", action == BrushAction::BRUSH_ACTION_ERASE)) {
+		brush.setBrushAction(BrushAction::BRUSH_ACTION_ERASE);
+	}
+
 	ImGui::SeparatorText("Shape");
 	BrushShape shape = brush.getBrushShape();
-	if (ImGui::RadioButton("Wall", shape == BrushShape::BRUSH_SHAPE_WALL)) {
+	if (ImGui::RadioButton("Wall##Shape", shape == BrushShape::BRUSH_SHAPE_WALL)) {
 		brush.setBrushShape(BrushShape::BRUSH_SHAPE_WALL);
 	}
-	if (ImGui::RadioButton("Point", shape == BrushShape::BRUSH_SHAPE_POINT)) {
+	if (ImGui::RadioButton("Point##Shape", shape == BrushShape::BRUSH_SHAPE_POINT)) {
 		brush.setBrushShape(BrushShape::BRUSH_SHAPE_POINT);
 	}
+
+	ImGui::SeparatorText("Fill");
+	BrushFill fill = brush.getBrushFill();
+	if (ImGui::RadioButton("Wall##Fill", fill == BrushFill::BRUSH_FILL_WALL)) {
+		brush.setBrushFill(BrushFill::BRUSH_FILL_WALL);
+	}
+	if (ImGui::RadioButton("Ground##Fill", fill == BrushFill::BRUSH_FILL_GROUND)) {
+		brush.setBrushFill(BrushFill::BRUSH_FILL_GROUND);
+	}
+	if (ImGui::RadioButton("Area##Fill", fill == BrushFill::BRUSH_FILL_AREA)) {
+		brush.setBrushFill(BrushFill::BRUSH_FILL_AREA);
+	}
+	if (ImGui::RadioButton("Entity##Fill", fill == BrushFill::BRUSH_FILL_ENTITY)) {
+		brush.setBrushFill(BrushFill::BRUSH_FILL_ENTITY);
+	}
+
+
 	ImGui::SeparatorText("Wall");
 	WallTypeId wall_id = brush.getWallId();
 	if (brushPopUp<WallDb>("Wall brush", &wall_id, wall_db, texture_db)) {

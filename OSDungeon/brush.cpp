@@ -1,5 +1,10 @@
 #include "brush.h"
 
+Brush::Brush(const EntityTemplateDb& template_db_init) 
+	: template_db(template_db_init)
+{
+}
+
 void Brush::apply(Labyrinth& labyrinth, float x, float y) const {
 	BrushPreview brush_preview = preview(labyrinth, x, y);
 	applyPreview(labyrinth, brush_preview);
@@ -34,7 +39,17 @@ void Brush::applyPreview(Labyrinth& labyrinth, const BrushPreview& brush_preview
 		}
 	}
 
-	// TODO: Add entities.
+	for (auto const& [key, val] : brush_preview.entities) {
+		if (val == 0) {
+			EntityVec entities = labyrinth.getEntityAbs(key.x, key.y);
+			for (auto const& entity : entities) {
+				labyrinth.removeEntity(entity.getId());
+			}
+		} else {
+			//labyrinth.addWall(key.x, key.y, key.o, val);
+			labyrinth.addEntityFromTemplate(val, key.x, key.y, CardinalDirection::NORTH, template_db);
+		}
+	}
 }
 
 BrushPreview Brush::pointPreview(const Labyrinth& labyrinth, float x, float y) const {
@@ -42,7 +57,7 @@ BrushPreview Brush::pointPreview(const Labyrinth& labyrinth, float x, float y) c
 	Coord base_coord = { static_cast<int>(x), static_cast<int>(y) };
 
 	BrushPreview retval;
-	if (brush_fill == BrushFillType::BRUSH_FILL_GROUND || brush_fill == BrushFillType::BRUSH_FILL_AREA) {
+	if (brush_fill == BrushFill::BRUSH_FILL_GROUND || brush_fill == BrushFill::BRUSH_FILL_AREA) {
 		if (brush_action == BrushAction::BRUSH_ACTION_DRAW) {
 			retval.grounds[base_coord] = ground_id;
 		} else {
@@ -50,7 +65,15 @@ BrushPreview Brush::pointPreview(const Labyrinth& labyrinth, float x, float y) c
 		}
 	}
 
-	if (brush_fill == BrushFillType::BRUSH_FILL_WALL || brush_fill == BrushFillType::BRUSH_FILL_AREA) {
+	if (brush_fill == BrushFill::BRUSH_FILL_ENTITY) {
+		if (brush_action == BrushAction::BRUSH_ACTION_DRAW) {
+			retval.entities[base_coord] = entity_id;
+		} else {
+			retval.entities[base_coord] = 0;
+		}
+	}
+
+	if (brush_fill == BrushFill::BRUSH_FILL_WALL || brush_fill == BrushFill::BRUSH_FILL_AREA) {
 		enclosingWall(retval, labyrinth, base_coord, CardinalDirection::NORTH);
 		enclosingWall(retval, labyrinth, base_coord, CardinalDirection::EAST);
 		enclosingWall(retval, labyrinth, base_coord, CardinalDirection::WEST);

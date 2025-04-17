@@ -36,6 +36,7 @@ LabyrinthView::LabyrinthView(Labyrinth& labyrinth_init, GroundDb& ground_db_init
 	  window(sf::VideoMode({ 400, 300 }), "Maze 1st person view"), x_size(x_size_init), y_size(y_size_init), 
 	  max_depth(max_depth_init), camera_distance(camera_distance_init)
 {
+	window.setPosition({ 2000, 400 });
 }
 
 float LabyrinthView::depthOffset(float depth, bool x, bool left) const {
@@ -189,18 +190,19 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	//drawPrimitive(ground1, ground2, ground3, ground4, sf::Color(127, 51, 0), &ground_texture, GROUND_TEXTURE, true);
 	drawPrimitive(ground1, ground2, ground3, ground4, ground_info.ground_color, texture_info.texture.get(), GROUND_TEXTURE, true);
 
-	if (Entity * ent = labyrinth.getEntityRel(step.x_offset, step.y_offset)) {
+	EntityVec entities = labyrinth.getEntityRel(step.x_offset, step.y_offset);
+	for (auto entity : entities) {
 		float scale_factor = static_cast<float>(pow(2, step.y_offset));
-		float final_x_size = ent->getXSize() / scale_factor;
-		float final_y_size = ent->getYSize() / scale_factor;
+		float final_x_size = entity.getXSize() / scale_factor;
+		float final_y_size = entity.getYSize() / scale_factor;
 		float tile_center_x = (ground1.x + ground2.x + ground3.x + ground4.x) / 4.0f;
 		float tile_center_y = (ground1.y + ground2.y + ground3.y + ground4.y) / 4.0f;
-		float final_x_offset = tile_center_x + (ent->getXOffset() / scale_factor);
-		float final_y_offset = tile_center_y + (ent->getYOffset() / scale_factor);
+		float final_x_offset = tile_center_x + (entity.getXOffset() / scale_factor);
+		float final_y_offset = tile_center_y + (entity.getYOffset() / scale_factor);
 
-		sf::Sprite sprite(*(texture_db.getTexture(ent->getTexture()).texture));
+		sf::Sprite sprite(*(texture_db.getTexture(entity.getTexture()).texture));
 		sprite.setPosition({ final_x_offset, final_y_offset });
-		sprite.setScale({ 1/scale_factor, 1/scale_factor });
+		sprite.setScale({ 1 / scale_factor, 1 / scale_factor });
 		window.draw(sprite);
 	}
 
