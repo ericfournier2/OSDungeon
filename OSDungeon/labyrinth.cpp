@@ -268,71 +268,6 @@ GroundTypeId Labyrinth::getGroundAbs(int x, int y) const
 	return ground[y * x_size + x];
 }
 
-std::string Labyrinth::printXLineToString(unsigned int y) const {
-	std::string retVal;
-	for (int x = 0; x < x_size; ++x) {
-		retVal.append("+");
-		if (getWallAbs(x, y, HORIZONTAL)) {
-			retVal.append("-");
-		}
-		else {
-			retVal.append(" ");
-		}
-	}
-	retVal.append("+\n");
-
-	return retVal;
-}
-
-std::string Labyrinth::printGroundTileToString(unsigned int x, unsigned int y) const {
-	std::string retVal;
-	GroundTypeId groundVal = getGroundAbs(x, y);
-	if (pov_x == x && pov_y == y) {
-		std::string pov_string(" ");
-		switch (pov_direction) {
-		case CardinalDirection::NORTH:
-			pov_string = "\x1E";
-			break;
-		case CardinalDirection::EAST:
-			pov_string = "\x10";
-			break;
-		case CardinalDirection::SOUTH:
-			pov_string = "\x1F";
-			break;
-		case CardinalDirection::WEST:
-			pov_string = "\x11";
-			break;
-		}
-		retVal.append(pov_string);
-	}
-	else if (groundVal) {
-		retVal.append(std::to_string(groundVal));
-	}
-	else {
-		retVal.append(" ");
-	}
-
-	return retVal;
-}
-
-std::string Labyrinth::printYLineToString(unsigned int y) const {
-	std::string retVal;
-	for (int x = 0; x < x_size + 1; ++x) {
-		if (getWallAbs(x, y, VERTICAL)) {
-			retVal.append("|");
-		}
-		else {
-			retVal.append(" ");
-		}
-
-		retVal.append(printGroundTileToString(x, y));
-	}
-	retVal.append("\n");
-	return retVal;
-}
-
-
-
 bool Labyrinth::canMove(int from_x, int from_y, CardinalDirection d) const
 {
 	switch (d) {
@@ -353,8 +288,6 @@ bool Labyrinth::canMove(int from_x, int from_y, CardinalDirection d) const
 	// Shouldn't be reached.
 	return false;
 }
-
-
 
 struct PathStep {
 	Coord c;
@@ -419,16 +352,6 @@ std::optional<Path> Labyrinth::findPath(int from_x, int from_y, int to_x, int to
 
 	// If there is no path, return the empty path.
 	return std::nullopt;
-}
-
-std::string Labyrinth::printToString() const {
-	std::string retVal;
-	retVal.append(printXLineToString(y_size));
-	for (int y = y_size - 1; y >= 0; --y) {
-		retVal.append(printYLineToString(y));
-		retVal.append(printXLineToString(y));
-	}
-	return retVal;
 }
 
 const char file_identifier[] = "OSDUNGEON0.0";

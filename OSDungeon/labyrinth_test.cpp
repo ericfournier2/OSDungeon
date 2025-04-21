@@ -1,5 +1,6 @@
 #include "labyrinth.h"
 #include "labyrinth_view.h"
+#include "labyrinth_print.h"
 #include <iostream>
 #include <cassert>
 
@@ -45,7 +46,7 @@ void labyrinthTestSymmetric() {
 	std::cout << "test.getWallId(3, 3, HORIZONTAL) <0>:" << test.getWallAbs(3, 3, HORIZONTAL) << std::endl;
 	std::cout << "test.getWallId(3, 3, VERTICAL) <0>:" << test.getWallAbs(3, 3, VERTICAL) << std::endl;
 
-	std::cout << test.printToString();
+	std::cout << printToString(test);
 }
 
 
@@ -91,35 +92,35 @@ void labyrinthTestAssymmetric() {
 	std::cout << "test.getWallId(3, 3, HORIZONTAL) <1>:" << test.getWallAbs(3, 3, HORIZONTAL) << std::endl;
 	std::cout << "test.getWallId(3, 3, VERTICAL) <0>:" << test.getWallAbs(3, 3, VERTICAL) << std::endl;
 
-	std::cout << test.printToString();
+	std::cout << printToString(test);
 
 	std::cout << "test.setPov(1, 1, SOUTH);" << std::endl;
 	test.setPov(1, 1, SOUTH);
 	assert(test.getPovX() == 1);
 	assert(test.getPovY() == 1);
 	assert(test.getPovDirection() == SOUTH);
-	std::cout << test.printToString();
+	std::cout << printToString(test);
 
 	std::cout << "test.movePov(0, -1);" << std::endl;
 	test.movePovRel(0, -1);
 	assert(test.getPovX() == 1);
 	assert(test.getPovY() == 2);
 	assert(test.getPovDirection() == SOUTH);
-	std::cout << test.printToString();
+	std::cout << printToString(test);
 
 	std::cout << "test.turnPovRel(RIGHT);" << std::endl;
 	test.turnPovRel(RIGHT);
 	assert(test.getPovX() == 1);
 	assert(test.getPovY() == 2);
 	assert(test.getPovDirection() == WEST);
-	std::cout << test.printToString();
+	std::cout << printToString(test);
 
 	std::cout << "test.movePovRel(-1, 0);" << std::endl;
 	test.movePovRel(-1, 0);
 	assert(test.getPovX() == 1);
 	assert(test.getPovY() == 1);
 	assert(test.getPovDirection() == WEST);
-	std::cout << test.printToString();
+	std::cout << printToString(test);
 
 	assert(test.getGroundRel(0, 0) == 1);
 	assert(test.getGroundRel(0, 1) == 0);
@@ -143,11 +144,11 @@ void labyrinthTestAssymmetric() {
 	assert(test.getWallRel(-1, 0, LEFT) == 1);
 	/*
 	LabyrinthView lv(test);
-	std::cout << test.printToString();
+	std::cout << printToString(test);
 	lv.render();
 	
 	test.movePovRel(0, -1);
-	std::cout << test.printToString();
+	std::cout << printToString(test);
 	lv.render();*/
 }
 
@@ -190,8 +191,8 @@ void testReadWrite() {
 	Labyrinth test_read = Labyrinth(0,0);
 	bool read_success = test_read.loadFromFile("test.labyrinth");
 
-	std::cout << test.printToString();
-	std::cout << test_read.printToString();
+	std::cout << printToString(test);
+	std::cout << printToString(test_read);
 
 	assert(test.getSizeX() == test_read.getSizeX());
 	assert(test.getSizeY() == test_read.getSizeY());
