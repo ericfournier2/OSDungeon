@@ -1,7 +1,8 @@
 #include "labyrinth.h"
 #include <cassert>
 #include <fstream>
-
+#include <queue>
+#include <set>
 
 int Labyrinth::getAbsXFromPovX(int x_offset, int y_offset) const {
 	int final_offset_x = pov_x;
@@ -289,16 +290,16 @@ std::string Labyrinth::printGroundTileToString(unsigned int x, unsigned int y) c
 	if (pov_x == x && pov_y == y) {
 		std::string pov_string(" ");
 		switch (pov_direction) {
-		case NORTH:
+		case CardinalDirection::NORTH:
 			pov_string = "\x1E";
 			break;
-		case EAST:
+		case CardinalDirection::EAST:
 			pov_string = "\x10";
 			break;
-		case SOUTH:
+		case CardinalDirection::SOUTH:
 			pov_string = "\x1F";
 			break;
-		case WEST:
+		case CardinalDirection::WEST:
 			pov_string = "\x11";
 			break;
 		}
@@ -328,6 +329,96 @@ std::string Labyrinth::printYLineToString(unsigned int y) const {
 	}
 	retVal.append("\n");
 	return retVal;
+}
+
+
+
+bool Labyrinth::canMove(int from_x, int from_y, CardinalDirection d) const
+{
+	switch (d) {
+	case CardinalDirection::NORTH:
+		return getWallAbs(from_x, from_y + 1, WallOrientation::HORIZONTAL) == 0;
+		break;
+	case CardinalDirection::SOUTH:
+		return getWallAbs(from_x, from_y, WallOrientation::HORIZONTAL) == 0;
+		break;
+	case CardinalDirection::EAST:
+		return getWallAbs(from_x + 1, from_y, WallOrientation::VERTICAL) == 0;
+		break;
+	case CardinalDirection::WEST:
+		return getWallAbs(from_x, from_y, WallOrientation::VERTICAL) == 0;
+		break;
+	}
+	
+	// Shouldn't be reached.
+	return false;
+}
+
+
+
+struct PathStep {
+	Coord c;
+	Path p;
+};
+
+typedef std::queue<PathStep> PathStepQueue;
+typedef std::set<Coord> CoordSet;
+
+void searchDirection(const Labyrinth& labyrinth, const PathStep& ps, CardinalDirection d, PathStepQueue& work_queue, CoordSet& traversed) {
+	int x_offset = 0;
+	int y_offset = 0;
+	switch (d) {
+	case CardinalDirection::NORTH:
+		y_offset = 1;
+		break;
+	case CardinalDirection::SOUTH:
+		y_offset = -1;
+		break;
+	case CardinalDirection::EAST:
+		x_offset = 1;
+		break;
+	case CardinalDirection::WEST:
+		x_offset = -1;
+		break;
+	}
+
+	if (labyrinth.canMove(ps.c.x, ps.c.y, d)) {
+		Coord next_coord({ ps.c.x + x_offset, ps.c.y + y_offset });
+		if (!traversed.contains(next_coord)) {
+			Path next_path = ps.p;
+			next_path.push_back(d);
+			work_queue.push({ next_coord, next_path });
+		}
+	}
+}
+
+// Breadth-first path finding.
+std::optional<Path> Labyrinth::findPath(int from_x, int from_y, int to_x, int to_y) const
+{
+	CoordSet traversed;
+	PathStepQueue work_queue;
+	Coord init_coord({ from_x, from_y });
+	Coord target_coord({ to_x, to_y });
+
+	// Initialize the queue with the start coordinate.
+	work_queue.push({ init_coord, Path() });
+	while (!work_queue.empty()) {
+		PathStep current = work_queue.front();
+		work_queue.pop();
+		traversed.insert(current.c);
+
+		if (current.c == target_coord) {
+			return current.p;
+		} else {
+			searchDirection(*this, current, CardinalDirection::NORTH, work_queue, traversed);
+			searchDirection(*this, current, CardinalDirection::EAST, work_queue, traversed);
+			searchDirection(*this, current, CardinalDirection::SOUTH, work_queue, traversed);
+			searchDirection(*this, current, CardinalDirection::WEST, work_queue, traversed);
+		}
+	}
+
+	// If there is no path, return the empty path.
+	return std::nullopt;
 }
 
 std::string Labyrinth::printToString() const {

@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <optional>
 #include "common.h"
 #include "entity.h"
 #include "databases.h"
@@ -10,6 +11,8 @@ typedef std::vector<WallTypeId> WallVec;
 typedef std::vector<GroundTypeId> GroundVec;
 typedef std::vector<Entity> EntityVec;
 typedef std::map<EntityId, Entity> EntityMap;
+typedef std::vector<CardinalDirection> Path;
+
 const unsigned int MAX_SIZE = 100;
 
 enum MoveResult {
@@ -45,6 +48,8 @@ public:
 	MoveResult movePovRel(int x_offset, int y_offset);
 	void turnPovRel(RelativeDirection direction);
 
+	bool canMove(int from_x, int from_y, CardinalDirection d) const;
+
 	MoveResult advance();
 	MoveResult moveBack();
 
@@ -58,6 +63,10 @@ public:
 	EntityVec getEntityAbs(int x, int y) const;
 	EntityVec getEntityRel(int x, int y) const;
 	const EntityMap& getAllEntities() const { return entities; }
+
+
+
+	std::optional<Path> findPath(int from_x, int from_y, int to_x, int to_y) const;
 
 	std::string printToString() const;
 private:

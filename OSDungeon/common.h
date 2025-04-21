@@ -14,6 +14,10 @@ struct Coord {
 
 		return false;
 	}
+
+	bool operator==(const Coord& rs) const {
+		return (x == rs.x && y == rs.y);
+	}
 };
 
 struct CoordF {

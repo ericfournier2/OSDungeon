@@ -12,6 +12,7 @@ void labyrinthTestSymmetric();
 void labyrinthTestAssymmetric();
 Labyrinth getTestLabyrinth();
 void testReadWrite();
+void testPathFinding();
 
 int main()
 {

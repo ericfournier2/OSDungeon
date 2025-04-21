@@ -205,3 +205,18 @@ void testReadWrite() {
 	}
 
 }
+
+void testPathFinding() {
+	Labyrinth test = getTestLabyrinth();
+	std::optional<Path> test_path_possible = test.findPath(0, 0, 3, 1);
+	if (test_path_possible) {
+		assert(test_path_possible.value()[0] == CardinalDirection::EAST);
+		assert(test_path_possible.value()[1] == CardinalDirection::EAST);
+		assert(test_path_possible.value()[2] == CardinalDirection::NORTH);
+		assert(test_path_possible.value()[3] == CardinalDirection::EAST);
+	}
+
+	std::optional<Path> test_path_impossible = test.findPath(0, 0, 1, 1);
+	assert(!test_path_impossible);
+
+}

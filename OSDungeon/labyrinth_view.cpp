@@ -191,7 +191,7 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	drawPrimitive(ground1, ground2, ground3, ground4, ground_info.ground_color, texture_info.texture.get(), GROUND_TEXTURE, true);
 
 	EntityVec entities = labyrinth.getEntityRel(step.x_offset, step.y_offset);
-	for (auto entity : entities) {
+	for (const auto& entity : entities) {
 		float scale_factor = static_cast<float>(pow(2, step.y_offset));
 		float final_x_size = entity.getXSize() / scale_factor;
 		float final_y_size = entity.getYSize() / scale_factor;
@@ -243,7 +243,6 @@ bool LabyrinthView::renderWall(RenderStep step) {
 	WallInfo wall_info = wall_db.getElement(step.wall_id);
 	TextureInfo texture_info = texture_db.getTexture(wall_info.texture);
 
-	//drawPrimitive(wall1, wall2, wall3, wall4, sf::Color(128, 128, 128), &wall0_texture, texture_type, true);
 	drawPrimitive(wall1, wall2, wall3, wall4, wall_info.color, texture_info.texture.get(), texture_type, true);
 
 	return true;
@@ -261,7 +260,6 @@ bool LabyrinthView::render() {
 			GroundTypeId ground_id = labyrinth.getGroundRel(current_step.x_offset, current_step.y_offset);
 			current_step.ground_id = ground_id;
 			// Do actual ground drawing. If we get here, the ground is always shown.
-			//renderGround(current_step);
 			drawStack.push(current_step);
 
 			// Then add the next steps to the queue.
@@ -283,7 +281,6 @@ bool LabyrinthView::render() {
 			current_step.wall_id = wall_id;
 			if (wall_id) {
 				// There's an actual wall, so let's draw it.
-				// renderWall(current_step);
 				drawStack.push(current_step);
 			}
 			else {
