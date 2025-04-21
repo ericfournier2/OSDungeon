@@ -30,13 +30,12 @@ void RenderStep::print() const {
 	std::cout << "(" << x_offset << "," << y_offset << ") " << (ground_render ? "Ground" : "Wall") << " " << direction << std::endl;
 }
 
-LabyrinthView::LabyrinthView(Labyrinth& labyrinth_init, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, 
-							 int x_size_init, int y_size_init, int max_depth_init, float camera_distance_init)
-	: labyrinth(labyrinth_init), ground_db(ground_db_init), wall_db(wall_db_init), texture_db(texture_db_init),
-	  window(sf::VideoMode({ 400, 300 }), "Maze 1st person view"), x_size(x_size_init), y_size(y_size_init), 
-	  max_depth(max_depth_init), camera_distance(camera_distance_init)
+LabyrinthView::LabyrinthView(const Labyrinth& labyrinth_init, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, 
+							 sf::RenderTarget& rt_init, int x_size_init, int y_size_init, int max_depth_init, float camera_distance_init)
+	: labyrinth(labyrinth_init), ground_db(ground_db_init), wall_db(wall_db_init), texture_db(texture_db_init), rt(rt_init),
+	  x_size(x_size_init), y_size(y_size_init), max_depth(max_depth_init), camera_distance(camera_distance_init)
 {
-	window.setPosition({ 2000, 400 });
+
 }
 
 float LabyrinthView::depthOffset(float depth, bool x, bool left) const {
@@ -144,7 +143,7 @@ void LabyrinthView::drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf
 	shape.setPoint(3, { p4.x, p4.y });
 	shape.setFillColor(color);
 
-	window.draw(shape);
+	rt.draw(shape);
 
 	if (outline) {
 		std::array line =
@@ -156,7 +155,7 @@ void LabyrinthView::drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf
 			sf::Vertex{sf::Vector2f(p1.x, p1.y), sf::Color::Black}
 		};
 
-		window.draw(line.data(), line.size(), sf::PrimitiveType::LineStrip);
+		rt.draw(line.data(), line.size(), sf::PrimitiveType::LineStrip);
 	}
 }
 
@@ -203,7 +202,7 @@ bool LabyrinthView::renderGround(RenderStep step) {
 		sf::Sprite sprite(*(texture_db.getTexture(entity.getTexture()).texture));
 		sprite.setPosition({ final_x_offset, final_y_offset });
 		sprite.setScale({ 1 / scale_factor, 1 / scale_factor });
-		window.draw(sprite);
+		rt.draw(sprite);
 	}
 
 	return true;
@@ -249,7 +248,6 @@ bool LabyrinthView::renderWall(RenderStep step) {
 }
 
 bool LabyrinthView::render() {
-	window.clear();
 	std::stack<RenderStep> drawStack;
 	render_queue.reset();
 	while (!render_queue.empty()) {
@@ -311,45 +309,5 @@ bool LabyrinthView::render() {
 		}
 	}
 
-	window.display();
 	return true;
-}
-
-void LabyrinthView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) {
-	if (keyPressed->scancode == sf::Keyboard::Scancode::Left) {
-		labyrinth.turnPovRel(LEFT);
-	}
-	else if (keyPressed->scancode == sf::Keyboard::Scancode::Up) {
-		if (labyrinth.advance() == MoveResult::SUCCESS) {
-			footstep.play();
-		} else {
-			thunk.play();
-		}
-	}
-	else if (keyPressed->scancode == sf::Keyboard::Scancode::Right) {
-		labyrinth.turnPovRel(RIGHT);
-	}
-	else if (keyPressed->scancode == sf::Keyboard::Scancode::Down) {
-		if(labyrinth.moveBack() == MoveResult::SUCCESS) {
-			footstep.play();
-		} else {
-			thunk.play();
-		}
-	}
-}
-
-bool LabyrinthView::processEvents()
-{
-	while (const std::optional event = window.pollEvent()) {
-
-		if (event->is<sf::Event::Closed>()) {
-			window.close();
-			return true;
-		}
-		else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-			handleKeyPress(keyPressed);
-		}
-	}
-
-	return false;
 }

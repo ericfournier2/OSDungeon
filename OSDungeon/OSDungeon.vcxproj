@@ -150,6 +150,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="databases.cpp" />
     <ClCompile Include="db_editor.cpp" />
+    <ClCompile Include="runner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="brush.h" />
@@ -166,6 +167,7 @@
     <ClInclude Include="labyrinth_view.h" />
     <ClInclude Include="databases.h" />
     <ClInclude Include="db_editor.h" />
+    <ClInclude Include="runner.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

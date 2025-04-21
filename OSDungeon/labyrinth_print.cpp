@@ -61,7 +61,7 @@ std::string printYLineToString(const Labyrinth& l, unsigned int y) {
 
 std::string printToString(const Labyrinth& l) {
 	std::string retVal;
-	retVal.append(printXLineToString(l.getSizeY()));
+	retVal.append(printXLineToString(l, l.getSizeY()));
 	for (int y = l.getSizeY() - 1; y >= 0; --y) {
 		retVal.append(printYLineToString(l, y));
 		retVal.append(printXLineToString(l, y));

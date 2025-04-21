@@ -2,11 +2,10 @@
 #include <iostream>
 
 #include "labyrinth.h"
-#include "labyrinth_view.h"
 #include "labyrinth_edit_view.h"
 #include "entity.h"
 #include "databases.h"
-#include "db_editor.h"
+#include "runner.h"
 
 void labyrinthTestSymmetric();
 void labyrinthTestAssymmetric();
@@ -40,6 +39,8 @@ int main()
     template_db.addElement({ 1, DOODAD, 105.0f, 83.0f, -52.5f, -60.0f, 5 });
     template_db.addElement({ 2, DOODAD, 100.0f, 300.0f, -50.0f, -250.0f, 6 });
 
+    Databases db(ground_db, wall_db, texture_db, template_db);
+
     Labyrinth test = Labyrinth(20, 20);
     Entity chest1 = Entity({ 1, 1, 5, 5, CardinalDirection::NORTH }, template_db);
     Entity chest2 = Entity({ 2, 1, 7, 5, CardinalDirection::NORTH }, template_db);
@@ -52,15 +53,15 @@ int main()
     test.addEntity(tree2);
 
     //test.loadFromFile("current.labyrinth");
-    LabyrinthView lv = LabyrinthView(test, ground_db, wall_db, texture_db, 400, 300);
+    Runner runner = Runner(test, db);
     LabyrinthEditView lve = LabyrinthEditView(test, ground_db, wall_db, texture_db, template_db);
     bool closed = false;
     while (!closed)
     {
         //std::cout << test.printToString();
         closed = lve.processEvents();
-        closed = lv.processEvents() || closed;
-        lv.render();
+        closed = runner.processEvents() || closed;
+        runner.render();
         lve.render();
         //std::cout << "Done with frame.";
     }

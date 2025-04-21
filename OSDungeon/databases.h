@@ -161,3 +161,10 @@ private:
 	std::shared_ptr<sf::Texture> empty_texture = std::make_shared<sf::Texture>();
 	TextureInfo empty_info;
 };
+
+struct Databases {
+	GroundDb& gdb;
+	WallDb& wdb;
+	TextureDb& tdb;
+	EntityTemplateDb& edb;
+};
