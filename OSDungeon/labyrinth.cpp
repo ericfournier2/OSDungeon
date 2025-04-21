@@ -268,6 +268,13 @@ GroundTypeId Labyrinth::getGroundAbs(int x, int y) const
 	return ground[y * x_size + x];
 }
 
+ShallowEntityVec Labyrinth::getEntityRel(int x, int y) const {
+	int abs_x_offset = getAbsXFromPovX(x, y);
+	int abs_y_offset = getAbsYFromPovY(x, y);
+
+	return entities.getEntityAbs(abs_x_offset, abs_y_offset);
+}
+
 bool Labyrinth::canMove(int from_x, int from_y, CardinalDirection d) const
 {
 	switch (d) {
@@ -365,6 +372,7 @@ bool Labyrinth::writeToFile(const std::string& filename) const {
 		stream.write(reinterpret_cast<const char*>(&y_size), sizeof(y_size));
 		stream.write(reinterpret_cast<const char*>(walls.data()), walls.size() * sizeof(WallTypeId));
 		stream.write(reinterpret_cast<const char*>(ground.data()), ground.size() * sizeof(GroundTypeId));
+		entities.writeToStream(stream);
 	}
 
 	return !stream.fail();
@@ -387,6 +395,7 @@ bool Labyrinth::loadFromFile(const std::string& filename) {
 
 				stream.read(reinterpret_cast<char*>(walls_read.data()), walls_read.size() * sizeof(WallTypeId));
 				stream.read(reinterpret_cast<char*>(ground_read.data()), ground_read.size() * sizeof(GroundTypeId));
+				entities.readFromStream(stream);
 
 				if (!stream.fail()) {
 					x_size = x_size_read;
@@ -403,61 +412,4 @@ bool Labyrinth::loadFromFile(const std::string& filename) {
 	}
 
 	return false;
-}
-
-EntityId Labyrinth::addEntity(Entity entity)
-{
-	entities.emplace(entity.getId(), entity);
-	return entity.getId();
-}
-
-void Labyrinth::removeEntity(EntityId id)
-{
-	entities.erase(id);
-}
-
-EntityId Labyrinth::addEntityFromTemplate(EntityTemplateId template_id, int x, int y, CardinalDirection d, const EntityTemplateDb& template_db) {
-	// Get first free ID
-	EntityId id = 1;
-	while (entities.contains(id)) {
-		++id;
-	}
-
-	// Build the EntityInfo object.
-	EntityInfo info;
-	info.id = id;
-	info.template_id = template_id;
-	info.x = x;
-	info.y = y;
-	info.direction = d;
-	
-	// Add it to the map and return the new id.
-	entities.emplace(id, Entity(info, template_db));
-	return id;
-}
-
-Entity Labyrinth::getEntity(EntityId id, const EntityTemplateDb& template_db) const {
-	if (entities.contains(id)) {
-		return entities.at(id);
-	} else {
-		return Entity(EntityInfo(), template_db);
-	}
-}
-
-EntityVec Labyrinth::getEntityAbs(int x, int y) const {
-	EntityVec retval;
-	for (auto const& [key, val] : entities) {
-		if (val.getX() == x && val.getY() == y) {
-			retval.push_back(val);
-		}
-	}
-	
-	return retval;
-}
-
-EntityVec Labyrinth::getEntityRel(int x, int y) const {
-	int abs_x_offset = getAbsXFromPovX(x, y);
-	int abs_y_offset = getAbsYFromPovY(x, y);
-
-	return getEntityAbs(abs_x_offset, abs_y_offset);
 }

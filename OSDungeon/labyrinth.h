@@ -9,8 +9,6 @@
 
 typedef std::vector<WallTypeId> WallVec;
 typedef std::vector<GroundTypeId> GroundVec;
-typedef std::vector<Entity> EntityVec;
-typedef std::map<EntityId, Entity> EntityMap;
 typedef std::vector<CardinalDirection> Path;
 
 const unsigned int MAX_SIZE = 100;
@@ -55,20 +53,22 @@ public:
 
 	bool writeToFile(const std::string& filename) const;
 	bool loadFromFile(const std::string& filename);
-
+	/*
 	EntityId addEntity(Entity entity);
 	void removeEntity(EntityId id);
 	EntityId addEntityFromTemplate(EntityTemplateId template_id, int x, int y, CardinalDirection d, const EntityTemplateDb& template_db);
 	Entity getEntity(EntityId id, const EntityTemplateDb& template_db) const;
 	EntityVec getEntityAbs(int x, int y) const;
-	EntityVec getEntityRel(int x, int y) const;
+	
 	const EntityMap& getAllEntities() const { return entities; }
+	*/
 
 
+	ShallowEntityManager& getEntityManager() { return entities; }
+	const ShallowEntityManager& getEntityManager() const { return entities; }
+	ShallowEntityVec getEntityRel(int x, int y) const;
 
 	std::optional<Path> findPath(int from_x, int from_y, int to_x, int to_y) const;
-
-	std::string printToString() const;
 private:
 	static int vectorSizeFromGridSize(int x_size, int y_size);
 
@@ -78,10 +78,6 @@ private:
 
 	bool setWall(int x, int y, WallOrientation d, WallTypeId id);
 
-	std::string printXLineToString(unsigned int y) const;
-	std::string printGroundTileToString(unsigned int x, unsigned int y) const;
-	std::string printYLineToString(unsigned int y) const;
-
 	int x_size = 0;
 	int y_size = 0;
 	WallVec walls = {};
@@ -90,5 +86,5 @@ private:
 	int pov_y = 0;
 	CardinalDirection pov_direction = CardinalDirection::NORTH;
 
-	EntityMap entities;
+	ShallowEntityManager entities;
 };

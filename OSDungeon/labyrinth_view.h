@@ -44,7 +44,7 @@ private:
 
 class LabyrinthView {
 public:
-	LabyrinthView(const Labyrinth& labyrinth, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, 
+	LabyrinthView(const Labyrinth& labyrinth, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, EntityTemplateDb& template_db_init,
 				  sf::RenderTarget& rt, int x_size=400, int y_size=300, int max_depth=5, float camera_distance=0.7f);
 	bool render();
 private:
@@ -66,6 +66,6 @@ private:
 	GroundDb& ground_db;
 	WallDb& wall_db;
 	TextureDb& texture_db;
-
+	const EntityTemplateDb& template_db;
 
 };

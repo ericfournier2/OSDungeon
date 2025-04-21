@@ -67,7 +67,7 @@ void LabyrinthTopView::drawBrush(sf::RenderTarget& render_target, float mouse_x,
 		}
 
 		for (auto const& [key, val] : preview.entities) {
-			EntityInfo info;
+			ShallowEntity info;
 			info.id = 2000000;
 			info.x = key.x;
 			info.y = key.y;
@@ -90,9 +90,9 @@ void LabyrinthTopView::drawGroundEntity(sf::RenderTarget& render_target, const E
 
 
 void LabyrinthTopView::drawGroundEntities(sf::RenderTarget& render_target) const {
-	const EntityMap& entities = labyrinth.getAllEntities();
+	const ShallowEntityMap& entities = labyrinth.getEntityManager().getAllEntities();
 	for (auto const& [id, entity] : entities) {
-		drawGroundEntity(render_target, entity);
+		drawGroundEntity(render_target, Entity(entity, template_db));
 	}
 }
 

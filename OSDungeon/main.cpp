@@ -42,15 +42,15 @@ int main()
     Databases db(ground_db, wall_db, texture_db, template_db);
 
     Labyrinth test = Labyrinth(20, 20);
-    Entity chest1 = Entity({ 1, 1, 5, 5, CardinalDirection::NORTH }, template_db);
-    Entity chest2 = Entity({ 2, 1, 7, 5, CardinalDirection::NORTH }, template_db);
-    Entity tree1 = Entity({ 3, 2, 5, 7, CardinalDirection::NORTH }, template_db);
-    Entity tree2 = Entity({ 4, 2, 7, 7, CardinalDirection::NORTH }, template_db);
+    ShallowEntity chest1 = ShallowEntity( 1, 1, 5, 5, CardinalDirection::NORTH);
+    ShallowEntity chest2 = ShallowEntity( 2, 1, 7, 5, CardinalDirection::NORTH);
+    ShallowEntity tree1 = ShallowEntity( 3, 2, 5, 7, CardinalDirection::NORTH);
+    ShallowEntity tree2 = ShallowEntity( 4, 2, 7, 7, CardinalDirection::NORTH);
 
-    test.addEntity(chest1);
-    test.addEntity(chest2);
-    test.addEntity(tree1);
-    test.addEntity(tree2);
+    test.getEntityManager().addEntity(chest1);
+    test.getEntityManager().addEntity(chest2);
+    test.getEntityManager().addEntity(tree1);
+    test.getEntityManager().addEntity(tree2);
 
     //test.loadFromFile("current.labyrinth");
     Runner runner = Runner(test, db);

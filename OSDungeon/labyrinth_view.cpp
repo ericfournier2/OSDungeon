@@ -30,9 +30,9 @@ void RenderStep::print() const {
 	std::cout << "(" << x_offset << "," << y_offset << ") " << (ground_render ? "Ground" : "Wall") << " " << direction << std::endl;
 }
 
-LabyrinthView::LabyrinthView(const Labyrinth& labyrinth_init, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, 
+LabyrinthView::LabyrinthView(const Labyrinth& labyrinth_init, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, EntityTemplateDb& template_db_init,
 							 sf::RenderTarget& rt_init, int x_size_init, int y_size_init, int max_depth_init, float camera_distance_init)
-	: labyrinth(labyrinth_init), ground_db(ground_db_init), wall_db(wall_db_init), texture_db(texture_db_init), rt(rt_init),
+	: labyrinth(labyrinth_init), ground_db(ground_db_init), wall_db(wall_db_init), texture_db(texture_db_init), template_db(template_db_init), rt(rt_init),
 	  x_size(x_size_init), y_size(y_size_init), max_depth(max_depth_init), camera_distance(camera_distance_init)
 {
 
@@ -189,8 +189,9 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	//drawPrimitive(ground1, ground2, ground3, ground4, sf::Color(127, 51, 0), &ground_texture, GROUND_TEXTURE, true);
 	drawPrimitive(ground1, ground2, ground3, ground4, ground_info.ground_color, texture_info.texture.get(), GROUND_TEXTURE, true);
 
-	EntityVec entities = labyrinth.getEntityRel(step.x_offset, step.y_offset);
-	for (const auto& entity : entities) {
+	ShallowEntityVec entities = labyrinth.getEntityRel(step.x_offset, step.y_offset);
+	for (const auto& shallow_entity : entities) {
+		Entity entity(shallow_entity, template_db);
 		float scale_factor = static_cast<float>(pow(2, step.y_offset));
 		float final_x_size = entity.getXSize() / scale_factor;
 		float final_y_size = entity.getYSize() / scale_factor;

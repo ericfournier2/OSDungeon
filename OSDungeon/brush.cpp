@@ -41,13 +41,13 @@ void Brush::applyPreview(Labyrinth& labyrinth, const BrushPreview& brush_preview
 
 	for (auto const& [key, val] : brush_preview.entities) {
 		if (val == 0) {
-			EntityVec entities = labyrinth.getEntityAbs(key.x, key.y);
+			ShallowEntityVec entities = labyrinth.getEntityManager().getEntityAbs(key.x, key.y);
 			for (auto const& entity : entities) {
-				labyrinth.removeEntity(entity.getId());
+				labyrinth.getEntityManager().removeEntity(entity.id);
 			}
 		} else {
 			//labyrinth.addWall(key.x, key.y, key.o, val);
-			labyrinth.addEntityFromTemplate(val, key.x, key.y, CardinalDirection::NORTH, template_db);
+			labyrinth.getEntityManager().addEntity(val, key.x, key.y, CardinalDirection::NORTH);
 		}
 	}
 }

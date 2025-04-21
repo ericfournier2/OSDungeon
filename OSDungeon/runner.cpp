@@ -2,7 +2,7 @@
 
 Runner::Runner(Labyrinth& labyrinth_init, const Databases& db_init) 
 	: labyrinth(labyrinth_init), db(db_init), window(sf::VideoMode({ 400, 300 }), "Maze 1st person view"),
-	  lv(labyrinth, db.gdb, db.wdb, db.tdb, window)
+	  lv(labyrinth, db.gdb, db.wdb, db.tdb, db.edb, window)
 {
 	window.setPosition({ 2000, 400 });
 }

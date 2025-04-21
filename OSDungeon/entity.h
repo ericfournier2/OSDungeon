@@ -2,21 +2,17 @@
 #include <SFML/Graphics.hpp>
 #include "common.h"
 #include "databases.h"
+#include "shallow_entities.h"
+
 
 class Labyrinth;
 
-typedef int EntityId;
-struct EntityInfo {
-	EntityId id;
-	EntityTemplateId template_id;
-	int x = 0;
-	int y = 0;
-	CardinalDirection direction = CardinalDirection::NORTH;
-};
 
 class Entity {
 public:
-	Entity(const EntityInfo& info, const EntityTemplateDb& template_db);
+	Entity(const ShallowEntity& info, const EntityTemplateDb& template_db);
+	operator ShallowEntity() const { return info; }
+	ShallowEntity getShallowEntity() const { return info; }
 	EntityId getId() const { return info.id; }
 	EntityTemplateId getTemplateId() const { return info.template_id; }
 	int getX() const { return info.x; }
@@ -29,7 +25,24 @@ public:
 	TextureId getTexture() const { return getTemplate().texture; }
 protected:
 	EntityTemplateInfo getTemplate() const { return template_db.getElement(info.template_id); }
-	EntityInfo info;
-	Labyrinth* labyrinth = nullptr;
+	ShallowEntity info;
+	//Labyrinth* labyrinth = nullptr;
 	const EntityTemplateDb& template_db;
 };
+
+// Manages a set of entities inside a labyrinth.
+/*class EntityManager {
+public:
+	EntityId addEntity(EntityInfo entity);
+	void removeEntity(EntityId id);
+	EntityId addEntityFromTemplate(EntityTemplateId template_id, int x, int y, CardinalDirection d, const EntityTemplateDb& template_db);
+	Entity getEntity(EntityId id, const EntityTemplateDb& template_db) const;
+	EntityVec getEntityAbs(int x, int y) const;
+	EntityVec getEntityRel(int x, int y) const;
+	const EntityMap& getAllEntities() const { return entities; }
+
+private:
+	const Labyrinth& labyrinth;
+	EntityMap entities;
+
+};*/
