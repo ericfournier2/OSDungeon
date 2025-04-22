@@ -21,6 +21,7 @@ public:
 	float getYOffset() const { return getTemplate().y_offset; }
 	float getXSize() const { return getTemplate().x_size;; }
 	float getYSize() const { return getTemplate().y_size; }
+	EntityBehaviourType getBehaviourType() const { return getTemplate().behaviour; }
 	//void setLabyrinth(Labyrinth* labyrinth_init) { labyrinth = labyrinth_init; }
 	TextureId getTexture() const { return getTemplate().texture; }
 protected:

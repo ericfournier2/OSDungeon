@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include "runner.h"
 
 Runner::Runner(const Labyrinth& labyrinth_init, const Databases& db_init) 
@@ -19,6 +20,7 @@ void Runner::handleKeyPress(const sf::Event::KeyPressed* keyPressed) {
 	} else if (keyPressed->scancode == sf::Keyboard::Scancode::Up) {
 		if (pov.advance() == MoveResult::SUCCESS) {
 			footstep.play();
+			tick();
 		} else {
 			thunk.play();
 		}
@@ -27,9 +29,12 @@ void Runner::handleKeyPress(const sf::Event::KeyPressed* keyPressed) {
 	} else if (keyPressed->scancode == sf::Keyboard::Scancode::Down) {
 		if (pov.moveBack() == MoveResult::SUCCESS) {
 			footstep.play();
+			tick();
 		} else {
 			thunk.play();
 		}
+	} else if (keyPressed->scancode == sf::Keyboard::Scancode::Space) {
+		tick();
 	}
 }
 
@@ -46,4 +51,35 @@ bool Runner::processEvents()
 	}
 
 	return false;
+}
+
+void Runner::tick()
+{
+	const ShallowEntityMap& entities_map = entities.getAllEntities();
+	for (auto & [id, entity] : entities_map) {
+		Entity ent(entity, db.edb);
+		if (ent.getBehaviourType() == EntityBehaviourType::WANDERING) {
+			// Pick a random direction
+			CardinalDirection d = static_cast<CardinalDirection>(static_cast<int>(rand() % 4));
+			if (labyrinth.canMove(ent.getX(), ent.getY(), d)) {
+				ShallowEntity new_entity = entity;
+				switch (d) {
+				case NORTH:
+					new_entity.y += 1;
+					break;
+				case SOUTH:
+					new_entity.y -= 1;
+					break;
+				case EAST:
+					new_entity.x += 1;
+					break;
+				case WEST:
+					new_entity.x -= 1;
+					break;
+				}
+
+				entities.updateEntity(new_entity);
+			}
+		}
+	}
 }

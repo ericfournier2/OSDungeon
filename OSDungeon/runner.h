@@ -12,6 +12,8 @@ public:
 	void handleKeyPress(const sf::Event::KeyPressed* keyPressed);
 	bool processEvents();
 private:
+	void tick();
+
 	Labyrinth labyrinth;
 	ShallowEntityManager entities;
 	LabyrinthPOV pov;
