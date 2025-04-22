@@ -4,8 +4,8 @@
 #include "labyrinth_top_view.h"
 
 
-LabyrinthTopView::LabyrinthTopView(const Labyrinth& labyrinth_init, const Brush& brush_init, const Databases& db_init)
-	: labyrinth(labyrinth_init), brush(brush_init), db(db_init)
+LabyrinthTopView::LabyrinthTopView(const Labyrinth& labyrinth_init, const ShallowEntityManager& entities_init, const Databases& db_init, const Brush* brush_init)
+	: labyrinth(labyrinth_init), entities(entities_init), brush(brush_init), db(db_init)
 {
 }
 
@@ -53,10 +53,13 @@ void LabyrinthTopView::drawGround(sf::RenderTarget& render_target) const {
 }
 
 void LabyrinthTopView::drawBrush(sf::RenderTarget& render_target, float mouse_x, float mouse_y) const {
+	if (!brush) {
+		return;
+	}
 	CoordF map_coord = getMapCoord(mouse_x, mouse_y);
 
 	if (map_coord.x > 0 && map_coord.y > 0 && map_coord.x < labyrinth.getSizeX() && map_coord.y < labyrinth.getSizeY()) {
-		BrushPreview preview = brush.preview(labyrinth, map_coord.x, map_coord.y);
+		BrushPreview preview = brush->preview(labyrinth, map_coord.x, map_coord.y);
 		for (auto const& [key, val] : preview.grounds) {
 			sf::RectangleShape ground_cursor_rect = groundRectangle(key.x, key.y, val);
 			render_target.draw(ground_cursor_rect);
@@ -90,8 +93,8 @@ void LabyrinthTopView::drawGroundEntity(sf::RenderTarget& render_target, const E
 
 
 void LabyrinthTopView::drawGroundEntities(sf::RenderTarget& render_target) const {
-	const ShallowEntityMap& entities = labyrinth.getEntityManager().getAllEntities();
-	for (auto const& [id, entity] : entities) {
+	const ShallowEntityMap& entities_map = entities.getAllEntities();
+	for (auto const& [id, entity] : entities_map) {
 		drawGroundEntity(render_target, Entity(entity, db.edb));
 	}
 }

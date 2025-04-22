@@ -1,7 +1,12 @@
 #include "labyrinth_pov.h"
 
 LabyrinthPOV::LabyrinthPOV(const Labyrinth& labyrinth_, int x_, int y_, CardinalDirection d_)
-	: labyrinth(labyrinth_), x(x_), y(y_), d(d_)
+	: labyrinth(labyrinth_), entities(labyrinth.getEntityManager()), x(x_), y(y_), d(d_)
+{
+}
+
+LabyrinthPOV::LabyrinthPOV(const Labyrinth& labyrinth_, const ShallowEntityManager& entities_)
+	: labyrinth(labyrinth_), entities(entities_)
 {
 }
 
@@ -72,7 +77,7 @@ WallTypeId LabyrinthPOV::getWall(int x_offset, int y_offset, RelativeDirection d
 ShallowEntityVec LabyrinthPOV::getEntities(int x, int y) const {
 	Coord t_coord = transformCoord(Coord(x, y));
 
-	return labyrinth.getEntityManager().getEntityAbs(t_coord.x, t_coord.y);
+	return entities.getEntityAbs(t_coord.x, t_coord.y);
 }
 
 bool LabyrinthPOV::canMove(RelativeDirection d) const

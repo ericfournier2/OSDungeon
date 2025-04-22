@@ -10,7 +10,7 @@ LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, Databases& db_in
 	  db(db_init), 
 	  brush(db.edb),
 	  brush_editor(brush, db),
-	  top_view(labyrinth, brush, db),
+	  top_view(labyrinth, labyrinth.getEntityManager(), db, &brush),
 	  db_editor(db)
 {
 	ImGui::SFML::Init(window);
@@ -35,6 +35,9 @@ void LabyrinthEditView::render() {
 	top_view.render(window, mouse_x, mouse_y);
 	drawWallBrushInfo();
 	db_editor.render();
+	if (runner) {
+		runner->render();
+	}
 	ImGui::SFML::Render(window);
 	window.display();
 }
@@ -66,6 +69,10 @@ void LabyrinthEditView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) 
 		db.wdb.readFromFile("assets/saves/wall.db");
 		db.tdb.readFromFile("assets/saves/texture.db");
 		db.edb.readFromFile("assets/saves/entities.db");
+	} else if (keyPressed->scancode == sf::Keyboard::Scancode::R) {
+		if (!runner) {
+			runner = std::make_shared<Runner>(labyrinth, db);
+		}
 	}
 }
 
@@ -122,6 +129,12 @@ bool LabyrinthEditView::processEvents()
 			if (painting_ground) {
 				applyBrush();
 			}
+		}
+	}
+
+	if (runner) {
+		if (runner->processEvents()) {
+			runner = nullptr;
 		}
 	}
 

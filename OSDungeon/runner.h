@@ -13,6 +13,7 @@ public:
 	bool processEvents();
 private:
 	Labyrinth& labyrinth;
+	ShallowEntityManager entities;
 	LabyrinthPOV pov;
 	const Databases& db;
 	sf::RenderWindow window;

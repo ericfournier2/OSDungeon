@@ -3,12 +3,13 @@
 #include "common.h"
 #include "databases.h"
 #include "brush.h"
+#include "shallow_entities.h"
 
 #pragma once
 class LabyrinthTopView
 {
 public:
-	LabyrinthTopView(const Labyrinth& labyrinth, const Brush& brush, const Databases& db);
+	LabyrinthTopView(const Labyrinth& labyrinth, const ShallowEntityManager& entities,  const Databases& db, const Brush* brush = 0 );
 	~LabyrinthTopView();
 
 	CoordF getMapCoord(float screen_x, float screen_y) const;
@@ -29,7 +30,8 @@ private:
 	void drawPOV(sf::RenderTarget& render_target) const;
 
 	const Labyrinth& labyrinth;
-	const Brush& brush;
+	const ShallowEntityManager& entities;
+	const Brush* brush;
 	const Databases& db;
 	float grid_spacing = 20.0f;
 	float grid_origin_x = 10.0f;

@@ -53,15 +53,15 @@ int main()
     test.getEntityManager().addEntity(tree2);
 
     //test.loadFromFile("current.labyrinth");
-    Runner runner = Runner(test, db);
+    //Runner runner = Runner(test, db);
     LabyrinthEditView lve = LabyrinthEditView(test, db);
     bool closed = false;
     while (!closed)
     {
         //std::cout << test.printToString();
         closed = lve.processEvents();
-        closed = runner.processEvents() || closed;
-        runner.render();
+        //closed = runner.processEvents() || closed;
+        //runner.render();
         lve.render();
         //std::cout << "Done with frame.";
     }

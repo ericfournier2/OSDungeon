@@ -1,3 +1,4 @@
+#include <memory>
 #include <SFML/Graphics.hpp>
 #include "labyrinth.h"
 #include "common.h"
@@ -6,6 +7,7 @@
 #include "brush_editor.h"
 #include "labyrinth_top_view.h"
 #include "db_editor.h"
+#include "runner.h"
 
 #pragma once
 class LabyrinthEditView
@@ -37,5 +39,6 @@ private:
 	BrushEditor brush_editor;
 	LabyrinthTopView top_view;
 	DatabaseEditor db_editor;
+	std::shared_ptr<Runner> runner;
 };
 
