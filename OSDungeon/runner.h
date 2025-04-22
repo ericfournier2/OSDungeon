@@ -6,13 +6,13 @@
 
 class Runner {
 public:
-	Runner(Labyrinth& labyrinth, const Databases& db);
+	Runner(const Labyrinth& labyrinth, const Databases& db);
 
 	void render();
 	void handleKeyPress(const sf::Event::KeyPressed* keyPressed);
 	bool processEvents();
 private:
-	Labyrinth& labyrinth;
+	Labyrinth labyrinth;
 	ShallowEntityManager entities;
 	LabyrinthPOV pov;
 	const Databases& db;

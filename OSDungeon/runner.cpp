@@ -1,6 +1,6 @@
 #include "runner.h"
 
-Runner::Runner(Labyrinth& labyrinth_init, const Databases& db_init) 
+Runner::Runner(const Labyrinth& labyrinth_init, const Databases& db_init) 
 	: labyrinth(labyrinth_init), entities(labyrinth.getEntityManager()), pov(labyrinth, entities), db(db_init), window(sf::VideoMode({ 400, 300 }), "Maze 1st person view"),
 	  lv(pov, db.gdb, db.wdb, db.tdb, db.edb, window)
 {
