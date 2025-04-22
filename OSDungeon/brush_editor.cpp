@@ -2,8 +2,8 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
 
-BrushEditor::BrushEditor(Brush& brush_init, const GroundDb& ground, const WallDb& wall, const TextureDb& texture, const EntityTemplateDb& template_db_init)
-	: brush(brush_init), ground_db(ground), wall_db(wall), texture_db(texture), template_db(template_db_init)
+BrushEditor::BrushEditor(Brush& brush_init, const Databases& db_init)
+	: brush(brush_init), db(db_init)
 {
 }
 
@@ -86,19 +86,19 @@ void BrushEditor::render() {
 
 	ImGui::SeparatorText("Wall");
 	WallTypeId wall_id = brush.getWallId();
-	if (brushPopUp<WallDb>("Wall brush", &wall_id, wall_db, texture_db)) {
+	if (brushPopUp<WallDb>("Wall brush", &wall_id, db.wdb, db.tdb)) {
 		brush.setWallId(wall_id);
 	}
 
 	ImGui::SeparatorText("Ground");
 	GroundTypeId ground_id = brush.getGroundId();
-	if (brushPopUp<GroundDb>("Ground brush", &ground_id, ground_db, texture_db)) {
+	if (brushPopUp<GroundDb>("Ground brush", &ground_id, db.gdb, db.tdb)) {
 		brush.setGroundId(ground_id);
 	}
 
 	ImGui::SeparatorText("Entity");
 	EntityTemplateId entity_id = brush.getEntityId();
-	if (brushPopUp<EntityTemplateDb>("Entity brush", &entity_id, template_db, texture_db)) {
+	if (brushPopUp<EntityTemplateDb>("Entity brush", &entity_id, db.edb, db.tdb)) {
 		brush.setEntityId(entity_id);
 	}
 	ImGui::End();

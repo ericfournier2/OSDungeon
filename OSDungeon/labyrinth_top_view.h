@@ -8,7 +8,7 @@
 class LabyrinthTopView
 {
 public:
-	LabyrinthTopView(const Labyrinth& labyrinth, const Brush& brush, const GroundDb& ground_db, const WallDb& wall_db, const TextureDb& texture_db, const EntityTemplateDb& template_db);
+	LabyrinthTopView(const Labyrinth& labyrinth, const Brush& brush, const Databases& db);
 	~LabyrinthTopView();
 
 	CoordF getMapCoord(float screen_x, float screen_y) const;
@@ -30,10 +30,7 @@ private:
 
 	const Labyrinth& labyrinth;
 	const Brush& brush;
-	const GroundDb& ground_db;
-	const WallDb& wall_db;
-	const TextureDb& texture_db;
-	const EntityTemplateDb& template_db;
+	const Databases& db;
 	float grid_spacing = 20.0f;
 	float grid_origin_x = 10.0f;
 	float grid_origin_y = 10.0f;

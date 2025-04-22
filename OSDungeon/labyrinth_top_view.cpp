@@ -4,8 +4,8 @@
 #include "labyrinth_top_view.h"
 
 
-LabyrinthTopView::LabyrinthTopView(const Labyrinth& labyrinth_init, const Brush& brush_init, const GroundDb& ground_db_init, const WallDb& wall_db_init, const TextureDb& texture_db_init, const EntityTemplateDb& template_db_init)
-	: labyrinth(labyrinth_init), brush(brush_init), ground_db(ground_db_init), wall_db(wall_db_init), texture_db(texture_db_init), template_db(template_db_init)
+LabyrinthTopView::LabyrinthTopView(const Labyrinth& labyrinth_init, const Brush& brush_init, const Databases& db_init)
+	: labyrinth(labyrinth_init), brush(brush_init), db(db_init)
 {
 }
 
@@ -17,7 +17,7 @@ sf::Color LabyrinthTopView::groundDrawColor(GroundTypeId id) const {
 	if (id == 0) {
 		return sf::Color::Black;
 	} else {
-		return ground_db.getElement(id).ground_color;
+		return db.gdb.getElement(id).ground_color;
 	}
 }
 
@@ -74,14 +74,14 @@ void LabyrinthTopView::drawBrush(sf::RenderTarget& render_target, float mouse_x,
 			info.direction = CardinalDirection::NORTH;
 			info.template_id = val;
 
-			drawGroundEntity(render_target, Entity(info, template_db));
+			drawGroundEntity(render_target, Entity(info, db.edb));
 		}
 	}
 }
 
 void LabyrinthTopView::drawGroundEntity(sf::RenderTarget& render_target, const Entity& entity) const {
 	CoordF rect_size = getGroundScreenSize();
-	sf::Sprite entity_sprite(*texture_db.getTexture(entity.getTexture()).texture);
+	sf::Sprite entity_sprite(*db.tdb.getTexture(entity.getTexture()).texture);
 	entity_sprite.setPosition(getGroundScreenPositionFromMapPosition(entity.getX(), entity.getY()));
 	float scale_factor = grid_spacing / std::max(entity.getXSize(), entity.getYSize());
 	entity_sprite.setScale({ scale_factor, scale_factor });
@@ -92,7 +92,7 @@ void LabyrinthTopView::drawGroundEntity(sf::RenderTarget& render_target, const E
 void LabyrinthTopView::drawGroundEntities(sf::RenderTarget& render_target) const {
 	const ShallowEntityMap& entities = labyrinth.getEntityManager().getAllEntities();
 	for (auto const& [id, entity] : entities) {
-		drawGroundEntity(render_target, Entity(entity, template_db));
+		drawGroundEntity(render_target, Entity(entity, db.edb));
 	}
 }
 
@@ -121,7 +121,7 @@ void LabyrinthTopView::drawWall(sf::RenderTarget& render_target, int x, int y, W
 	float pos_x = grid_origin_x + grid_spacing * x;
 	float pos_y = grid_origin_y + grid_spacing * labyrinth.getSizeY() - grid_spacing * y;
 
-	sf::Color color = id == 0 ? sf::Color::Black : wall_db.getElement(id).color;
+	sf::Color color = id == 0 ? sf::Color::Black : db.wdb.getElement(id).color;
 
 	if (o == WallOrientation::HORIZONTAL) {
 		vertex_array.append(sf::Vertex({ pos_x , pos_y }, color));
@@ -147,13 +147,13 @@ void LabyrinthTopView::drawWalls(sf::RenderTarget& render_target) const {
 			float pos_y = grid_origin_y + grid_spacing * labyrinth.getSizeY() - grid_spacing * y;
 
 			if (h_wall) {
-				sf::Color color = wall_db.getElement(h_wall).color;
+				sf::Color color = db.wdb.getElement(h_wall).color;
 				vertex_array.append(sf::Vertex({ pos_x , pos_y }, color));
 				vertex_array.append(sf::Vertex({ pos_x + grid_spacing, pos_y }, color));
 			}
 
 			if (v_wall) {
-				sf::Color color = wall_db.getElement(v_wall).color;
+				sf::Color color = db.wdb.getElement(v_wall).color;
 				vertex_array.append(sf::Vertex({ pos_x, pos_y }, color));
 				vertex_array.append(sf::Vertex({ pos_x, pos_y - grid_spacing }, color));
 			}

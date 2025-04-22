@@ -2,8 +2,8 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
 
-DatabaseEditor::DatabaseEditor(GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, EntityTemplateDb& template_db_init)
- : wall_db(wall_db_init), ground_db(ground_db_init), texture_db(texture_db_init), template_db(template_db_init) 
+DatabaseEditor::DatabaseEditor(Databases& db_init)
+ : db(db_init) 
 {
 }
 
@@ -37,7 +37,7 @@ bool DatabaseEditor::selectTextureButton(TextureId* texture_id, int object_id, s
 	popup_label.append(std::to_string(object_id));
 	popup_label.append(extra_label);
 
-	TextureInfo info = texture_db.getTexture(*texture_id);
+	TextureInfo info = db.tdb.getTexture(*texture_id);
 	sf::Vector2f tex_size = { 100.0f, 100.0f };
 	
 	if (ImGui::ImageButton(texture_label.c_str(), *(info.texture.get()), tex_size)) {
@@ -45,9 +45,9 @@ bool DatabaseEditor::selectTextureButton(TextureId* texture_id, int object_id, s
 	}
 
 	if (ImGui::BeginPopup(popup_label.c_str())) {
-		auto all_ids = texture_db.getIds();
+		auto all_ids = db.tdb.getIds();
 		for (int i = 0; i < all_ids.size(); ++i) {
-			std::string selectable_label = texture_db.getTexture(all_ids[i]).texture_filename;
+			std::string selectable_label = db.tdb.getTexture(all_ids[i]).texture_filename;
 			selectable_label.append("##");
 			selectable_label.append(std::to_string(i));
 			if (ImGui::Selectable(selectable_label.c_str())) {
@@ -68,14 +68,14 @@ void DatabaseEditor::renderWallRow(WallTypeId id) {
 	ImGui::Text(id_str.c_str());
 
 	ImGui::TableNextColumn();
-	auto wall_info = wall_db.getElement(id);
+	auto wall_info = db.wdb.getElement(id);
 	if (selectColorButton(&(wall_info.color), id)) {
-		wall_db.updateElement(wall_info);
+		db.wdb.updateElement(wall_info);
 	}
 
 	ImGui::TableNextColumn();
 	if (selectTextureButton(&(wall_info.texture), id)) {
-		wall_db.updateElement(wall_info);
+		db.wdb.updateElement(wall_info);
 	}
 }
 
@@ -85,7 +85,7 @@ void DatabaseEditor::renderWallTable() {
 		ImGui::TableSetupColumn("Color", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableSetupColumn("Texture", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableHeadersRow();
-		auto all_ids = wall_db.getIds();
+		auto all_ids = db.wdb.getIds();
 		for (auto id : all_ids) {
 			renderWallRow(id);
 		}
@@ -100,19 +100,19 @@ void DatabaseEditor::renderGroundRow(GroundTypeId id) {
 	ImGui::Text(id_str.c_str());
 
 	ImGui::TableNextColumn();
-	auto ground_info = ground_db.getElement(id);
+	auto ground_info = db.gdb.getElement(id);
 	if (selectColorButton(&(ground_info.ground_color), id, "ground")) {
-		ground_db.updateElement(ground_info);
+		db.gdb.updateElement(ground_info);
 	}
 
 	ImGui::TableNextColumn();
 	if (selectColorButton(&(ground_info.ceiling_color), id, "ceiling")) {
-		ground_db.updateElement(ground_info);
+		db.gdb.updateElement(ground_info);
 	}
 
 	ImGui::TableNextColumn();
 	if (selectTextureButton(&(ground_info.texture), id)) {
-		ground_db.updateElement(ground_info);
+		db.gdb.updateElement(ground_info);
 	}
 }
 
@@ -123,7 +123,7 @@ void DatabaseEditor::renderGroundTable() {
 		ImGui::TableSetupColumn("Ground", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableSetupColumn("Texture", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableHeadersRow();
-		auto all_ids = ground_db.getIds();
+		auto all_ids = db.gdb.getIds();
 		for (auto id : all_ids) {
 			renderGroundRow(id);
 		}
@@ -153,15 +153,15 @@ void DatabaseEditor::renderEntityRow(EntityTemplateId id) {
 	std::string id_str = std::to_string(id);
 	ImGui::Text(id_str.c_str());
 
-	auto template_info = template_db.getElement(id);
-	floatColumn("##x_size", &template_info.x_size, id, &template_info, template_db);
-	floatColumn("##y_size", &template_info.y_size, id, &template_info, template_db);
-	floatColumn("##x_offset", &template_info.x_offset, id, &template_info, template_db);
-	floatColumn("##y_offset", &template_info.y_offset, id, &template_info, template_db);
+	auto template_info = db.edb.getElement(id);
+	floatColumn("##x_size", &template_info.x_size, id, &template_info, db.edb);
+	floatColumn("##y_size", &template_info.y_size, id, &template_info, db.edb);
+	floatColumn("##x_offset", &template_info.x_offset, id, &template_info, db.edb);
+	floatColumn("##y_offset", &template_info.y_offset, id, &template_info, db.edb);
 
 	ImGui::TableNextColumn();
 	if (selectTextureButton(&(template_info.texture), id)) {
-		template_db.updateElement(template_info);
+		db.edb.updateElement(template_info);
 	}
 }
 
@@ -174,7 +174,7 @@ void DatabaseEditor::renderEntityTable() {
 		ImGui::TableSetupColumn("y offset", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableSetupColumn("Texture", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableHeadersRow();
-		auto all_ids = template_db.getIds();
+		auto all_ids = db.edb.getIds();
 		for (auto id : all_ids) {
 			renderEntityRow(id);
 		}
@@ -189,7 +189,7 @@ void DatabaseEditor::renderTextureRow(TextureId id) {
 	ImGui::Text(id_str.c_str());
 
 	ImGui::TableNextColumn();
-	auto texture_info = texture_db.getTexture(id);
+	auto texture_info = db.tdb.getTexture(id);
 	ImGui::Text(texture_info.texture_filename.c_str());
 
 	ImGui::TableNextColumn();
@@ -198,7 +198,7 @@ void DatabaseEditor::renderTextureRow(TextureId id) {
 
 void DatabaseEditor::renderTextureTable() {
 	if (ImGui::BeginTable("Texture entries", 3, ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_SizingStretchProp)) {
-		auto all_ids = texture_db.getIds();
+		auto all_ids = db.tdb.getIds();
 		for (auto id : all_ids) {
 			renderTextureRow(id);
 		}
@@ -213,14 +213,14 @@ void DatabaseEditor::render() {
 	{
 		if (ImGui::BeginTabItem("Walls")) {
 			if (ImGui::Button("Add")) {
-				wall_db.addElement(WallInfo());
+				db.wdb.addElement(WallInfo());
 			}
 			renderWallTable();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Ground")) {
 			if (ImGui::Button("Add")) {
-				ground_db.addElement(GroundInfo());
+				db.gdb.addElement(GroundInfo());
 			}
 			renderGroundTable();
 			ImGui::EndTabItem();
@@ -234,7 +234,7 @@ void DatabaseEditor::render() {
 		}
 		if (ImGui::BeginTabItem("Entities")) {
 			if (ImGui::Button("Add")) {
-				template_db.addElement(EntityTemplateInfo());
+				db.edb.addElement(EntityTemplateInfo());
 			}
 			renderEntityTable();
 			ImGui::EndTabItem();

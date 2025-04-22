@@ -4,17 +4,14 @@
 #include "labyrinth_edit_view.h"
 
 
-LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, EntityTemplateDb& template_db_init)
+LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, Databases& db_init)
 	: labyrinth(labyrinth_init), 
 	  window(sf::VideoMode({ 1600, 900 }), "Edit maze"),
-	  ground_db(ground_db_init), 
-	  wall_db(wall_db_init), 
-	  texture_db(texture_db_init),
-	  template_db(template_db_init),
-	  brush(template_db_init),
-	  brush_editor(brush, ground_db_init, wall_db_init, texture_db_init, template_db_init),
-	  top_view(labyrinth, brush, ground_db_init, wall_db_init, texture_db_init, template_db_init),
-	  db_editor(ground_db_init, wall_db_init, texture_db_init, template_db_init)
+	  db(db_init), 
+	  brush(db.edb),
+	  brush_editor(brush, db),
+	  top_view(labyrinth, brush, db),
+	  db_editor(db)
 {
 	ImGui::SFML::Init(window);
 	window.setPosition({ 0,0 });
@@ -57,18 +54,18 @@ void LabyrinthEditView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) 
 	}
 	else*/ if (keyPressed->scancode == sf::Keyboard::Scancode::S) {
 		labyrinth.writeToFile("assets/saves/current.labyrinth");
-		ground_db.writeToFile("assets/saves/ground.db");
-		wall_db.writeToFile("assets/saves/wall.db");
-		texture_db.writeToFile("assets/saves/texture.db");
-		template_db.writeToFile("assets/saves/entities.db");
+		db.gdb.writeToFile("assets/saves/ground.db");
+		db.wdb.writeToFile("assets/saves/wall.db");
+		db.tdb.writeToFile("assets/saves/texture.db");
+		db.edb.writeToFile("assets/saves/entities.db");
 
 	}
 	else if (keyPressed->scancode == sf::Keyboard::Scancode::L) {
 		labyrinth.loadFromFile("assets/saves/current.labyrinth");
-		ground_db.readFromFile("assets/saves/ground.db");
-		wall_db.readFromFile("assets/saves/wall.db");
-		texture_db.readFromFile("assets/saves/texture.db");
-		template_db.readFromFile("assets/saves/entities.db");
+		db.gdb.readFromFile("assets/saves/ground.db");
+		db.wdb.readFromFile("assets/saves/wall.db");
+		db.tdb.readFromFile("assets/saves/texture.db");
+		db.edb.readFromFile("assets/saves/entities.db");
 	}
 }
 

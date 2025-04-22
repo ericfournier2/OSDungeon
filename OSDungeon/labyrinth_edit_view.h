@@ -11,7 +11,7 @@
 class LabyrinthEditView
 {
 public:
-	LabyrinthEditView(Labyrinth& labyrinth, GroundDb& ground_db, WallDb& wall_db, TextureDb& texture_db, EntityTemplateDb& template_db);
+	LabyrinthEditView(Labyrinth& labyrinth, Databases& db);
 	~LabyrinthEditView();
 
 	void render();
@@ -31,10 +31,7 @@ private:
 	float mouse_x = 0.0f;
 	float mouse_y = 0.0f;
 	sf::Clock deltaClock;
-	GroundDb& ground_db;
-	WallDb& wall_db;
-	TextureDb& texture_db;
-	EntityTemplateDb& template_db;
+	Databases& db;
 	bool painting_ground = false;
 	Brush brush;
 	BrushEditor brush_editor;

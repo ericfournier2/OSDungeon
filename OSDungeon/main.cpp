@@ -54,7 +54,7 @@ int main()
 
     //test.loadFromFile("current.labyrinth");
     Runner runner = Runner(test, db);
-    LabyrinthEditView lve = LabyrinthEditView(test, ground_db, wall_db, texture_db, template_db);
+    LabyrinthEditView lve = LabyrinthEditView(test, db);
     bool closed = false;
     while (!closed)
     {
