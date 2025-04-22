@@ -3,7 +3,7 @@
 #include <queue>
 #include <SFML/Graphics.hpp>
 
-#include "labyrinth.h"
+#include "labyrinth_pov.h"
 #include "common.h"
 
 struct RenderStep {
@@ -44,7 +44,7 @@ private:
 
 class LabyrinthView {
 public:
-	LabyrinthView(const Labyrinth& labyrinth, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, EntityTemplateDb& template_db_init,
+	LabyrinthView(const LabyrinthPOV& labyrinth, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, EntityTemplateDb& template_db_init,
 				  sf::RenderTarget& rt, int x_size=400, int y_size=300, int max_depth=5, float camera_distance=0.7f);
 	bool render();
 private:
@@ -53,7 +53,7 @@ private:
 	bool renderGround(RenderStep step);
 	bool renderWall(RenderStep step);
 	void drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf::Color color, const sf::Texture* texture, TextureType texture_type, bool outline = false);
-	const Labyrinth& labyrinth;
+	const LabyrinthPOV& labyrinth;
 	sf::RenderTarget& rt;
 
 	int x_size = 400;

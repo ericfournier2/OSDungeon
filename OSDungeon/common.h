@@ -5,6 +5,8 @@ struct Coord {
 	int x;
 	int y;
 
+	Coord(int x_, int y_) : x(x_), y(y_) {}
+
 	bool operator<(const Coord& rs) const {
 		if (x < rs.x) {
 			return true;
@@ -61,12 +63,16 @@ enum RelativeDirection {
 };
 
 struct CardinalCoord {
+	CardinalCoord(int x_, int y_, CardinalDirection d_) : x(x_), y(y_), d(d_) {}
+
 	int x;
 	int y;
 	CardinalDirection d;
 };
 
 struct RelativeCoord {
+	RelativeCoord(int x_, int y_, RelativeDirection d_) : x(x_), y(y_), d(d_) {}
+
 	int x;
 	int y;
 	RelativeDirection d;

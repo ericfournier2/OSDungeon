@@ -30,7 +30,7 @@ void RenderStep::print() const {
 	std::cout << "(" << x_offset << "," << y_offset << ") " << (ground_render ? "Ground" : "Wall") << " " << direction << std::endl;
 }
 
-LabyrinthView::LabyrinthView(const Labyrinth& labyrinth_init, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, EntityTemplateDb& template_db_init,
+LabyrinthView::LabyrinthView(const LabyrinthPOV& labyrinth_init, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, EntityTemplateDb& template_db_init,
 							 sf::RenderTarget& rt_init, int x_size_init, int y_size_init, int max_depth_init, float camera_distance_init)
 	: labyrinth(labyrinth_init), ground_db(ground_db_init), wall_db(wall_db_init), texture_db(texture_db_init), template_db(template_db_init), rt(rt_init),
 	  x_size(x_size_init), y_size(y_size_init), max_depth(max_depth_init), camera_distance(camera_distance_init)
@@ -189,7 +189,7 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	//drawPrimitive(ground1, ground2, ground3, ground4, sf::Color(127, 51, 0), &ground_texture, GROUND_TEXTURE, true);
 	drawPrimitive(ground1, ground2, ground3, ground4, ground_info.ground_color, texture_info.texture.get(), GROUND_TEXTURE, true);
 
-	ShallowEntityVec entities = labyrinth.getEntityRel(step.x_offset, step.y_offset);
+	ShallowEntityVec entities = labyrinth.getEntities(step.x_offset, step.y_offset);
 	for (const auto& shallow_entity : entities) {
 		Entity entity(shallow_entity, template_db);
 		float scale_factor = static_cast<float>(pow(2, step.y_offset));
@@ -256,7 +256,7 @@ bool LabyrinthView::render() {
 		//std::cout << "Queue is processing:";
 		//current_step.print();
 		if (current_step.ground_render) {
-			GroundTypeId ground_id = labyrinth.getGroundRel(current_step.x_offset, current_step.y_offset);
+			GroundTypeId ground_id = labyrinth.getGround(current_step.x_offset, current_step.y_offset);
 			current_step.ground_id = ground_id;
 			// Do actual ground drawing. If we get here, the ground is always shown.
 			drawStack.push(current_step);
@@ -276,7 +276,7 @@ bool LabyrinthView::render() {
 		}
 		else {
 			
-			WallTypeId wall_id = labyrinth.getWallRel(current_step.x_offset, current_step.y_offset, current_step.direction);
+			WallTypeId wall_id = labyrinth.getWall(current_step.x_offset, current_step.y_offset, current_step.direction);
 			current_step.wall_id = wall_id;
 			if (wall_id) {
 				// There's an actual wall, so let's draw it.

@@ -25,6 +25,7 @@ public:
 	Labyrinth(int x_size, int y_size, WallVec initWalls, GroundVec initGround,
 		      int pov_x_init = 0, int pov_y_init = 0, CardinalDirection pov_direction_init = NORTH);
 
+	bool setPov(int x, int y, CardinalDirection direction);
 	int getPovX() const { return pov_x; }
 	int getPovY() const { return pov_y; }
 	CardinalDirection getPovDirection() const { return pov_direction; }
@@ -34,47 +35,23 @@ public:
 
 	GroundTypeId getGroundAbs(int x, int y) const;
 	WallTypeId getWallAbs(int x, int y, WallOrientation d) const;
+	WallTypeId getWallCardinal(int x, int y, CardinalDirection d) const;
 
-	GroundTypeId getGroundRel(int x_offset, int y_offset) const;
-	WallTypeId getWallRel(int x_offset, int y_offset, RelativeDirection direction) const;
-	
 	bool addWall(int x_offset, int y_offset, WallOrientation d, WallTypeId id=0);
 	bool removeWall(int x_offset, int y_offset, WallOrientation d);
 	void setGround(int x, int y, GroundTypeId id = 0);
 
-	bool setPov(int x, int y, CardinalDirection direction);
-	MoveResult movePovRel(int x_offset, int y_offset);
-	void turnPovRel(RelativeDirection direction);
-
-	bool canMove(int from_x, int from_y, CardinalDirection d) const;
-
-	MoveResult advance();
-	MoveResult moveBack();
-
 	bool writeToFile(const std::string& filename) const;
 	bool loadFromFile(const std::string& filename);
-	/*
-	EntityId addEntity(Entity entity);
-	void removeEntity(EntityId id);
-	EntityId addEntityFromTemplate(EntityTemplateId template_id, int x, int y, CardinalDirection d, const EntityTemplateDb& template_db);
-	Entity getEntity(EntityId id, const EntityTemplateDb& template_db) const;
-	EntityVec getEntityAbs(int x, int y) const;
-	
-	const EntityMap& getAllEntities() const { return entities; }
-	*/
-
 
 	ShallowEntityManager& getEntityManager() { return entities; }
 	const ShallowEntityManager& getEntityManager() const { return entities; }
 	ShallowEntityVec getEntityRel(int x, int y) const;
 
+	bool canMove(int from_x, int from_y, CardinalDirection d) const;
 	std::optional<Path> findPath(int from_x, int from_y, int to_x, int to_y) const;
 private:
 	static int vectorSizeFromGridSize(int x_size, int y_size);
-
-	int getAbsXFromPovX(int x_offset, int y_offset) const;
-	int getAbsYFromPovY(int x_offset, int y_offset) const;
-	CardinalDirection getAbsDirectionFromRelativeDirection(RelativeDirection direction) const;
 
 	bool setWall(int x, int y, WallOrientation d, WallTypeId id);
 

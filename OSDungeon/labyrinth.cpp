@@ -4,97 +4,6 @@
 #include <queue>
 #include <set>
 
-int Labyrinth::getAbsXFromPovX(int x_offset, int y_offset) const {
-	int final_offset_x = pov_x;
-
-	switch (pov_direction) {
-	case NORTH:
-		final_offset_x += x_offset;
-		break;
-	case EAST:
-		final_offset_x += y_offset;
-		break;
-	case SOUTH:
-		final_offset_x -= x_offset;
-		break;
-	case WEST:
-		final_offset_x -= y_offset;
-		break;
-	}
-
-	return final_offset_x;
-}
-
-int Labyrinth::getAbsYFromPovY(int x_offset, int y_offset) const {
-	int final_offset_y = pov_y;
-
-	switch (pov_direction) {
-	case NORTH:
-		final_offset_y += y_offset;
-		break;
-	case EAST:
-		final_offset_y -= x_offset;
-		break;
-	case SOUTH:
-		final_offset_y -= y_offset;
-		break;
-	case WEST:
-		final_offset_y += x_offset;
-		break;
-	}
-
-	return final_offset_y;
-}
-
-CardinalDirection Labyrinth::getAbsDirectionFromRelativeDirection(RelativeDirection direction) const {
-	int cardinal_offset = 0;
-
-	switch (direction) {
-	case RIGHT:
-		cardinal_offset = 1;
-		break;
-	case BACK:
-		cardinal_offset = 2;
-		break;
-	case LEFT:
-		cardinal_offset = 3;
-		break;
-	}
-
-	return static_cast<CardinalDirection>((static_cast<int>(pov_direction) + cardinal_offset) % 4);
-}
-
-GroundTypeId Labyrinth::getGroundRel(int x_offset, int y_offset) const
-{
-	return getGroundAbs(getAbsXFromPovX(x_offset, y_offset), getAbsYFromPovY(x_offset, y_offset));
-}
-
-WallTypeId Labyrinth::getWallRel(int x_offset, int y_offset, RelativeDirection direction) const
-{
-	CardinalDirection abs_direction = getAbsDirectionFromRelativeDirection(direction);
-	int abs_x_offset = getAbsXFromPovX(x_offset, y_offset);
-	int abs_y_offset = getAbsYFromPovY(x_offset, y_offset);
-
-	switch (abs_direction) {
-	case NORTH:
-		return getWallAbs(abs_x_offset, abs_y_offset + 1, HORIZONTAL);
-		break;
-	case EAST:
-		return getWallAbs(abs_x_offset + 1, abs_y_offset, VERTICAL);
-		break;
-	case SOUTH:
-		return getWallAbs(abs_x_offset, abs_y_offset, HORIZONTAL);
-		break;
-	case WEST:
-		return getWallAbs(abs_x_offset, abs_y_offset, VERTICAL);
-		break;
-	}
-
-	return WallTypeId();
-}
-
-
-
 bool Labyrinth::setWall(int x, int y, WallOrientation d, WallTypeId id)
 {
 	// Determine if it is out of bound
@@ -126,56 +35,6 @@ bool Labyrinth::removeWall(int x, int y, WallOrientation d)
 void Labyrinth::setGround(int x, int y, GroundTypeId id)
 {
 	ground[y * x_size + x] = id;
-}
-
-MoveResult Labyrinth::movePovRel(int x_offset, int y_offset)
-{
-	int new_pov_x = getAbsXFromPovX(x_offset, y_offset);
-	if (new_pov_x < 0 || new_pov_x >= x_size) {
-		return MoveResult::FAIL_WALL;
-	}
-
-	int new_pov_y = getAbsYFromPovY(x_offset, y_offset);
-	if (new_pov_y < 0 || new_pov_y >= y_size) {
-		return MoveResult::FAIL_WALL;
-	}
-
-	pov_x = new_pov_x;
-	pov_y = new_pov_y;
-	return MoveResult::SUCCESS;
-}
-
-MoveResult Labyrinth::advance() {
-	if (!getWallRel(0, 0, FRONT)) {
-		return movePovRel(0, 1);
-	}
-	else {
-		return MoveResult::FAIL_WALL;
-	}
-}
-
-MoveResult Labyrinth::moveBack() {
-	if (!getWallRel(0, 0, BACK)) {
-		return movePovRel(0, -1);
-	}
-	else {
-		return MoveResult::FAIL_WALL;
-	}
-}
-
-void Labyrinth::turnPovRel(RelativeDirection direction)
-{
-	switch (direction) {
-	case LEFT:
-		pov_direction = (CardinalDirection) (((int) pov_direction + 3) % 4);
-		break;
-	case BACK:
-		pov_direction = (CardinalDirection)(((int)pov_direction + 2) % 4);
-		break;
-	case RIGHT:
-		pov_direction = (CardinalDirection)(((int)pov_direction + 1) % 4);
-		break;
-	}
 }
 
 bool Labyrinth::setPov(int x, int y, CardinalDirection direction)
@@ -259,6 +118,26 @@ WallTypeId Labyrinth::getWallAbs(int x, int y, WallOrientation d) const{
 	}
 }
 
+WallTypeId Labyrinth::getWallCardinal(int x, int y, CardinalDirection d) const {
+	switch (d) {
+	case NORTH:
+		return getWallAbs(x, y + 1, WallOrientation::HORIZONTAL);
+		break;
+	case SOUTH:
+		return getWallAbs(x, y, WallOrientation::HORIZONTAL);
+		break;
+	case EAST:
+		return getWallAbs(x + 1, y, WallOrientation::VERTICAL);
+		break;
+	case WEST:
+		return getWallAbs(x, y, WallOrientation::VERTICAL);
+		break;
+	}
+
+	// Shouldn't ever be reached.
+	return 0;
+}
+
 GroundTypeId Labyrinth::getGroundAbs(int x, int y) const
 {
 	if (x < 0 || y < 0 || x >= (int) x_size || y >= (int) y_size) {
@@ -268,32 +147,9 @@ GroundTypeId Labyrinth::getGroundAbs(int x, int y) const
 	return ground[y * x_size + x];
 }
 
-ShallowEntityVec Labyrinth::getEntityRel(int x, int y) const {
-	int abs_x_offset = getAbsXFromPovX(x, y);
-	int abs_y_offset = getAbsYFromPovY(x, y);
-
-	return entities.getEntityAbs(abs_x_offset, abs_y_offset);
-}
-
 bool Labyrinth::canMove(int from_x, int from_y, CardinalDirection d) const
 {
-	switch (d) {
-	case CardinalDirection::NORTH:
-		return getWallAbs(from_x, from_y + 1, WallOrientation::HORIZONTAL) == 0;
-		break;
-	case CardinalDirection::SOUTH:
-		return getWallAbs(from_x, from_y, WallOrientation::HORIZONTAL) == 0;
-		break;
-	case CardinalDirection::EAST:
-		return getWallAbs(from_x + 1, from_y, WallOrientation::VERTICAL) == 0;
-		break;
-	case CardinalDirection::WEST:
-		return getWallAbs(from_x, from_y, WallOrientation::VERTICAL) == 0;
-		break;
-	}
-	
-	// Shouldn't be reached.
-	return false;
+	return getWallCardinal(from_x, from_y, d) == 0;
 }
 
 struct PathStep {

@@ -43,7 +43,7 @@ void LabyrinthEditView::render() {
 }
 
 void LabyrinthEditView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) {
-	if (keyPressed->scancode == sf::Keyboard::Scancode::Left) {
+	/*if (keyPressed->scancode == sf::Keyboard::Scancode::Left) {
 		labyrinth.turnPovRel(LEFT);
 	}
 	else if (keyPressed->scancode == sf::Keyboard::Scancode::Up) {
@@ -55,11 +55,12 @@ void LabyrinthEditView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) 
 	else if (keyPressed->scancode == sf::Keyboard::Scancode::Down) {
 		labyrinth.moveBack();
 	}
-	else if (keyPressed->scancode == sf::Keyboard::Scancode::S) {
+	else*/ if (keyPressed->scancode == sf::Keyboard::Scancode::S) {
 		labyrinth.writeToFile("assets/saves/current.labyrinth");
 		ground_db.writeToFile("assets/saves/ground.db");
 		wall_db.writeToFile("assets/saves/wall.db");
 		texture_db.writeToFile("assets/saves/texture.db");
+		template_db.writeToFile("assets/saves/entities.db");
 
 	}
 	else if (keyPressed->scancode == sf::Keyboard::Scancode::L) {
@@ -67,7 +68,7 @@ void LabyrinthEditView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) 
 		ground_db.readFromFile("assets/saves/ground.db");
 		wall_db.readFromFile("assets/saves/wall.db");
 		texture_db.readFromFile("assets/saves/texture.db");
-
+		template_db.readFromFile("assets/saves/entities.db");
 	}
 }
 

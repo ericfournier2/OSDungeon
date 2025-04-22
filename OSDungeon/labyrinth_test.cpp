@@ -32,7 +32,7 @@ void labyrinthTestSymmetric() {
 	};
 
 	Labyrinth test(3, 3, testWalls, testGround);
-
+	/*
 	std::cout << "test.getWallId(0, 0, HORIZONTAL) <1>:" << test.getWallAbs(0, 0, HORIZONTAL) << std::endl;
 	std::cout << "test.getWallId(0, 0, VERTICAL) <1>:" << test.getWallAbs(0, 0, VERTICAL) << std::endl;
 	std::cout << "test.getWallId(0, 1, HORIZONTAL) <0>:" << test.getWallAbs(0, 1, HORIZONTAL) << std::endl;
@@ -46,7 +46,7 @@ void labyrinthTestSymmetric() {
 	std::cout << "test.getWallId(3, 3, HORIZONTAL) <0>:" << test.getWallAbs(3, 3, HORIZONTAL) << std::endl;
 	std::cout << "test.getWallId(3, 3, VERTICAL) <0>:" << test.getWallAbs(3, 3, VERTICAL) << std::endl;
 
-	std::cout << printToString(test);
+	std::cout << printToString(test);*/
 }
 
 
@@ -78,7 +78,7 @@ void labyrinthTestAssymmetric() {
 	};
 
 	Labyrinth test(4, 3, testWalls, testGround);
-
+	/*
 	std::cout << "test.getWallId(0, 0, HORIZONTAL) <1>:" << test.getWallAbs(0, 0, HORIZONTAL) << std::endl;
 	std::cout << "test.getWallId(0, 0, VERTICAL) <1>:" << test.getWallAbs(0, 0, VERTICAL) << std::endl;
 	std::cout << "test.getWallId(0, 1, HORIZONTAL) <0>:" << test.getWallAbs(0, 1, HORIZONTAL) << std::endl;
@@ -142,6 +142,7 @@ void labyrinthTestAssymmetric() {
 	assert(test.getWallRel(-1, 0, RIGHT) == 1);
 	assert(test.getWallRel(-1, 0, BACK) == 0);
 	assert(test.getWallRel(-1, 0, LEFT) == 1);
+	*/
 	/*
 	LabyrinthView lv(test);
 	std::cout << printToString(test);

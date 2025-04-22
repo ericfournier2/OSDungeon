@@ -1,5 +1,6 @@
 #pragma once
 #include "labyrinth.h"
+#include "labyrinth_pov.h"
 #include "labyrinth_view.h"
 #include <SFML/Audio.hpp>
 
@@ -12,6 +13,7 @@ public:
 	bool processEvents();
 private:
 	Labyrinth& labyrinth;
+	LabyrinthPOV pov;
 	const Databases& db;
 	sf::RenderWindow window;
 	LabyrinthView lv;
