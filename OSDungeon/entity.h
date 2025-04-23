@@ -3,14 +3,14 @@
 #include "common.h"
 #include "databases.h"
 #include "shallow_entities.h"
-
+#include "labyrinth.h"
 
 class Labyrinth;
 
 
 class Entity {
 public:
-	Entity(const ShallowEntity& info, const EntityTemplateDb& template_db);
+	Entity(ShallowEntity& info, const EntityTemplateDb& template_db);
 	operator ShallowEntity() const { return info; }
 	ShallowEntity getShallowEntity() const { return info; }
 	EntityId getId() const { return info.id; }
@@ -24,6 +24,9 @@ public:
 	EntityBehaviourType getBehaviourType() const { return getTemplate().behaviour; }
 	//void setLabyrinth(Labyrinth* labyrinth_init) { labyrinth = labyrinth_init; }
 	TextureId getTexture() const { return getTemplate().texture; }
+
+	void move(const Labyrinth& labyrinth);
+	bool collide(const Labyrinth& labyrinth);
 protected:
 	EntityTemplateInfo getTemplate() const { return template_db.getElement(info.template_id); }
 	ShallowEntity info;

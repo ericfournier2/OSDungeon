@@ -58,30 +58,9 @@ void Runner::tick()
 	ShallowEntityMap entities_map = entities.getAllEntities();
 	for (auto & [id, entity] : entities_map) {
 		Entity ent(entity, db.edb);
-		if (ent.getBehaviourType() == EntityBehaviourType::WANDERING) {
-			// Pick a random direction
-			CardinalDirection d = static_cast<CardinalDirection>(static_cast<int>(rand() % 4));
-			if (labyrinth.canMove(ent.getX(), ent.getY(), d)) {
-				ShallowEntity new_entity = entity;
-				switch (d) {
-				case NORTH:
-					new_entity.y += 1;
-					break;
-				case SOUTH:
-					new_entity.y -= 1;
-					break;
-				case EAST:
-					new_entity.x += 1;
-					break;
-				case WEST:
-					new_entity.x -= 1;
-					break;
-				}
-
-				entities.updateEntity(new_entity);
-			}
-		} else if (ent.getBehaviourType() == EntityBehaviourType::PICKABLE) {
-			if (ent.getX() == pov.getPov().x && ent.getY() == pov.getPov().y) {
+		ent.move(labyrinth);
+		if (ent.getX() == pov.getPov().x && ent.getY() == pov.getPov().y) {
+			if (ent.collide(labyrinth)) {
 				entities.removeEntity(ent.getId());
 				coin.play();
 			}

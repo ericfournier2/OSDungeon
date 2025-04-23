@@ -77,16 +77,16 @@ void LabyrinthTopView::drawBrush(sf::RenderTarget& render_target, float mouse_x,
 			info.direction = CardinalDirection::NORTH;
 			info.template_id = val;
 
-			drawGroundEntity(render_target, Entity(info, db.edb));
+			drawGroundEntity(render_target, info);
 		}
 	}
 }
 
-void LabyrinthTopView::drawGroundEntity(sf::RenderTarget& render_target, const Entity& entity) const {
+void LabyrinthTopView::drawGroundEntity(sf::RenderTarget& render_target, const ShallowEntity& entity) const {
 	CoordF rect_size = getGroundScreenSize();
-	sf::Sprite entity_sprite(*db.tdb.getTexture(entity.getTexture()).texture);
-	entity_sprite.setPosition(getGroundScreenPositionFromMapPosition(entity.getX(), entity.getY()));
-	float scale_factor = grid_spacing / std::max(entity.getXSize(), entity.getYSize());
+	sf::Sprite entity_sprite(*db.tdb.getTexture(entity.getTexture(db.edb)).texture);
+	entity_sprite.setPosition(getGroundScreenPositionFromMapPosition(entity.x, entity.y));
+	float scale_factor = grid_spacing / std::max(entity.getXSize(db.edb), entity.getYSize(db.edb));
 	entity_sprite.setScale({ scale_factor, scale_factor });
 	render_target.draw(entity_sprite);
 }
@@ -95,7 +95,7 @@ void LabyrinthTopView::drawGroundEntity(sf::RenderTarget& render_target, const E
 void LabyrinthTopView::drawGroundEntities(sf::RenderTarget& render_target) const {
 	const ShallowEntityMap& entities_map = entities.getAllEntities();
 	for (auto const& [id, entity] : entities_map) {
-		drawGroundEntity(render_target, Entity(entity, db.edb));
+		drawGroundEntity(render_target, entity);
 	}
 }
 

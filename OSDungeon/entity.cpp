@@ -1,8 +1,43 @@
 #include "entity.h"
 
-Entity::Entity(const ShallowEntity& info_init, const EntityTemplateDb& template_db_init)
+Entity::Entity(ShallowEntity& info_init, const EntityTemplateDb& template_db_init)
 	: info(info_init), template_db(template_db_init)
 {
 
+}
+
+void Entity::move(const Labyrinth& labyrinth)
+{
+	if (getBehaviourType() == EntityBehaviourType::WANDERING) {
+		// Pick a random direction
+		CardinalDirection d = static_cast<CardinalDirection>(static_cast<int>(rand() % 4));
+		if (labyrinth.canMove(getX(), getY(), d)) {
+			switch (d) {
+			case NORTH:
+				info.y += 1;
+				break;
+			case SOUTH:
+				info.y -= 1;
+				break;
+			case EAST:
+				info.x += 1;
+				break;
+			case WEST:
+				info.x -= 1;
+				break;
+			}
+
+			//entities.updateEntity(new_entity);
+		}
+	}
+}
+
+bool Entity::collide(const Labyrinth& labyrinth)
+{
+	if (getBehaviourType() == EntityBehaviourType::PICKABLE) {
+		return true;
+	}
+
+	return false;
 }
 

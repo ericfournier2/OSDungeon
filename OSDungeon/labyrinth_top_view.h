@@ -20,7 +20,7 @@ private:
 	CoordF getGroundScreenPositionFromMapPosition(int x, int y) const;
 	sf::RectangleShape groundRectangle(int x, int y, GroundTypeId id) const;
 	void drawWall(sf::RenderTarget& render_target, int x, int y, WallOrientation o, WallTypeId id) const;
-	void drawGroundEntity(sf::RenderTarget& render_target, const Entity& entity) const;
+	void drawGroundEntity(sf::RenderTarget& render_target, const ShallowEntity& entity) const;
 
 	void drawGround(sf::RenderTarget& render_target) const;
 	void drawBrush(sf::RenderTarget& render_target, float mouse_x, float mouse_y) const;

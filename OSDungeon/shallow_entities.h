@@ -18,6 +18,17 @@ struct ShallowEntity {
 	ShallowEntity() {}
 	ShallowEntity(EntityId id_init, EntityTemplateId template_id_init, int x_init, int y_init, CardinalDirection direction_init)
 		: id(id_init), template_id(template_id_init), x(x_init), y(y_init), direction(direction_init) {}
+
+	float getXOffset(const EntityTemplateDb& edb) const { return getTemplate(edb).x_offset; }
+	float getYOffset(const EntityTemplateDb& edb) const { return getTemplate(edb).y_offset; }
+	float getXSize(const EntityTemplateDb& edb) const { return getTemplate(edb).x_size;; }
+	float getYSize(const EntityTemplateDb& edb) const { return getTemplate(edb).y_size; }
+	EntityBehaviourType getBehaviourType(const EntityTemplateDb& edb) const { return getTemplate(edb).behaviour; }
+	//void setLabyrinth(Labyrinth* labyrinth_init) { labyrinth = labyrinth_init; }
+	TextureId getTexture(const EntityTemplateDb& edb) const { return getTemplate(edb).texture; }
+
+	EntityTemplateInfo getTemplate(const EntityTemplateDb& edb) const { return edb.getElement(template_id); }
+
 };
 
 typedef std::vector<ShallowEntity> ShallowEntityVec;
