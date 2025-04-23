@@ -23,6 +23,8 @@ private:
 
 	sf::SoundBuffer footsteps_buffer = sf::SoundBuffer("assets/sounds/footstep.wav");
 	sf::SoundBuffer thunk_buffer = sf::SoundBuffer("assets/sounds/thunk.wav");
+	sf::SoundBuffer coin_buffer = sf::SoundBuffer("assets/sounds/coin.mp3");
 	sf::Sound footstep = sf::Sound(footsteps_buffer);
 	sf::Sound thunk = sf::Sound(thunk_buffer);
+	sf::Sound coin = sf::Sound(coin_buffer);
 };

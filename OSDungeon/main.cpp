@@ -37,7 +37,7 @@ int main()
     texture_db.loadNewTexture(7, "assets/textures/BunnySprite.png");
 
     EntityTemplateDb template_db;
-    template_db.addElement({ 1, EntityBehaviourType::DOODAD, 105.0f, 83.0f, -52.5f, -60.0f, 5 });
+    template_db.addElement({ 1, EntityBehaviourType::PICKABLE, 105.0f, 83.0f, -52.5f, -60.0f, 5 });
     template_db.addElement({ 2, EntityBehaviourType::DOODAD, 100.0f, 300.0f, -50.0f, -250.0f, 6 });
     template_db.addElement({ 3, EntityBehaviourType::WANDERING, 50.0f, 50.0f, -25.0f, -40.0f, 7 });
 

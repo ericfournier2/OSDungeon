@@ -55,7 +55,7 @@ bool Runner::processEvents()
 
 void Runner::tick()
 {
-	const ShallowEntityMap& entities_map = entities.getAllEntities();
+	ShallowEntityMap entities_map = entities.getAllEntities();
 	for (auto & [id, entity] : entities_map) {
 		Entity ent(entity, db.edb);
 		if (ent.getBehaviourType() == EntityBehaviourType::WANDERING) {
@@ -79,6 +79,11 @@ void Runner::tick()
 				}
 
 				entities.updateEntity(new_entity);
+			}
+		} else if (ent.getBehaviourType() == EntityBehaviourType::PICKABLE) {
+			if (ent.getX() == pov.getPov().x && ent.getY() == pov.getPov().y) {
+				entities.removeEntity(ent.getId());
+				coin.play();
 			}
 		}
 	}
