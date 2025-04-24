@@ -83,15 +83,20 @@ bool Runner::processEvents()
 
 void Runner::tick()
 {
+	std::set<EntityId> to_remove;
 	for (auto & [id, dummy_entity] : entities.getAllEntities()) {
 		Entity ent(entities.getAllEntities().at(id), db.edb);
 		ent.move(labyrinth, gs);
 		if (ent.getX() == pov.getPov().x && ent.getY() == pov.getPov().y) {
 			if (ent.collide(labyrinth, gs)) {
-				entities.removeEntity(ent.getId());
+				to_remove.insert(ent.getId());
 				coin.play();
 			}
 		}
+	}
+
+	for (const auto& id : to_remove) {
+		entities.removeEntity(id);
 	}
 }
 
