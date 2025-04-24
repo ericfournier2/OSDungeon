@@ -23,7 +23,9 @@ struct ShallowEntity {
 	float getYOffset(const EntityTemplateDb& edb) const { return getTemplate(edb).y_offset; }
 	float getXSize(const EntityTemplateDb& edb) const { return getTemplate(edb).x_size;; }
 	float getYSize(const EntityTemplateDb& edb) const { return getTemplate(edb).y_size; }
-	EntityBehaviourType getBehaviourType(const EntityTemplateDb& edb) const { return getTemplate(edb).behaviour; }
+	MovementType getMovementType(const EntityTemplateDb& edb) const { return getTemplate(edb).movement; }
+	CollisionType getCollisionType(const EntityTemplateDb& edb) const { return getTemplate(edb).collision; }
+	InteractionType getInteractionType(const EntityTemplateDb& edb) const { return getTemplate(edb).interaction; }
 	//void setLabyrinth(Labyrinth* labyrinth_init) { labyrinth = labyrinth_init; }
 	TextureId getTexture(const EntityTemplateDb& edb) const { return getTemplate(edb).texture; }
 
@@ -45,6 +47,7 @@ public:
 	ShallowEntity getEntity(EntityId id) const;
 	ShallowEntityVec getEntityAbs(int x, int y) const;
 	//ShallowEntityVec getEntityRel(int x, int y) const;
+	ShallowEntityMap& getAllEntities() { return entities; }
 	const ShallowEntityMap& getAllEntities() const { return entities; }
 
 	bool writeToStream(std::ofstream& stream) const;

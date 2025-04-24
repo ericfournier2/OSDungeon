@@ -22,7 +22,9 @@ public:
 	float getYOffset() const { return getTemplate().y_offset; }
 	float getXSize() const { return getTemplate().x_size;; }
 	float getYSize() const { return getTemplate().y_size; }
-	EntityBehaviourType getBehaviourType() const { return getTemplate().behaviour; }
+	MovementType getMovementType() const { return getTemplate().movement; }
+	CollisionType getCollisionType() const { return getTemplate().collision; }
+	InteractionType getInteractionType() const { return getTemplate().interaction; }
 	//void setLabyrinth(Labyrinth* labyrinth_init) { labyrinth = labyrinth_init; }
 	TextureId getTexture() const { return getTemplate().texture; }
 
@@ -30,7 +32,7 @@ public:
 	bool collide(const Labyrinth& labyrinth, GameState& state);
 protected:
 	EntityTemplateInfo getTemplate() const { return template_db.getElement(info.template_id); }
-	ShallowEntity info;
+	ShallowEntity& info;
 	//Labyrinth* labyrinth = nullptr;
 	const EntityTemplateDb& template_db;
 };

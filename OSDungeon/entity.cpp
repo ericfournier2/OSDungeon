@@ -8,7 +8,7 @@ Entity::Entity(ShallowEntity& info_init, const EntityTemplateDb& template_db_ini
 
 void Entity::move(const Labyrinth& labyrinth, GameState& state)
 {
-	if (getBehaviourType() == EntityBehaviourType::WANDERING) {
+	if (getMovementType() == MovementType::WANDER) {
 		// Pick a random direction
 		CardinalDirection d = static_cast<CardinalDirection>(static_cast<int>(rand() % 4));
 		if (labyrinth.canMove(getX(), getY(), d)) {
@@ -29,15 +29,17 @@ void Entity::move(const Labyrinth& labyrinth, GameState& state)
 
 			//entities.updateEntity(new_entity);
 		}
+	} else if (getMovementType() == MovementType::FOLLOW) {
+		
 	}
 }
 
 bool Entity::collide(const Labyrinth& labyrinth, GameState& state)
 {
-	if (getBehaviourType() == EntityBehaviourType::PICKABLE) {
+	if (getCollisionType() == CollisionType::PICKABLE) {
 		state.showDialog("You got the\ntreasure!");
 		return true;
-	} else if (getBehaviourType() == EntityBehaviourType::LETHAL) {
+	} else if (getCollisionType() == CollisionType::LETHAL) {
 		state.gameOver("The bunny ate\nyou. =(");
 	}
 

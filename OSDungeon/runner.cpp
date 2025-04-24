@@ -19,8 +19,11 @@ void Runner::render() {
 }
 
 void Runner::handleKeyPress(const sf::Event::KeyPressed* keyPressed) {
-	handleKeyPressWaitingForInput(keyPressed);
-	handleKeyPressOther(keyPressed);
+	if (gs.getGlobalState() == GameGlobalState::WAITING_FOR_INPUT) {
+		handleKeyPressWaitingForInput(keyPressed);
+	} else {
+		handleKeyPressOther(keyPressed);
+	}
 }
 
 void Runner::handleKeyPressWaitingForInput(const sf::Event::KeyPressed* keyPressed) {
@@ -80,9 +83,8 @@ bool Runner::processEvents()
 
 void Runner::tick()
 {
-	ShallowEntityMap entities_map = entities.getAllEntities();
-	for (auto & [id, entity] : entities_map) {
-		Entity ent(entity, db.edb);
+	for (auto & [id, dummy_entity] : entities.getAllEntities()) {
+		Entity ent(entities.getAllEntities().at(id), db.edb);
 		ent.move(labyrinth, gs);
 		if (ent.getX() == pov.getPov().x && ent.getY() == pov.getPov().y) {
 			if (ent.collide(labyrinth, gs)) {

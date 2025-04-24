@@ -24,16 +24,32 @@ struct GroundInfo {
 	TextureId texture = 0;
 };
 
-enum EntityBehaviourType {
-	DOODAD,
+enum class MovementType {
+	STATIC,
+	WANDER,
+	FOLLOW,
+	FLEE,
+	PATH
+};
+
+enum class CollisionType {
+	NONE,
 	PICKABLE,
-	WANDERING,
+	DIALOG,
 	LETHAL
 };
 
+enum class InteractionType {
+	NONE,
+	DIALOG
+};
+
+
 struct EntityTemplateInfo {
 	EntityTemplateId id;
-	EntityBehaviourType behaviour;
+	MovementType movement;
+	CollisionType collision;
+	InteractionType interaction;
 	float x_size = 0.0f;
 	float y_size = 0.0f;
 	float x_offset = 0.0f;
