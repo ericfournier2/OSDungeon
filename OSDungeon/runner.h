@@ -11,12 +11,14 @@ public:
 	Runner(const Labyrinth& labyrinth, const Databases& db);
 
 	void render();
-	void handleKeyPress(const sf::Event::KeyPressed* keyPressed);
+	
 	bool processEvents();
 private:
 	void tick();
 	void displayMessageBox();
-
+	void handleKeyPress(const sf::Event::KeyPressed* keyPressed);
+	void handleKeyPressWaitingForInput(const sf::Event::KeyPressed* keyPressed);
+	void handleKeyPressOther(const sf::Event::KeyPressed* keyPressed);
 	Labyrinth labyrinth;
 	ShallowEntityManager entities;
 	LabyrinthPOV pov;

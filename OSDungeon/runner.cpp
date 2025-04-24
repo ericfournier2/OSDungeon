@@ -19,36 +19,37 @@ void Runner::render() {
 }
 
 void Runner::handleKeyPress(const sf::Event::KeyPressed* keyPressed) {
+	handleKeyPressWaitingForInput(keyPressed);
+	handleKeyPressOther(keyPressed);
+}
+
+void Runner::handleKeyPressWaitingForInput(const sf::Event::KeyPressed* keyPressed) {
 	if (keyPressed->scancode == sf::Keyboard::Scancode::Left) {
-		if (gs.getGlobalState() == GameGlobalState::WAITING_FOR_INPUT) {
-			pov.turn(RelativeDirection::LEFT);
-		}
+		pov.turn(RelativeDirection::LEFT);
 	} else if (keyPressed->scancode == sf::Keyboard::Scancode::Up) {
-		if (gs.getGlobalState() == GameGlobalState::WAITING_FOR_INPUT) {
-			if (pov.advance() == MoveResult::SUCCESS) {
-				footstep.play();
-				tick();
-			} else {
-				thunk.play();
-			}
+		if (pov.advance() == MoveResult::SUCCESS) {
+			footstep.play();
+			tick();
+		} else {
+			thunk.play();
 		}
 	} else if (keyPressed->scancode == sf::Keyboard::Scancode::Right) {
-		if (gs.getGlobalState() == GameGlobalState::WAITING_FOR_INPUT) {
-			pov.turn(RelativeDirection::RIGHT);
-		}
+		pov.turn(RelativeDirection::RIGHT);
 	} else if (keyPressed->scancode == sf::Keyboard::Scancode::Down) {
-		if (gs.getGlobalState() == GameGlobalState::WAITING_FOR_INPUT) {
-			if (pov.moveBack() == MoveResult::SUCCESS) {
-				footstep.play();
-				tick();
-			} else {
-				thunk.play();
-			}
+		if (pov.moveBack() == MoveResult::SUCCESS) {
+			footstep.play();
+			tick();
+		} else {
+			thunk.play();
 		}
 	} else if (keyPressed->scancode == sf::Keyboard::Scancode::Space) {
-		if (gs.getGlobalState() == GameGlobalState::WAITING_FOR_INPUT) {
-			tick();
-		} else if (gs.getGlobalState() == GameGlobalState::MESSAGE_BOX) {
+		tick();
+	}
+}
+
+void Runner::handleKeyPressOther(const sf::Event::KeyPressed* keyPressed) {
+	if (keyPressed->scancode == sf::Keyboard::Scancode::Space) {
+		if (gs.getGlobalState() == GameGlobalState::MESSAGE_BOX) {
 			gs.clearDialog();
 		} else if (gs.getGlobalState() == GameGlobalState::GAME_OVER) {
 			gs.clearDialog();
