@@ -2,7 +2,9 @@
 #include "labyrinth.h"
 #include "labyrinth_pov.h"
 #include "labyrinth_view.h"
+#include "game_state.h"
 #include <SFML/Audio.hpp>
+
 
 class Runner {
 public:
@@ -13,6 +15,7 @@ public:
 	bool processEvents();
 private:
 	void tick();
+	void displayMessageBox();
 
 	Labyrinth labyrinth;
 	ShallowEntityManager entities;
@@ -27,4 +30,8 @@ private:
 	sf::Sound footstep = sf::Sound(footsteps_buffer);
 	sf::Sound thunk = sf::Sound(thunk_buffer);
 	sf::Sound coin = sf::Sound(coin_buffer);
+
+	GameState gs;
+
+	sf::Font font;
 };

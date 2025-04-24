@@ -43,7 +43,7 @@ int main()
 
     Databases db(ground_db, wall_db, texture_db, template_db);
 
-    Labyrinth test = Labyrinth(20, 20);
+    Labyrinth test = Labyrinth(30, 30);
     ShallowEntity chest1 = ShallowEntity( 1, 1, 5, 5, CardinalDirection::NORTH);
     ShallowEntity chest2 = ShallowEntity( 2, 1, 7, 5, CardinalDirection::NORTH);
     ShallowEntity tree1 = ShallowEntity( 3, 2, 5, 7, CardinalDirection::NORTH);

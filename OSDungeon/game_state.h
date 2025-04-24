@@ -1,0 +1,21 @@
+#pragma once
+#include <string>
+
+enum GameGlobalState {
+	WAITING_FOR_INPUT,
+	MESSAGE_BOX
+};
+
+class GameState {
+public:
+	GameGlobalState getGlobalState() const { return global_state; }
+	std::string getMessage() const { return message; }
+
+	void setGlobalState(GameGlobalState state) { global_state = state; };
+	void clearDialog() { message = ""; global_state = WAITING_FOR_INPUT; }
+	void showDialog(const std::string& message_) { message = message_; global_state = MESSAGE_BOX; }
+private:
+	GameGlobalState global_state = WAITING_FOR_INPUT;
+	std::string message;
+};
+

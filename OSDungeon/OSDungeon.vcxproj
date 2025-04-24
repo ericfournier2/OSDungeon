@@ -135,6 +135,7 @@
     <ClCompile Include="brush.cpp" />
     <ClCompile Include="brush_editor.cpp" />
     <ClCompile Include="entity.cpp" />
+    <ClCompile Include="game_state.cpp" />
     <ClCompile Include="imgui\imgui-SFML.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="brush_editor.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="entity.h" />
+    <ClInclude Include="game_state.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui-SFML.h" />
     <ClInclude Include="imgui\imgui.h" />

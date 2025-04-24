@@ -4,6 +4,7 @@
 #include "databases.h"
 #include "shallow_entities.h"
 #include "labyrinth.h"
+#include "game_state.h"
 
 class Labyrinth;
 
@@ -25,8 +26,8 @@ public:
 	//void setLabyrinth(Labyrinth* labyrinth_init) { labyrinth = labyrinth_init; }
 	TextureId getTexture() const { return getTemplate().texture; }
 
-	void move(const Labyrinth& labyrinth);
-	bool collide(const Labyrinth& labyrinth);
+	void move(const Labyrinth& labyrinth, GameState& state);
+	bool collide(const Labyrinth& labyrinth, GameState& state);
 protected:
 	EntityTemplateInfo getTemplate() const { return template_db.getElement(info.template_id); }
 	ShallowEntity info;

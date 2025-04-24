@@ -6,7 +6,7 @@ Entity::Entity(ShallowEntity& info_init, const EntityTemplateDb& template_db_ini
 
 }
 
-void Entity::move(const Labyrinth& labyrinth)
+void Entity::move(const Labyrinth& labyrinth, GameState& state)
 {
 	if (getBehaviourType() == EntityBehaviourType::WANDERING) {
 		// Pick a random direction
@@ -32,9 +32,10 @@ void Entity::move(const Labyrinth& labyrinth)
 	}
 }
 
-bool Entity::collide(const Labyrinth& labyrinth)
+bool Entity::collide(const Labyrinth& labyrinth, GameState& state)
 {
 	if (getBehaviourType() == EntityBehaviourType::PICKABLE) {
+		state.showDialog("You got the\ntreasure!");
 		return true;
 	}
 
