@@ -34,6 +34,10 @@ bool Labyrinth::removeWall(int x, int y, WallOrientation d)
 
 void Labyrinth::setGround(int x, int y, GroundTypeId id)
 {
+	if (x < 0 || y < 0 || x >= x_size || y >= y_size) {
+		return;
+	}
+
 	ground[y * x_size + x] = id;
 }
 
