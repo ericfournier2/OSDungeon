@@ -12,7 +12,7 @@ Runner::Runner(const Labyrinth& labyrinth_init, const Databases& db_init)
 void Runner::render() {
 	window.clear();
 	lv.render();
-	if (gs.getGlobalState() == GameGlobalState::MESSAGE_BOX) {
+	if (gs.getGlobalState() == GameGlobalState::MESSAGE_BOX || gs.getGlobalState() == GameGlobalState::GAME_OVER) {
 		displayMessageBox();
 	}
 	window.display();
@@ -48,14 +48,22 @@ void Runner::handleKeyPress(const sf::Event::KeyPressed* keyPressed) {
 	} else if (keyPressed->scancode == sf::Keyboard::Scancode::Space) {
 		if (gs.getGlobalState() == GameGlobalState::WAITING_FOR_INPUT) {
 			tick();
-		} else {
+		} else if (gs.getGlobalState() == GameGlobalState::MESSAGE_BOX) {
 			gs.clearDialog();
+		} else if (gs.getGlobalState() == GameGlobalState::GAME_OVER) {
+			gs.clearDialog();
+			window.close();
+			should_exit = true;
 		}
 	}
 }
 
 bool Runner::processEvents()
 {
+	if (should_exit) {
+		return true;
+	}
+
 	while (const std::optional event = window.pollEvent()) {
 
 		if (event->is<sf::Event::Closed>()) {

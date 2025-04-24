@@ -27,7 +27,8 @@ struct GroundInfo {
 enum EntityBehaviourType {
 	DOODAD,
 	PICKABLE,
-	WANDERING
+	WANDERING,
+	LETHAL
 };
 
 struct EntityTemplateInfo {

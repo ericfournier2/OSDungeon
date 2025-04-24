@@ -34,4 +34,5 @@ private:
 	GameState gs;
 
 	sf::Font font;
+	bool should_exit = false;
 };

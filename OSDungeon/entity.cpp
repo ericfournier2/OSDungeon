@@ -37,6 +37,8 @@ bool Entity::collide(const Labyrinth& labyrinth, GameState& state)
 	if (getBehaviourType() == EntityBehaviourType::PICKABLE) {
 		state.showDialog("You got the\ntreasure!");
 		return true;
+	} else if (getBehaviourType() == EntityBehaviourType::LETHAL) {
+		state.gameOver("The bunny ate\nyou. =(");
 	}
 
 	return false;
