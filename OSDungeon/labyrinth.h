@@ -50,10 +50,12 @@ public:
 
 	bool canMove(int from_x, int from_y, CardinalDirection d) const;
 	std::optional<Path> findPath(int from_x, int from_y, int to_x, int to_y) const;
+	bool hasLOS(int from_x, int from_y, int to_x, int to_y) const;
 private:
 	static int vectorSizeFromGridSize(int x_size, int y_size);
 
 	bool setWall(int x, int y, WallOrientation d, WallTypeId id);
+	bool slopeInterceptLOS(int ind1, int dep1, int ind2, int dep2, CardinalDirection d) const;
 
 	int x_size = 0;
 	int y_size = 0;

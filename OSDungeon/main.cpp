@@ -12,9 +12,12 @@ void labyrinthTestAssymmetric();
 Labyrinth getTestLabyrinth();
 void testReadWrite();
 void testPathFinding();
+void testLOS();
 
 int main()
 {
+    testLOS();
+
     GroundDb ground_db;
     //ground_db.addElement(GroundInfo({ 0, sf::Color::White, 0 }));
     ground_db.addElement(GroundInfo({ 1, sf::Color::White, sf::Color::Blue, 4 }));
@@ -39,7 +42,7 @@ int main()
     EntityTemplateDb template_db;
     template_db.addElement({ 1, MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 105.0f, 83.0f, -52.5f, -60.0f, 5 });
     template_db.addElement({ 2, MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 100.0f, 300.0f, -50.0f, -250.0f, 6 });
-    template_db.addElement({ 3, MovementType::WANDER, CollisionType::LETHAL, InteractionType::NONE, 50.0f, 50.0f, -25.0f, -40.0f, 7 });
+    template_db.addElement({ 3, MovementType::FOLLOW, CollisionType::LETHAL, InteractionType::NONE, 50.0f, 50.0f, -25.0f, -40.0f, 7 });
 
     Databases db(ground_db, wall_db, texture_db, template_db);
 

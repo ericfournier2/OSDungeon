@@ -13,6 +13,7 @@ class Entity {
 public:
 	Entity(ShallowEntity& info, const EntityTemplateDb& template_db);
 	operator ShallowEntity() const { return info; }
+
 	ShallowEntity getShallowEntity() const { return info; }
 	EntityId getId() const { return info.id; }
 	EntityTemplateId getTemplateId() const { return info.template_id; }
@@ -32,6 +33,8 @@ public:
 	bool collide(const Labyrinth& labyrinth, GameState& state);
 protected:
 	EntityTemplateInfo getTemplate() const { return template_db.getElement(info.template_id); }
+	bool moveCardinal(const Labyrinth& labyrinth, CardinalDirection d);
+
 	ShallowEntity& info;
 	//Labyrinth* labyrinth = nullptr;
 	const EntityTemplateDb& template_db;

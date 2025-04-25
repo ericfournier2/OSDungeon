@@ -1,9 +1,9 @@
 #include <cstdlib>
 #include "runner.h"
 
-Runner::Runner(const Labyrinth& labyrinth_init, const Databases& db_init) 
+Runner::Runner(const Labyrinth& labyrinth_init, const Databases& db_init)
 	: labyrinth(labyrinth_init), entities(labyrinth.getEntityManager()), pov(labyrinth, entities), db(db_init), window(sf::VideoMode({ 400, 300 }), "Maze 1st person view"),
-	  lv(pov, db.gdb, db.wdb, db.tdb, db.edb, window)
+	lv(pov, db.gdb, db.wdb, db.tdb, db.edb, window)
 {
 	window.setPosition({ 2000, 400 });
 	font.openFromFile("assets/LEMONMILK-Regular.otf");
@@ -29,8 +29,10 @@ void Runner::handleKeyPress(const sf::Event::KeyPressed* keyPressed) {
 void Runner::handleKeyPressWaitingForInput(const sf::Event::KeyPressed* keyPressed) {
 	if (keyPressed->scancode == sf::Keyboard::Scancode::Left) {
 		pov.turn(RelativeDirection::LEFT);
+		gs.setPlayerPos(pov.getPov());
 	} else if (keyPressed->scancode == sf::Keyboard::Scancode::Up) {
 		if (pov.advance() == MoveResult::SUCCESS) {
+			gs.setPlayerPos(pov.getPov());
 			footstep.play();
 			tick();
 		} else {
@@ -38,8 +40,10 @@ void Runner::handleKeyPressWaitingForInput(const sf::Event::KeyPressed* keyPress
 		}
 	} else if (keyPressed->scancode == sf::Keyboard::Scancode::Right) {
 		pov.turn(RelativeDirection::RIGHT);
+		gs.setPlayerPos(pov.getPov());
 	} else if (keyPressed->scancode == sf::Keyboard::Scancode::Down) {
 		if (pov.moveBack() == MoveResult::SUCCESS) {
+			gs.setPlayerPos(pov.getPov());
 			footstep.play();
 			tick();
 		} else {
@@ -84,7 +88,7 @@ bool Runner::processEvents()
 void Runner::tick()
 {
 	std::set<EntityId> to_remove;
-	for (auto & [id, dummy_entity] : entities.getAllEntities()) {
+	for (auto& [id, dummy_entity] : entities.getAllEntities()) {
 		Entity ent(entities.getAllEntities().at(id), db.edb);
 		ent.move(labyrinth, gs);
 		if (ent.getX() == pov.getPov().x && ent.getY() == pov.getPov().y) {

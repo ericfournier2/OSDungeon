@@ -220,5 +220,21 @@ void testPathFinding() {
 
 	std::optional<Path> test_path_impossible = test.findPath(0, 0, 1, 1);
 	assert(!test_path_impossible);
+}
 
+void testLOS() {
+	Labyrinth test = getTestLabyrinth();
+	assert(test.hasLOS(0,0,0,0));
+	assert(test.hasLOS(0, 0, 2, 0));
+	assert(test.hasLOS(2, 0, 0, 0));
+	assert(test.hasLOS(0, 0, 0, 2));
+	assert(test.hasLOS(0, 2, 0, 0));
+	assert(!test.hasLOS(0, 1, 2, 1));
+	assert(!test.hasLOS(2, 1, 0, 1));
+	assert(!test.hasLOS(1, 0, 1, 2));
+	assert(!test.hasLOS(1, 2, 1, 0));
+	assert(!test.hasLOS(0, 0, 2, 2));
+	assert(!test.hasLOS(2, 2, 0, 0));
+	assert(test.hasLOS(2, 0, 3, 2));
+	assert(test.hasLOS(3, 2, 2, 0));
 }

@@ -221,6 +221,47 @@ std::optional<Path> Labyrinth::findPath(int from_x, int from_y, int to_x, int to
 	return std::nullopt;
 }
 
+bool Labyrinth::slopeInterceptLOS(int ind1, int dep1, int ind2, int dep2, CardinalDirection d) const {
+	assert(d == CardinalDirection::NORTH || d == CardinalDirection::EAST);
+
+	if (ind1 == ind2) {
+		return true;
+	}
+
+	float slope = float(dep2 - dep1) / float(ind2 - ind1);
+
+	int lower_bound = ind1 < ind2 ? ind1 : ind2;
+	int upper_bound = ind1 > ind2 ? ind1 : ind2;
+
+	int dep_start = ind1 < ind2 ? dep1 : dep2;
+
+	// TODO: This is probably wrong for 45 degree slopes.
+	for (int ind = lower_bound; ind < upper_bound; ++ind) {
+		int intercept = static_cast<int>(dep_start + ((ind - lower_bound + 0.5f) * slope));
+		switch (d) {
+		case CardinalDirection::EAST:
+			if (getWallCardinal(ind, intercept, CardinalDirection::EAST)) {
+				return false;
+			}
+			break;
+		case CardinalDirection::NORTH:
+			if (getWallCardinal(intercept, ind, CardinalDirection::NORTH)) {
+				return false;
+			}
+			break;
+		}
+	}
+
+	return true;
+}
+
+bool Labyrinth::hasLOS(int from_x, int from_y, int to_x, int to_y) const
+{
+	return slopeInterceptLOS(from_y, from_x, to_y, to_x, CardinalDirection::NORTH) && slopeInterceptLOS(from_x, from_y, to_x, to_y, CardinalDirection::EAST);
+}
+
+
+
 const char file_identifier[] = "OSDUNGEON0.0";
 
 bool Labyrinth::writeToFile(const std::string& filename) const {
