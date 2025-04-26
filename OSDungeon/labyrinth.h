@@ -7,8 +7,8 @@
 #include "entity.h"
 #include "databases.h"
 
-typedef std::vector<WallTypeId> WallVec;
-typedef std::vector<GroundTypeId> GroundVec;
+typedef std::vector<WallId> WallVec;
+typedef std::vector<GroundId> GroundVec;
 typedef std::vector<CardinalDirection> Path;
 
 const unsigned int MAX_SIZE = 100;
@@ -33,13 +33,13 @@ public:
 	int getSizeX() const { return x_size; }
 	int getSizeY() const { return y_size; }
 
-	GroundTypeId getGroundAbs(int x, int y) const;
-	WallTypeId getWallAbs(int x, int y, WallOrientation d) const;
-	WallTypeId getWallCardinal(int x, int y, CardinalDirection d) const;
+	GroundId getGroundAbs(int x, int y) const;
+	WallId getWallAbs(int x, int y, WallOrientation d) const;
+	WallId getWallCardinal(int x, int y, CardinalDirection d) const;
 
-	bool addWall(int x_offset, int y_offset, WallOrientation d, WallTypeId id=0);
+	bool addWall(int x_offset, int y_offset, WallOrientation d, WallId id=0);
 	bool removeWall(int x_offset, int y_offset, WallOrientation d);
-	void setGround(int x, int y, GroundTypeId id = 0);
+	void setGround(int x, int y, GroundId id = 0);
 
 	bool writeToFile(const std::string& filename) const;
 	bool loadFromFile(const std::string& filename);
@@ -54,7 +54,7 @@ public:
 private:
 	static int vectorSizeFromGridSize(int x_size, int y_size);
 
-	bool setWall(int x, int y, WallOrientation d, WallTypeId id);
+	bool setWall(int x, int y, WallOrientation d, WallId id);
 	bool slopeInterceptLOS(int ind1, int dep1, int ind2, int dep2, CardinalDirection d) const;
 
 	int x_size = 0;

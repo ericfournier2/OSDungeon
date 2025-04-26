@@ -17,8 +17,8 @@ public:
 	void setPov(CardinalCoord coord);
 	CardinalCoord getPov() const;
 
-	WallTypeId getWall(int x, int y, RelativeDirection d) const;
-	GroundTypeId getGround(int x, int y) const;
+	WallId getWall(int x, int y, RelativeDirection d) const;
+	GroundId getGround(int x, int y) const;
 	ShallowEntityVec getEntities(int x, int y) const;
 	bool canMove(RelativeDirection d) const;
 private:

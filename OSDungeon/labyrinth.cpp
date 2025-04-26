@@ -4,7 +4,7 @@
 #include <queue>
 #include <set>
 
-bool Labyrinth::setWall(int x, int y, WallOrientation d, WallTypeId id)
+bool Labyrinth::setWall(int x, int y, WallOrientation d, WallId id)
 {
 	// Determine if it is out of bound
 	if (x < 0 || y < 0 || x >(int) x_size || y >(int) y_size || (x == x_size && d == HORIZONTAL) || (y == y_size && d == VERTICAL)) {
@@ -23,7 +23,7 @@ bool Labyrinth::setWall(int x, int y, WallOrientation d, WallTypeId id)
 	return false;
 }
 
-bool Labyrinth::addWall(int x, int y, WallOrientation d, WallTypeId id) {
+bool Labyrinth::addWall(int x, int y, WallOrientation d, WallId id) {
 	return setWall(x, y, d, id);
 }
 
@@ -32,7 +32,7 @@ bool Labyrinth::removeWall(int x, int y, WallOrientation d)
 	return setWall(x, y, d, 0);
 }
 
-void Labyrinth::setGround(int x, int y, GroundTypeId id)
+void Labyrinth::setGround(int x, int y, GroundId id)
 {
 	if (x < 0 || y < 0 || x >= x_size || y >= y_size) {
 		return;
@@ -107,7 +107,7 @@ Labyrinth::Labyrinth(int x_size_init, int y_size_init, WallVec initWalls, Ground
 	assert(ground.size() == x_size * y_size);
 }
 
-WallTypeId Labyrinth::getWallAbs(int x, int y, WallOrientation d) const{
+WallId Labyrinth::getWallAbs(int x, int y, WallOrientation d) const{
 	// Determine if it is out of bound
 	if (x < 0 || y < 0 || x > (int) x_size || y > (int) y_size || (x == x_size && d == HORIZONTAL) || (y == y_size && d == VERTICAL)) {
 		return 0;
@@ -122,7 +122,7 @@ WallTypeId Labyrinth::getWallAbs(int x, int y, WallOrientation d) const{
 	}
 }
 
-WallTypeId Labyrinth::getWallCardinal(int x, int y, CardinalDirection d) const {
+WallId Labyrinth::getWallCardinal(int x, int y, CardinalDirection d) const {
 	switch (d) {
 	case NORTH:
 		return getWallAbs(x, y + 1, WallOrientation::HORIZONTAL);
@@ -142,7 +142,7 @@ WallTypeId Labyrinth::getWallCardinal(int x, int y, CardinalDirection d) const {
 	return 0;
 }
 
-GroundTypeId Labyrinth::getGroundAbs(int x, int y) const
+GroundId Labyrinth::getGroundAbs(int x, int y) const
 {
 	if (x < 0 || y < 0 || x >= (int) x_size || y >= (int) y_size) {
 		return 0;
@@ -271,8 +271,8 @@ bool Labyrinth::writeToFile(const std::string& filename) const {
 		stream << file_identifier << '\0';
 		stream.write(reinterpret_cast<const char*>(&x_size), sizeof(x_size));
 		stream.write(reinterpret_cast<const char*>(&y_size), sizeof(y_size));
-		stream.write(reinterpret_cast<const char*>(walls.data()), walls.size() * sizeof(WallTypeId));
-		stream.write(reinterpret_cast<const char*>(ground.data()), ground.size() * sizeof(GroundTypeId));
+		stream.write(reinterpret_cast<const char*>(walls.data()), walls.size() * sizeof(WallId));
+		stream.write(reinterpret_cast<const char*>(ground.data()), ground.size() * sizeof(GroundId));
 		entities.writeToStream(stream);
 	}
 
@@ -294,8 +294,8 @@ bool Labyrinth::loadFromFile(const std::string& filename) {
 				WallVec walls_read = WallVec(vectorSizeFromGridSize(x_size_read, y_size_read), 0);
 				GroundVec ground_read = GroundVec(x_size_read * y_size_read, 0);
 
-				stream.read(reinterpret_cast<char*>(walls_read.data()), walls_read.size() * sizeof(WallTypeId));
-				stream.read(reinterpret_cast<char*>(ground_read.data()), ground_read.size() * sizeof(GroundTypeId));
+				stream.read(reinterpret_cast<char*>(walls_read.data()), walls_read.size() * sizeof(WallId));
+				stream.read(reinterpret_cast<char*>(ground_read.data()), ground_read.size() * sizeof(GroundId));
 				entities.readFromStream(stream);
 
 				if (!stream.fail()) {

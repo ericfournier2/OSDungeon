@@ -255,7 +255,7 @@ bool LabyrinthView::render() {
 		//std::cout << "Queue is processing:";
 		//current_step.print();
 		if (current_step.ground_render) {
-			GroundTypeId ground_id = labyrinth.getGround(current_step.x_offset, current_step.y_offset);
+			GroundId ground_id = labyrinth.getGround(current_step.x_offset, current_step.y_offset);
 			current_step.ground_id = ground_id;
 			// Do actual ground drawing. If we get here, the ground is always shown.
 			drawStack.push(current_step);
@@ -275,7 +275,7 @@ bool LabyrinthView::render() {
 		}
 		else {
 			
-			WallTypeId wall_id = labyrinth.getWall(current_step.x_offset, current_step.y_offset, current_step.direction);
+			WallId wall_id = labyrinth.getWall(current_step.x_offset, current_step.y_offset, current_step.direction);
 			current_step.wall_id = wall_id;
 			if (wall_id) {
 				// There's an actual wall, so let's draw it.

@@ -13,7 +13,7 @@ LabyrinthTopView::~LabyrinthTopView()
 {
 }
 
-sf::Color LabyrinthTopView::groundDrawColor(GroundTypeId id) const {
+sf::Color LabyrinthTopView::groundDrawColor(GroundId id) const {
 	if (id == 0) {
 		return sf::Color::Black;
 	} else {
@@ -32,7 +32,7 @@ CoordF LabyrinthTopView::getGroundScreenPositionFromMapPosition(int x, int y) co
 	return { rect_x, rect_y };
 }
 
-sf::RectangleShape LabyrinthTopView::groundRectangle(int x, int y, GroundTypeId id) const {
+sf::RectangleShape LabyrinthTopView::groundRectangle(int x, int y, GroundId id) const {
 	sf::Color current_color = groundDrawColor(id);
 	sf::RectangleShape ground_rect(getGroundScreenSize());
 	ground_rect.setPosition(getGroundScreenPositionFromMapPosition(x, y));
@@ -44,7 +44,7 @@ sf::RectangleShape LabyrinthTopView::groundRectangle(int x, int y, GroundTypeId 
 void LabyrinthTopView::drawGround(sf::RenderTarget& render_target) const {
 	for (int x = 0; x < labyrinth.getSizeX(); ++x) {
 		for (int y = 0; y < labyrinth.getSizeY(); ++y) {
-			GroundTypeId current_id = labyrinth.getGroundAbs(x, y);
+			GroundId current_id = labyrinth.getGroundAbs(x, y);
 			sf::RectangleShape ground_rect = groundRectangle(x, y, current_id);
 
 			render_target.draw(ground_rect);
@@ -118,7 +118,7 @@ void LabyrinthTopView::drawGrid(sf::RenderTarget& render_target) const
 	render_target.draw(vertex_array);
 }
 
-void LabyrinthTopView::drawWall(sf::RenderTarget& render_target, int x, int y, WallOrientation o, WallTypeId id) const {
+void LabyrinthTopView::drawWall(sf::RenderTarget& render_target, int x, int y, WallOrientation o, WallId id) const {
 	auto vertex_array = sf::VertexArray(sf::PrimitiveType::Lines, 0);
 
 	float pos_x = grid_origin_x + grid_spacing * x;
@@ -143,8 +143,8 @@ void LabyrinthTopView::drawWalls(sf::RenderTarget& render_target) const {
 
 	for (int x = 0; x < labyrinth.getSizeX() + 1; ++x) {
 		for (int y = 0; y < labyrinth.getSizeY() + 1; ++y) {
-			WallTypeId h_wall = labyrinth.getWallAbs(x, y, WallOrientation::HORIZONTAL);
-			WallTypeId v_wall = labyrinth.getWallAbs(x, y, WallOrientation::VERTICAL);
+			WallId h_wall = labyrinth.getWallAbs(x, y, WallOrientation::HORIZONTAL);
+			WallId v_wall = labyrinth.getWallAbs(x, y, WallOrientation::VERTICAL);
 
 			float pos_x = grid_origin_x + grid_spacing * x;
 			float pos_y = grid_origin_y + grid_spacing * labyrinth.getSizeY() - grid_spacing * y;

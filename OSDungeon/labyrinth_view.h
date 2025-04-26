@@ -11,8 +11,8 @@ struct RenderStep {
 	int y_offset;
 	bool ground_render;
 	RelativeDirection direction;
-	GroundTypeId ground_id;
-	WallTypeId wall_id;
+	GroundId ground_id;
+	WallId wall_id;
 
 	bool operator<(const RenderStep& rs) const;
 	void print() const;

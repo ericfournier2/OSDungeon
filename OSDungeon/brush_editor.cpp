@@ -85,13 +85,13 @@ void BrushEditor::render() {
 
 
 	ImGui::SeparatorText("Wall");
-	WallTypeId wall_id = brush.getWallId();
+	WallId wall_id = brush.getWallId();
 	if (brushPopUp<WallDb>("Wall brush", &wall_id, db.wdb, db.tdb)) {
 		brush.setWallId(wall_id);
 	}
 
 	ImGui::SeparatorText("Ground");
-	GroundTypeId ground_id = brush.getGroundId();
+	GroundId ground_id = brush.getGroundId();
 	if (brushPopUp<GroundDb>("Ground brush", &ground_id, db.gdb, db.tdb)) {
 		brush.setGroundId(ground_id);
 	}

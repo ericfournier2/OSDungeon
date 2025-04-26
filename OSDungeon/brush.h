@@ -22,8 +22,8 @@ enum BrushFill {
 };
 
 struct BrushPreview {
-	std::map<Coord, GroundTypeId> grounds;
-	std::map<WallCoord, WallTypeId> walls;
+	std::map<Coord, GroundId> grounds;
+	std::map<WallCoord, WallId> walls;
 	std::map<Coord, EntityTemplateId> entities;
 };
 
@@ -34,11 +34,11 @@ public:
 	void apply(Labyrinth& labyrinth, float x, float y) const;
 	BrushPreview preview(const Labyrinth& labyrinth, float x, float y) const;
 
-	GroundTypeId getGroundId() const { return ground_id; }
-	void setGroundId(GroundTypeId ground_id_init) { ground_id = ground_id_init; }
+	GroundId getGroundId() const { return ground_id; }
+	void setGroundId(GroundId ground_id_init) { ground_id = ground_id_init; }
 
-	WallTypeId getWallId() const { return wall_id; }
-	void setWallId(WallTypeId wall_id_init) { wall_id = wall_id_init; }
+	WallId getWallId() const { return wall_id; }
+	void setWallId(WallId wall_id_init) { wall_id = wall_id_init; }
 
 	EntityTemplateId getEntityId() const { return entity_id; }
 	void setEntityId(EntityTemplateId entity_id_init) { entity_id = entity_id_init; }
@@ -64,8 +64,8 @@ private:
 	BrushAction brush_action = BRUSH_ACTION_DRAW;
 	BrushFill brush_fill = BRUSH_FILL_AREA;
 
-	GroundTypeId ground_id = 1;
-	WallTypeId wall_id = 1;
+	GroundId ground_id = 1;
+	WallId wall_id = 1;
 	EntityTemplateId entity_id = 1;
 
 	const EntityTemplateDb& template_db;

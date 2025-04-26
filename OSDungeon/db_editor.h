@@ -9,9 +9,9 @@ public:
 private:
 	bool selectColorButton(sf::Color* initial_color, int object_id, std::string extra_label = "");
 	bool selectTextureButton(TextureId* texture_id, int object_id, std::string extra_label="");
-	void renderWallRow(WallTypeId id);
+	void renderWallRow(WallId id);
 	void renderWallTable();
-	void renderGroundRow(GroundTypeId id);
+	void renderGroundRow(GroundId id);
 	void renderGroundTable();
 	void renderEntityRow(EntityTemplateId id);
 	void renderEntityTable();

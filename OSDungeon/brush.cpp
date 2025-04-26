@@ -109,8 +109,8 @@ void Brush::enclosingWall(BrushPreview& preview, const Labyrinth& labyrinth, Coo
 		break;
 	}
 	
-	GroundTypeId brush_id = brush_action == BRUSH_ACTION_DRAW ? wall_id : 0;
-	GroundTypeId other_ground = labyrinth.getGroundAbs(coord.x + ground_x_offset, coord.y + ground_y_offset);
+	GroundId brush_id = brush_action == BRUSH_ACTION_DRAW ? wall_id : 0;
+	GroundId other_ground = labyrinth.getGroundAbs(coord.x + ground_x_offset, coord.y + ground_y_offset);
 	WallCoord wall_coord = { coord.x + wall_x_offset, coord.y + wall_y_offset, orient };
 	if ((other_ground == 0 && brush_id == 0) || (other_ground != 0 && brush_id != 0)) {
 		preview.walls[wall_coord] = 0;

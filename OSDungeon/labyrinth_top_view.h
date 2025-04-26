@@ -15,11 +15,11 @@ public:
 	CoordF getMapCoord(float screen_x, float screen_y) const;
 	void render(sf::RenderTarget& target, float mouse_x, float mouse_y) const;
 private:
-	sf::Color groundDrawColor(GroundTypeId id) const;
+	sf::Color groundDrawColor(GroundId id) const;
 	CoordF getGroundScreenSize() const;
 	CoordF getGroundScreenPositionFromMapPosition(int x, int y) const;
-	sf::RectangleShape groundRectangle(int x, int y, GroundTypeId id) const;
-	void drawWall(sf::RenderTarget& render_target, int x, int y, WallOrientation o, WallTypeId id) const;
+	sf::RectangleShape groundRectangle(int x, int y, GroundId id) const;
+	void drawWall(sf::RenderTarget& render_target, int x, int y, WallOrientation o, WallId id) const;
 	void drawGroundEntity(sf::RenderTarget& render_target, const ShallowEntity& entity) const;
 
 	void drawGround(sf::RenderTarget& render_target) const;

@@ -62,13 +62,13 @@ void LabyrinthPOV::turn(RelativeDirection direction)
 
 
 
-GroundTypeId LabyrinthPOV::getGround(int x_offset, int y_offset) const
+GroundId LabyrinthPOV::getGround(int x_offset, int y_offset) const
 {
 	Coord t_coord = transformCoord(Coord(x_offset, y_offset));
 	return labyrinth.getGroundAbs(t_coord.x, t_coord.y);
 }
 
-WallTypeId LabyrinthPOV::getWall(int x_offset, int y_offset, RelativeDirection direction) const
+WallId LabyrinthPOV::getWall(int x_offset, int y_offset, RelativeDirection direction) const
 {
 	CardinalCoord t_coord = transformCoord(RelativeCoord(x_offset, y_offset, direction));
 	return labyrinth.getWallCardinal(t_coord.x, t_coord.y, t_coord.d);

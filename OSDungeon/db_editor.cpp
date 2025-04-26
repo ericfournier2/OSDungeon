@@ -61,7 +61,7 @@ bool DatabaseEditor::selectTextureButton(TextureId* texture_id, int object_id, s
 	return retval;
 }
 
-void DatabaseEditor::renderWallRow(WallTypeId id) {
+void DatabaseEditor::renderWallRow(WallId id) {
 	ImGui::TableNextRow();
 	ImGui::TableNextColumn();
 	std::string id_str = std::to_string(id);
@@ -93,7 +93,7 @@ void DatabaseEditor::renderWallTable() {
 	}
 }
 
-void DatabaseEditor::renderGroundRow(GroundTypeId id) {
+void DatabaseEditor::renderGroundRow(GroundId id) {
 	ImGui::TableNextRow();
 	ImGui::TableNextColumn();
 	std::string id_str = std::to_string(id);

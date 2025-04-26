@@ -17,7 +17,7 @@ std::string printXLineToString(const Labyrinth& l, unsigned int y) {
 
 std::string printGroundTileToString(const Labyrinth& l, unsigned int x, unsigned int y) {
 	std::string retVal;
-	GroundTypeId groundVal = l.getGroundAbs(x, y);
+	GroundId groundVal = l.getGroundAbs(x, y);
 	if (l.getPovX() == x && l.getPovY() == y) {
 		std::string pov_string(" ");
 		switch (l.getPovDirection()) {

@@ -6,19 +6,19 @@
 #include <memory>
 #include <vector>
 
-typedef unsigned int WallTypeId;
-typedef unsigned int GroundTypeId;
+typedef unsigned int WallId;
+typedef unsigned int GroundId;
 typedef unsigned int TextureId;
 typedef int EntityTemplateId;
 
 struct WallInfo {
-	WallTypeId id = 0;
+	WallId id = 0;
 	sf::Color color = sf::Color::White;
 	TextureId texture = 0;
 };
 
 struct GroundInfo {
-	GroundTypeId id = 0;
+	GroundId id = 0;
 	sf::Color ground_color = sf::Color::White;
 	sf::Color ceiling_color = sf::Color::White;
 	TextureId texture = 0;
@@ -154,8 +154,8 @@ private:
 	std::map<TId, TInfo> db_map;
 };
 
-typedef TemplateDb<WallTypeId, WallInfo> WallDb;
-typedef TemplateDb<GroundTypeId, GroundInfo> GroundDb;
+typedef TemplateDb<WallId, WallInfo> WallDb;
+typedef TemplateDb<GroundId, GroundInfo> GroundDb;
 typedef TemplateDb<EntityTemplateId, EntityTemplateInfo> EntityTemplateDb;
 
 struct TextureInfo {
