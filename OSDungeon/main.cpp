@@ -44,7 +44,7 @@ int main()
     template_db.addElement({ 1, MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 105.0f, 83.0f, -52.5f, -60.0f, 5, {0}, {0}, {0}, {0} });
     template_db.addElement({ 2, MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 100.0f, 300.0f, -50.0f, -250.0f, 6, {0}, {0}, {0}, {0} });
     template_db.addElement({ 3, MovementType::FOLLOW, CollisionType::NONE, InteractionType::NONE, 50.0f, 50.0f, -25.0f, -40.0f, 7, {0}, {0}, {0}, {0} });
-    template_db.addElement({ 4, MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 200.0f, 200.0f, -100.0f, -180.0f, 8, {0}, {3}, {6}, {6} });
+    template_db.addElement({ 4, MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 200.0f, 200.0f, -100.0f, -180.0f, 8, {0, 1, 0, 2}, {3, 4, 3, 5}, {6, 7, 8}, {6, 7, 8, 7} });
 
     Databases db(ground_db, wall_db, texture_db, template_db);
 

@@ -175,6 +175,8 @@ RelativeDirection getEntityFacing(CardinalDirection pov_d, CardinalDirection ent
 	return RelativeDirection::LEFT;
 }
 
+static sf::Clock animation_clock;
+
 bool LabyrinthView::renderGround(RenderStep step) {
 	//std::cout << "Currently rendering: ";
 	//step.print();
@@ -219,7 +221,11 @@ bool LabyrinthView::renderGround(RenderStep step) {
 		sf::Sprite sprite(*tex_info.texture);
 		RelativeDirection ent_facing = getEntityFacing(labyrinth.getPov().d, entity.direction);
 		TileVec tiles = entity.getTiles(template_db, ent_facing);
-		sprite.setTextureRect(tex_info.getTextureRect(tiles[0]));
+
+		sf::Time animation_time = animation_clock.getElapsedTime();
+		int millisecond = animation_time.asMilliseconds() % 1000;
+		int tile = (millisecond / (1000 / tiles.size())) % tiles.size();
+		sprite.setTextureRect(tex_info.getTextureRect(tiles[tile]));
 		sprite.setPosition({ final_x_offset, final_y_offset });
 		sprite.setScale({ 1 / scale_factor, 1 / scale_factor });
 		rt.draw(sprite);
