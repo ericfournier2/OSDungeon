@@ -214,8 +214,6 @@ bool LabyrinthView::renderGround(RenderStep step) {
 		float final_y_size = entity.getYSize(template_db) / scale_factor;
 		float tile_center_x = (ground1.x + ground2.x + ground3.x + ground4.x) / 4.0f;
 		float tile_center_y = (ground1.y + ground2.y + ground3.y + ground4.y) / 4.0f;
-		float final_x_offset = tile_center_x + (entity.getXOffset(template_db) / scale_factor);
-		float final_y_offset = tile_center_y + (entity.getYOffset(template_db) / scale_factor);
 
 		TextureInfo tex_info = texture_db.getTexture(entity.getTexture(template_db));
 		sf::Sprite sprite(*tex_info.texture);
@@ -225,9 +223,18 @@ bool LabyrinthView::renderGround(RenderStep step) {
 		sf::Time animation_time = animation_clock.getElapsedTime();
 		int millisecond = animation_time.asMilliseconds() % 1000;
 		int tile = (millisecond / (1000 / tiles.size())) % tiles.size();
-		sprite.setTextureRect(tex_info.getTextureRect(tiles[tile]));
+		sprite.setTextureRect(tex_info.getTextureRect(abs(tiles[tile])));
+
+		float mirror_scale = 1;
+		if (tiles[tile] < 0) {
+			mirror_scale = -1;
+		}
+
+		float final_x_offset = tile_center_x + (entity.getXOffset(template_db) / scale_factor) * mirror_scale;
+		float final_y_offset = tile_center_y + (entity.getYOffset(template_db) / scale_factor);
+
 		sprite.setPosition({ final_x_offset, final_y_offset });
-		sprite.setScale({ 1 / scale_factor, 1 / scale_factor });
+		sprite.setScale({ 1 / scale_factor * mirror_scale, 1 / scale_factor });
 		rt.draw(sprite);
 	}
 

@@ -8,6 +8,7 @@ Entity::Entity(ShallowEntity& info_init, const EntityTemplateDb& template_db_ini
 
 bool Entity::moveCardinal(const Labyrinth& labyrinth, CardinalDirection d) {
 	if (labyrinth.canMove(getX(), getY(), d)) {
+		info.direction = d;
 		switch (d) {
 		case NORTH:
 			info.y += 1;
