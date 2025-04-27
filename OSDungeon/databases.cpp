@@ -121,10 +121,10 @@ bool EntityTemplateInfo::write(std::ofstream& stream) const {
 	stream.write(reinterpret_cast<const char*>(&y_offset), sizeof(float));
 	stream.write(reinterpret_cast<const char*>(&texture), sizeof(TextureId));
 
-	writeTileVec(north, stream);
-	writeTileVec(south, stream);
-	writeTileVec(east, stream);
-	writeTileVec(west, stream);
+	writeTileVec(front, stream);
+	writeTileVec(back, stream);
+	writeTileVec(left, stream);
+	writeTileVec(right, stream);
 
 	return !stream.fail();
 }
@@ -153,28 +153,28 @@ bool EntityTemplateInfo::read(std::ifstream& stream) {
 	stream.read(reinterpret_cast<char*>(&y_offset), sizeof(float));
 	stream.read(reinterpret_cast<char*>(&texture), sizeof(TextureId));
 
-	north = readTileVec(stream);
-	south = readTileVec(stream);
-	east = readTileVec(stream);
-	west = readTileVec(stream);
+	front = readTileVec(stream);
+	back = readTileVec(stream);
+	left = readTileVec(stream);
+	right = readTileVec(stream);
 	return !stream.fail();
 }
 
-const TileVec& EntityTemplateInfo::getTileVec(CardinalDirection d) const {
+const TileVec& EntityTemplateInfo::getTileVec(RelativeDirection d) const {
 	switch (d) {
-	case CardinalDirection::NORTH:
-		return north;
+	case RelativeDirection::FRONT:
+		return front;
 		break;
-	case CardinalDirection::SOUTH:
-		return south;
+	case RelativeDirection::BACK:
+		return back;
 		break;
-	case CardinalDirection::EAST:
-		return east;
+	case RelativeDirection::LEFT:
+		return left;
 		break;
-	case CardinalDirection::WEST:
-		return west;
+	case RelativeDirection::RIGHT:
+		return right;
 		break;
 	}
 
-	return north;
+	return front;
 }

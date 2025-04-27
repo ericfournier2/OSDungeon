@@ -159,6 +159,22 @@ void LabyrinthView::drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf
 	}
 }
 
+RelativeDirection getEntityFacing(CardinalDirection pov_d, CardinalDirection entity_d) {
+	if (pov_d == entity_d) {
+		return RelativeDirection::BACK;
+	}
+
+	if (((pov_d + 1) % 4) == entity_d) {
+		return RelativeDirection::RIGHT;
+	}
+
+	if (((pov_d + 2) % 4) == entity_d) {
+		return RelativeDirection::FRONT;
+	}
+
+	return RelativeDirection::LEFT;
+}
+
 bool LabyrinthView::renderGround(RenderStep step) {
 	//std::cout << "Currently rendering: ";
 	//step.print();
@@ -201,7 +217,8 @@ bool LabyrinthView::renderGround(RenderStep step) {
 
 		TextureInfo tex_info = texture_db.getTexture(entity.getTexture(template_db));
 		sf::Sprite sprite(*tex_info.texture);
-		TileVec tiles = entity.getTiles(template_db, CardinalDirection::NORTH);
+		RelativeDirection ent_facing = getEntityFacing(labyrinth.getPov().d, entity.direction);
+		TileVec tiles = entity.getTiles(template_db, ent_facing);
 		sprite.setTextureRect(tex_info.getTextureRect(tiles[0]));
 		sprite.setPosition({ final_x_offset, final_y_offset });
 		sprite.setScale({ 1 / scale_factor, 1 / scale_factor });

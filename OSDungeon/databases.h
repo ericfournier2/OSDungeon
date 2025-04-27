@@ -82,14 +82,14 @@ struct EntityTemplateInfo {
 	float x_offset = 0.0f;
 	float y_offset = 0.0f;
 	TextureId texture = 0;
-	TileVec north;
-	TileVec south;
-	TileVec east;
-	TileVec west;
+	TileVec front;
+	TileVec back;
+	TileVec left;
+	TileVec right;
 
 	bool write(std::ofstream& stream) const;
 	bool read(std::ifstream& stream);
-	const TileVec& getTileVec(CardinalDirection d) const;
+	const TileVec& getTileVec(RelativeDirection d) const;
 };
 
 template <typename TId, typename TInfo>
