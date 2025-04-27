@@ -84,7 +84,11 @@ void LabyrinthTopView::drawBrush(sf::RenderTarget& render_target, float mouse_x,
 
 void LabyrinthTopView::drawGroundEntity(sf::RenderTarget& render_target, const ShallowEntity& entity) const {
 	CoordF rect_size = getGroundScreenSize();
-	sf::Sprite entity_sprite(*db.tdb.getTexture(entity.getTexture(db.edb)).texture);
+
+	TextureInfo tex_info = db.tdb.getTexture(entity.getTexture(db.edb));
+	TileVec tiles = entity.getTiles(db.edb, RelativeDirection::FRONT);
+	sf::Sprite entity_sprite(*tex_info.texture);
+	entity_sprite.setTextureRect(tex_info.getTextureRect(tiles[0]));
 	entity_sprite.setPosition(getGroundScreenPositionFromMapPosition(entity.x, entity.y));
 	float scale_factor = grid_spacing / std::max(entity.getXSize(db.edb), entity.getYSize(db.edb));
 	entity_sprite.setScale({ scale_factor, scale_factor });
