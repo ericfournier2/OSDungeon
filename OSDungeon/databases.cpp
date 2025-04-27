@@ -1,6 +1,20 @@
 #include <memory>
 #include "databases.h"
 
+sf::IntRect TextureInfo::getTextureRect(int index) const {
+	auto tex_size = texture->getSize();
+	int tile_per_row = tex_size.x / tile_size_x;
+	int tile_per_col = tex_size.y / tile_size_y;
+	
+	int row = index / tile_per_row;
+	int col = index % tile_per_row;
+
+	int pos_x = col * tile_size_x;
+	int pos_y = row * tile_size_y;
+
+	return sf::IntRect({ pos_x, pos_y }, { tile_size_x, tile_size_y });
+}
+
 
 TextureDb::TextureDb() {
 	empty_info.id = 0;
@@ -8,11 +22,15 @@ TextureDb::TextureDb() {
 	empty_info.texture = empty_texture;
 }
 
-TextureId TextureDb::loadNewTexture(TextureId id, const std::string& filename) {
+TextureId TextureDb::loadNewTexture(TextureId id, const std::string& filename, int tile_size_x, int tile_size_y) {
 	std::string full_filename("assets\\textures\\");
 	full_filename.append(filename);
 	auto ptr = std::make_shared<sf::Texture>(filename);
-	TextureInfo info = TextureInfo({ id, filename, ptr });
+	if (tile_size_x == 0) {
+		tile_size_x = ptr->getSize().x;
+		tile_size_y = ptr->getSize().y;
+	}
+	TextureInfo info = TextureInfo({ id, tile_size_x, tile_size_y, filename, ptr });
 	texture_map.emplace(id, info);
 
 	return id;
@@ -41,9 +59,13 @@ bool TextureDb::readFromStream(std::ifstream& stream) {
 	for (int i = 0; i < db_size; ++i) {
 		TextureId id;
 		stream.read(reinterpret_cast<char*>(&id), sizeof(id));
+		int tile_size_x = 0;
+		stream.read(reinterpret_cast<char*>(&tile_size_x), sizeof(tile_size_x));
+		int tile_size_y = 0;
+		stream.read(reinterpret_cast<char*>(&tile_size_y), sizeof(tile_size_y));
 		std::string filename;
 		std::getline(stream, filename, '\0');
-		loadNewTexture(id, filename);
+		loadNewTexture(id, filename, tile_size_x, tile_size_y);
 	}
 	return !stream.fail();
 }
@@ -63,6 +85,8 @@ bool TextureDb::writeToStream(std::ofstream& stream) const {
 	stream.write(reinterpret_cast<char*>(&db_size), sizeof(db_size));
 	for (const auto& [key, value] : texture_map) {
 		stream.write(reinterpret_cast<const char*>(&key), sizeof(key));
+		stream.write(reinterpret_cast<const char*>(&value.tile_size_x), sizeof(value.tile_size_x));
+		stream.write(reinterpret_cast<const char*>(&value.tile_size_y), sizeof(value.tile_size_y));
 		//stream.write(reinterpret_cast<const char*>(value.texture_filename.c_str()), value.texture_filename.size() + 1);
 		stream << value.texture_filename << '\0';
 	}
@@ -77,4 +101,80 @@ bool TextureDb::writeToFile(const std::string& filename) const {
 		success = writeToStream(stream);
 	}
 	return success;
+}
+
+void writeTileVec(TileVec tiles, std::ofstream& stream) {
+	auto vec_size = tiles.size();
+	stream.write(reinterpret_cast<const char*>(&vec_size), sizeof(vec_size));
+	for (const auto& tile : tiles) {
+		stream.write(reinterpret_cast<const char*>(&tile), sizeof(tile));
+	}
+}
+
+bool EntityTemplateInfo::write(std::ofstream& stream) const {
+	stream.write(reinterpret_cast<const char*>(&id), sizeof(EntityTemplateId));
+	stream.write(reinterpret_cast<const char*>(&movement), sizeof(MovementType));
+	stream.write(reinterpret_cast<const char*>(&collision), sizeof(CollisionType));
+	stream.write(reinterpret_cast<const char*>(&x_size), sizeof(float));
+	stream.write(reinterpret_cast<const char*>(&y_size), sizeof(float));
+	stream.write(reinterpret_cast<const char*>(&x_offset), sizeof(float));
+	stream.write(reinterpret_cast<const char*>(&y_offset), sizeof(float));
+	stream.write(reinterpret_cast<const char*>(&texture), sizeof(TextureId));
+
+	writeTileVec(north, stream);
+	writeTileVec(south, stream);
+	writeTileVec(east, stream);
+	writeTileVec(west, stream);
+
+	return !stream.fail();
+}
+
+TileVec readTileVec(std::ifstream& stream) {
+	TileVec retval;
+	auto vec_size = retval.size();
+
+	stream.read(reinterpret_cast<char*>(&vec_size), sizeof(vec_size));
+	for (int c = 0; c < vec_size; ++c) {
+		TileId tile_id;
+		stream.read(reinterpret_cast<char*>(&tile_id), sizeof(tile_id));
+		retval.push_back(tile_id);
+	}
+
+	return retval;
+}
+
+bool EntityTemplateInfo::read(std::ifstream& stream) {
+	stream.read(reinterpret_cast<char*>(&id), sizeof(EntityTemplateId));
+	stream.read(reinterpret_cast<char*>(&movement), sizeof(MovementType));
+	stream.read(reinterpret_cast<char*>(&collision), sizeof(CollisionType));
+	stream.read(reinterpret_cast<char*>(&x_size), sizeof(float));
+	stream.read(reinterpret_cast<char*>(&y_size), sizeof(float));
+	stream.read(reinterpret_cast<char*>(&x_offset), sizeof(float));
+	stream.read(reinterpret_cast<char*>(&y_offset), sizeof(float));
+	stream.read(reinterpret_cast<char*>(&texture), sizeof(TextureId));
+
+	north = readTileVec(stream);
+	south = readTileVec(stream);
+	east = readTileVec(stream);
+	west = readTileVec(stream);
+	return !stream.fail();
+}
+
+const TileVec& EntityTemplateInfo::getTileVec(CardinalDirection d) const {
+	switch (d) {
+	case CardinalDirection::NORTH:
+		return north;
+		break;
+	case CardinalDirection::SOUTH:
+		return south;
+		break;
+	case CardinalDirection::EAST:
+		return east;
+		break;
+	case CardinalDirection::WEST:
+		return west;
+		break;
+	}
+
+	return north;
 }

@@ -199,7 +199,10 @@ bool LabyrinthView::renderGround(RenderStep step) {
 		float final_x_offset = tile_center_x + (entity.getXOffset(template_db) / scale_factor);
 		float final_y_offset = tile_center_y + (entity.getYOffset(template_db) / scale_factor);
 
-		sf::Sprite sprite(*(texture_db.getTexture(entity.getTexture(template_db)).texture));
+		TextureInfo tex_info = texture_db.getTexture(entity.getTexture(template_db));
+		sf::Sprite sprite(*tex_info.texture);
+		TileVec tiles = entity.getTiles(template_db, CardinalDirection::NORTH);
+		sprite.setTextureRect(tex_info.getTextureRect(tiles[0]));
 		sprite.setPosition({ final_x_offset, final_y_offset });
 		sprite.setScale({ 1 / scale_factor, 1 / scale_factor });
 		rt.draw(sprite);

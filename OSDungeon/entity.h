@@ -28,6 +28,7 @@ public:
 	InteractionType getInteractionType() const { return getTemplate().interaction; }
 	//void setLabyrinth(Labyrinth* labyrinth_init) { labyrinth = labyrinth_init; }
 	TextureId getTexture() const { return getTemplate().texture; }
+	const TileVec& getTiles(CardinalDirection d) const { return getTemplate().getTileVec(d); };
 
 	void move(const Labyrinth& labyrinth, GameState& state);
 	bool collide(const Labyrinth& labyrinth, GameState& state);

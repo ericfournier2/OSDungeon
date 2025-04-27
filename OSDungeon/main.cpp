@@ -38,11 +38,13 @@ int main()
     texture_db.loadNewTexture(5, "assets/textures/ChestSprite.png");
     texture_db.loadNewTexture(6, "assets/textures/TreeSprite.png");
     texture_db.loadNewTexture(7, "assets/textures/BunnySprite.png");
+    texture_db.loadNewTexture(8, "assets/textures/Bunny2.png", 200, 200);
 
     EntityTemplateDb template_db;
-    template_db.addElement({ 1, MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 105.0f, 83.0f, -52.5f, -60.0f, 5 });
-    template_db.addElement({ 2, MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 100.0f, 300.0f, -50.0f, -250.0f, 6 });
-    template_db.addElement({ 3, MovementType::FOLLOW, CollisionType::LETHAL, InteractionType::NONE, 50.0f, 50.0f, -25.0f, -40.0f, 7 });
+    template_db.addElement({ 1, MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 105.0f, 83.0f, -52.5f, -60.0f, 5, {0}, {0}, {0}, {0} });
+    template_db.addElement({ 2, MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 100.0f, 300.0f, -50.0f, -250.0f, 6, {0}, {0}, {0}, {0} });
+    template_db.addElement({ 3, MovementType::FOLLOW, CollisionType::NONE, InteractionType::NONE, 50.0f, 50.0f, -25.0f, -40.0f, 7, {0}, {0}, {0}, {0} });
+    template_db.addElement({ 4, MovementType::FOLLOW, CollisionType::NONE, InteractionType::NONE, 50.0f, 50.0f, -25.0f, -40.0f, 8, {0}, {3}, {6}, {6} });
 
     Databases db(ground_db, wall_db, texture_db, template_db);
 

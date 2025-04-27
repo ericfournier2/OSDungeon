@@ -6,6 +6,8 @@
 #include <memory>
 #include <vector>
 
+#include "common.h"
+
 typedef unsigned int WallId;
 typedef unsigned int GroundId;
 typedef unsigned int TextureId;
@@ -15,6 +17,15 @@ struct WallInfo {
 	WallId id = 0;
 	sf::Color color = sf::Color::White;
 	TextureId texture = 0;
+
+	bool write(std::ofstream& stream) const {
+		stream.write(reinterpret_cast<const char*>(this), sizeof(WallInfo));
+		return !stream.fail();
+	}
+	bool read(std::ifstream& stream) {
+		stream.read(reinterpret_cast<char*>(this), sizeof(WallInfo));
+		return !stream.fail();
+	}
 };
 
 struct GroundInfo {
@@ -22,6 +33,15 @@ struct GroundInfo {
 	sf::Color ground_color = sf::Color::White;
 	sf::Color ceiling_color = sf::Color::White;
 	TextureId texture = 0;
+
+	bool write(std::ofstream& stream) const {
+		stream.write(reinterpret_cast<const char*>(this), sizeof(GroundInfo));
+		return !stream.fail();
+	}
+	bool read(std::ifstream& stream) {
+		stream.read(reinterpret_cast<char*>(this), sizeof(GroundInfo));
+		return !stream.fail();
+	}
 };
 
 enum class MovementType {
@@ -44,6 +64,13 @@ enum class InteractionType {
 	DIALOG
 };
 
+struct AnimationInfo {
+	TextureId texture_id;
+	std::vector<int> tiles;
+};
+
+typedef int TileId;
+typedef std::vector<TileId> TileVec;
 
 struct EntityTemplateInfo {
 	EntityTemplateId id;
@@ -55,6 +82,14 @@ struct EntityTemplateInfo {
 	float x_offset = 0.0f;
 	float y_offset = 0.0f;
 	TextureId texture = 0;
+	TileVec north;
+	TileVec south;
+	TileVec east;
+	TileVec west;
+
+	bool write(std::ofstream& stream) const;
+	bool read(std::ifstream& stream);
+	const TileVec& getTileVec(CardinalDirection d) const;
 };
 
 template <typename TId, typename TInfo>
@@ -69,7 +104,7 @@ public:
 		stream.read(reinterpret_cast<char *>(&db_size), sizeof(db_size));
 		for (int i = 0; i < db_size; ++i) {
 			TInfo info;
-			stream.read(reinterpret_cast<char*>(&info), sizeof(TInfo));
+			info.read(stream);
 			db_map.emplace(info.id, info);
 		}
 		return !stream.fail();
@@ -89,7 +124,7 @@ public:
 		auto db_size = db_map.size();
 		stream.write(reinterpret_cast<char*>(&db_size), sizeof(db_size));
 		for (const auto& [key, value] : db_map) {
-			stream.write(reinterpret_cast<const char*>(&value), sizeof(value));
+			value.write(stream);
 		}
 		return !stream.fail();
 	}
@@ -160,14 +195,18 @@ typedef TemplateDb<EntityTemplateId, EntityTemplateInfo> EntityTemplateDb;
 
 struct TextureInfo {
 	TextureId id;
+	int tile_size_x;
+	int tile_size_y;
 	std::string texture_filename;
 	std::shared_ptr<sf::Texture> texture;
+
+	sf::IntRect getTextureRect(int index) const;
 };
 
 class TextureDb {
 public:
 	TextureDb();
-	TextureId loadNewTexture(TextureId id, const std::string& filename);
+	TextureId loadNewTexture(TextureId id, const std::string& filename, int tile_size_x = 0, int tile_size_y = 0);
 	TextureInfo getTexture(TextureId id) const;
 	std::vector<TextureId> getIds() const;
 	bool writeToFile(const std::string& filename) const;

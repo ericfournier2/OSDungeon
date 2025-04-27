@@ -38,7 +38,7 @@ void Entity::move(const Labyrinth& labyrinth, GameState& state)
 	} else if (getMovementType() == MovementType::FOLLOW) {
 		if (labyrinth.hasLOS(state.getPlayerPos().x, state.getPlayerPos().y, info.x, info.y)) {
 			std::optional<Path> player_path = labyrinth.findPath(info.x, info.y, state.getPlayerPos().x, state.getPlayerPos().y);
-			if (player_path) {
+			if (player_path && player_path.value().size() > 0) {
 				moveCardinal(labyrinth, player_path.value()[0]);
 			}
 		}

@@ -28,6 +28,7 @@ struct ShallowEntity {
 	InteractionType getInteractionType(const EntityTemplateDb& edb) const { return getTemplate(edb).interaction; }
 	//void setLabyrinth(Labyrinth* labyrinth_init) { labyrinth = labyrinth_init; }
 	TextureId getTexture(const EntityTemplateDb& edb) const { return getTemplate(edb).texture; }
+	TileVec getTiles(const EntityTemplateDb& edb, CardinalDirection d) const { return getTemplate(edb).getTileVec(d); };
 
 	EntityTemplateInfo getTemplate(const EntityTemplateDb& edb) const { return edb.getElement(template_id); }
 
