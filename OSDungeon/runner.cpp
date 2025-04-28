@@ -2,11 +2,11 @@
 #include "runner.h"
 
 Runner::Runner(const Labyrinth& labyrinth_init, const Databases& db_init)
-	: labyrinth(labyrinth_init), entities(labyrinth.getEntityManager()), pov(labyrinth, entities), db(db_init), window(sf::VideoMode({ 400, 300 }), "Maze 1st person view"),
-	lv(pov, db.gdb, db.wdb, db.tdb, db.edb, window)
+	: labyrinth(labyrinth_init), entities(labyrinth.getEntityManager()), pov(labyrinth, entities), db(db_init), window(sf::VideoMode({ window_width, window_height }), "Maze 1st person view"),
+	lv(pov, db.gdb, db.wdb, db.tdb, db.edb, window, lv_width, lv_height)
 {
-	window.setPosition({ 2000, 400 });
-	font.openFromFile("assets/LEMONMILK-Regular.otf");
+	window.setPosition({ 2000, 100 });
+	font.openFromFile("assets/MorrisRomanBlack.otf");
 }
 
 void Runner::render() {
@@ -104,18 +104,68 @@ void Runner::tick()
 	}
 }
 
+void Runner::printCenteredDialogText(const std::string& message, int line_number, float text_left_start, float text_top_start, float text_max_width) {
+	sf::Text text(font, message, dialog_char_size);
+	text.setFillColor(sf::Color::Black);
+
+	float text_width = text.getLocalBounds().size.x;
+	float text_x = text_left_start + ((text_max_width - text_width) / 2);
+	float text_y = text_top_start + (line_number * dialog_char_size);
+	text.setPosition({ text_x, text_y });
+	window.draw(text);
+}
+
 void Runner::displayMessageBox()
 {
-	sf::RectangleShape dialog_box({ 200.0f, 200.0f });
-	dialog_box.setPosition({ 100.0f, 50.0f });
+	float dialog_width = lv_width * (1 - dialog_left_margin - dialog_right_margin);
+	float dialog_height = lv_height * (1 - dialog_top_margin - dialog_bottom_margin);
+	float dialog_x_pos = lv_width * dialog_left_margin;
+	float dialog_y_pos = lv_width * dialog_top_margin;
+
+	sf::RectangleShape dialog_box({ dialog_width, dialog_height });
+	dialog_box.setPosition({ dialog_x_pos, dialog_y_pos });
 	dialog_box.setFillColor(sf::Color::White);
 	dialog_box.setOutlineColor(sf::Color::Black);
 	dialog_box.setOutlineThickness(4.0f);
 
 	window.draw(dialog_box);
 
-	sf::Text text(font, gs.getMessage(), 24);
-	text.setFillColor(sf::Color::Black);
-	text.setPosition({ 110.0f, 60.0f });
-	window.draw(text);
+	float text_max_width = dialog_width * (1 - text_left_margin - text_right_margin);
+	float text_left_start = dialog_x_pos + (dialog_width * text_left_margin);
+	float text_top_start = dialog_y_pos + (dialog_height * text_top_margin);
+	int max_char_per_row = text_max_width / dialog_char_size;
+	std::string full_message = gs.getMessage();
+	std::string::iterator it = full_message.begin();
+	std::string::iterator next_to_print = full_message.begin();
+	std::string::iterator last_space = full_message.begin();
+	std::string::iterator end = full_message.end();
+
+	int current_length = 0;
+	int n_line = 0;
+	sf::Text next_text(font, "", dialog_char_size);
+	while (it != end) {
+		if (*it == ' ' || *it == '\n') {
+			last_space = it;
+		}
+
+		next_text.setString(std::string(next_to_print, it));
+		float width = next_text.getLocalBounds().size.x;
+
+		if (*it == '\n' || width >= text_max_width) {
+			std::string message(next_to_print, last_space);
+			printCenteredDialogText(message, n_line, text_left_start, text_top_start, text_max_width);
+			++n_line;
+			next_to_print = last_space;
+			++next_to_print;
+			last_space = next_to_print;
+			current_length = 0;
+		}
+		
+		++it;
+		++current_length;
+	}
+	std::string message(next_to_print, it);
+	printCenteredDialogText(message, n_line, text_left_start, text_top_start, text_max_width);
+
+
 }

@@ -52,7 +52,7 @@ bool Entity::collide(const Labyrinth& labyrinth, GameState& state)
 		state.showDialog("You got the\ntreasure!");
 		return true;
 	} else if (getCollisionType() == CollisionType::LETHAL) {
-		state.gameOver("The bunny ate\nyou. =(");
+		state.gameOver("WWWWWWWWWWWWWWWWWWWWWW Let's write a really long sentence. The kind of sentence that will NEED line wrap. The kind of sentence that will make an epic dialog box. The kind of sentence that never ends. Ooops, that's actually a paragraph, not a single sentence. Shucks. Whatever will I do? The bunny ate you. =(");
 	}
 
 	return false;

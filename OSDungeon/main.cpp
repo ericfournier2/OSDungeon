@@ -41,12 +41,14 @@ int main()
     texture_db.loadNewTexture(6, "assets/textures/TreeSprite.png");
     texture_db.loadNewTexture(7, "assets/textures/BunnySprite.png");
     texture_db.loadNewTexture(8, "assets/textures/Bunny2.png", 200, 200);
+    texture_db.loadNewTexture(9, "assets/textures/BunnyChest.png", 400, 250);
 
     EntityTemplateDb template_db;
     template_db.addElement({ 1, MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 105.0f, 83.0f, -52.5f, -60.0f, 5, {0}, {0}, {0}, {0} });
     template_db.addElement({ 2, MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 100.0f, 300.0f, -50.0f, -250.0f, 6, {0}, {0}, {0}, {0} });
     template_db.addElement({ 3, MovementType::FOLLOW, CollisionType::PICKABLE, InteractionType::NONE, 50.0f, 50.0f, -25.0f, -40.0f, 7, {0}, {0}, {0}, {0} });
     template_db.addElement({ 4, MovementType::WANDER, CollisionType::LETHAL, InteractionType::NONE, 200.0f, 200.0f, -100.0f, -180.0f, 8, {0, 1, 0, 2}, {3, 4, 3, 5}, {6, 7, 8, 7}, {-6, -7, -8, -7} });
+    template_db.addElement({ 5, MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 400.0f, 250.0f, -200.0f, -220.0f, 9, {0}, {1}, {2}, {-2} });
 
     Databases db(ground_db, wall_db, texture_db, template_db);
 
@@ -58,6 +60,8 @@ int main()
     ShallowEntity bunny1 = ShallowEntity(5, 3, 0, 1, CardinalDirection::NORTH);
     ShallowEntity bunny2 = ShallowEntity(6, 3, 1, 0, CardinalDirection::NORTH);
     ShallowEntity bunny3 = ShallowEntity(7, 4, 1, 1, CardinalDirection::NORTH);
+    ShallowEntity bunny_chest = ShallowEntity(8, 5, 2, 2, CardinalDirection::SOUTH);
+
 
     test.getEntityManager().addEntity(chest1);
     test.getEntityManager().addEntity(chest2);
@@ -66,6 +70,7 @@ int main()
     test.getEntityManager().addEntity(bunny1);
     test.getEntityManager().addEntity(bunny2);
     test.getEntityManager().addEntity(bunny3);
+    test.getEntityManager().addEntity(bunny_chest);
 
     //test.loadFromFile("current.labyrinth");
     //Runner runner = Runner(test, db);
