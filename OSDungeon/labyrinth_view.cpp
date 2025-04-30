@@ -130,6 +130,13 @@ CoordF LabyrinthView::mapCoordToProjection(float x, float y, float d) const {
 	return CoordF({ static_cast<float>(x0 + (x * x_scale)), static_cast<float>(y0 + (y * y_scale)) });
 }
 
+sf::IntRect getTexRect(int x1, int y1, int x2, int y2, const sf::RenderTarget& rt, const sf::Texture* texture) {
+	return sf::IntRect({ static_cast<int>(((float)x1 / rt.getSize().x) * texture->getSize().x),
+		static_cast<int>(((float)y1 / rt.getSize().y) * texture->getSize().y)},
+		{ static_cast<int>(((float)x2 / rt.getSize().x) * texture->getSize().x),
+		static_cast<int>(((float)y2 / rt.getSize().y) * texture->getSize().y) });
+}
+
 void LabyrinthView::drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf::Color color, const sf::Texture* texture, TextureType texture_type, bool outline) {
 	sf::ConvexShape shape;
 	shape.setPointCount(4);
@@ -141,26 +148,28 @@ void LabyrinthView::drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf
 			int min_y = static_cast<int>(std::min({ p1.y, p2.y, p3.y, p4.y }));
 			int max_x = static_cast<int>(std::max({ p1.x, p2.x, p3.x, p4.x }));
 			int max_y = static_cast<int>(std::max({ p1.y, p2.y, p3.y, p4.y }));
-			shape.setTextureRect(sf::IntRect({ min_x, min_y }, { max_x - min_x, max_y - min_y }));
+			//shape.setTextureRect(sf::IntRect({ min_x, min_y }, { max_x - min_x, max_y - min_y }));
+			shape.setTextureRect(getTexRect(min_x, min_y, max_x - min_x, max_y - min_y, rt, texture));
 		}
 		else if (texture_type == TextureType::FRONT_WALL_TEXTURE) {
 			CoordF wall1 = mapCoordToProjection(0.0f, 0.0f, camera_distance);
 			CoordF wall3 = mapCoordToProjection(1.0f, 1.0f, camera_distance);
-			shape.setTextureRect(sf::IntRect({ (int)wall1.x, (int)wall1.y}, { (int)(wall3.x - wall1.x), (int)(wall3.y - wall1.y) }));
-		}
-		else if (texture_type == TextureType::LEFT_WALL_TEXTURE) {
+			//shape.setTextureRect(sf::IntRect({ (int)wall1.x, (int)wall1.y}, { (int)(wall3.x - wall1.x), (int)(wall3.y - wall1.y) }));
+			shape.setTextureRect(getTexRect((int)wall1.x, (int)wall1.y, (int)(wall3.x - wall1.x), (int)(wall3.y - wall1.y), rt, texture));
+		} else if (texture_type == TextureType::LEFT_WALL_TEXTURE) {
 			CoordF wall1 = mapCoordToProjection(0.0f, 0.0f, 0.0f);
 			CoordF wall2 = mapCoordToProjection(0.0f, 0.0f, camera_distance);
 			CoordF wall4 = mapCoordToProjection(0.0f, 1.0f, 0.0f);
-			shape.setTextureRect(sf::IntRect({ (int)wall1.x, (int)wall1.y }, { (int) (wall2.x - wall1.x), (int)(wall4.y - wall1.y) }));
-		}
-		else if (texture_type == TextureType::RIGHT_WALL_TEXTURE) {
+			//shape.setTextureRect(sf::IntRect({ (int)wall1.x, (int)wall1.y }, { (int) (wall2.x - wall1.x), (int)(wall4.y - wall1.y) }));
+			shape.setTextureRect(getTexRect((int)wall1.x, (int)wall1.y, (int)(wall2.x - wall1.x), (int)(wall4.y - wall1.y), rt, texture));
+		} else if (texture_type == TextureType::RIGHT_WALL_TEXTURE) {
 			CoordF wall1 = mapCoordToProjection(1.0f, 0.0f, 0.0f);
 			CoordF wall2 = mapCoordToProjection(1.0f, 0.0f, camera_distance);
 			CoordF wall3 = mapCoordToProjection(1.0f, 1.0f, camera_distance);
 			CoordF wall4 = mapCoordToProjection(1.0f, 1.0f, 0.0f);
 
-			shape.setTextureRect(sf::IntRect({ (int)wall3.x, (int)wall1.y }, { (int)(wall1.x - wall3.x), (int)(wall4.y - wall1.y) }));
+			//shape.setTextureRect(sf::IntRect({ (int)wall3.x, (int)wall1.y }, { (int)(wall1.x - wall3.x), (int)(wall4.y - wall1.y) }));
+			shape.setTextureRect(getTexRect((int)wall3.x, (int)wall1.y, (int)(wall1.x - wall3.x), (int)(wall4.y - wall1.y), rt, texture));
 		}
 		
 	}
