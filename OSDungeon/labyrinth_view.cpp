@@ -250,7 +250,7 @@ bool LabyrinthView::renderGround(RenderStep step) {
 
 		sf::Time animation_time = animation_clock.getElapsedTime();
 		int millisecond = animation_time.asMilliseconds() % 1000;
-		int tile = (millisecond / (1000 / tiles.size())) % tiles.size();
+		auto tile = (millisecond / (1000 / tiles.size())) % tiles.size();
 		sprite.setTextureRect(tex_info.getTextureRect(abs(tiles[tile])));
 
 		float mirror_scale = 1;
@@ -310,9 +310,9 @@ bool LabyrinthView::renderWall(RenderStep step) {
 
 bool LabyrinthView::renderBackground() {
 	CoordF top_left = { 0.0f, 0.0f };
-	CoordF bottom_left = {0.0f, rt.getSize().y };
-	CoordF bottom_right = { rt.getSize().x,rt.getSize().y };
-	CoordF top_right = { rt.getSize().x, 0.0f };
+	CoordF bottom_left = {0.0f, (float)rt.getSize().y };
+	CoordF bottom_right = { (float) rt.getSize().x,(float) rt.getSize().y };
+	CoordF top_right = { (float) rt.getSize().x, 0.0f };
 	
 	drawPrimitive(top_left, bottom_left, bottom_right, top_right, sf::Color::White, texture_db.getTexture(10).texture.get(), GROUND_TEXTURE, false);
 

@@ -133,7 +133,7 @@ void Runner::displayMessageBox()
 	float text_max_width = dialog_width * (1 - text_left_margin - text_right_margin);
 	float text_left_start = dialog_x_pos + (dialog_width * text_left_margin);
 	float text_top_start = dialog_y_pos + (dialog_height * text_top_margin);
-	int max_char_per_row = text_max_width / dialog_char_size;
+	int max_char_per_row = static_cast<int>(text_max_width / dialog_char_size);
 	std::string full_message = gs.getMessage();
 	std::string::iterator it = full_message.begin();
 	std::string::iterator next_to_print = full_message.begin();

@@ -21,20 +21,20 @@ private:
 	void handleKeyPressWaitingForInput(const sf::Event::KeyPressed* keyPressed);
 	void handleKeyPressOther(const sf::Event::KeyPressed* keyPressed);
 
-	unsigned int window_width = 1200;
-	unsigned int window_height = 900;
+	unsigned int window_width = 400;
+	unsigned int window_height = 300;
 	int lv_width = window_width;
 	int lv_height = window_height;
 
-	float dialog_left_margin = 0.15;
-	float dialog_top_margin = 0.15;
-	float dialog_right_margin = 0.15;
-	float dialog_bottom_margin = 0.15;
+	float dialog_left_margin = 0.15f;
+	float dialog_top_margin = 0.15f;
+	float dialog_right_margin = 0.15f;
+	float dialog_bottom_margin = 0.15f;
 
-	float text_left_margin = 0.05;
-	float text_top_margin = 0.05;
-	float text_right_margin = 0.05;
-	float text_bottom_margin = 0.10;
+	float text_left_margin = 0.05f;
+	float text_top_margin = 0.05f;
+	float text_right_margin = 0.05f;
+	float text_bottom_margin = 0.10f;
 
 	int dialog_char_size = 24;
 
