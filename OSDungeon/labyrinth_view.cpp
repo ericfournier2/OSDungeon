@@ -30,10 +30,34 @@ void RenderStep::print() const {
 	std::cout << "(" << x_offset << "," << y_offset << ") " << (ground_render ? "Ground" : "Wall") << " " << direction << std::endl;
 }
 
+RenderStep RenderStep::nextWall(RelativeDirection d) const {
+	assert(ground_render);
+	return RenderStep({ x_offset, y_offset, false, d });
+}
+
+RenderStep RenderStep::nextGround() const {
+	assert(!ground_render);
+	RenderStep retval = *this;
+	retval.ground_render = true;
+	switch (direction) {
+	case RelativeDirection::FRONT:
+		++retval.y_offset;
+		break;
+	case RelativeDirection::LEFT:
+		--retval.x_offset;
+		break;
+	case RelativeDirection::RIGHT:
+		++retval.x_offset;
+		break;
+	}
+	//retval.direction = RelativeDirection::FRONT;
+	return retval;
+}
+
 LabyrinthView::LabyrinthView(const LabyrinthPOV& labyrinth_init, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, EntityTemplateDb& template_db_init,
 							 sf::RenderTarget& rt_init, int x_size_init, int y_size_init, int max_depth_init, float camera_distance_init)
 	: labyrinth(labyrinth_init), ground_db(ground_db_init), wall_db(wall_db_init), texture_db(texture_db_init), template_db(template_db_init), rt(rt_init),
-	  x_size(x_size_init), y_size(y_size_init), max_depth(max_depth_init), camera_distance(camera_distance_init)
+	  x_size(x_size_init), y_size(y_size_init), max_depth(max_depth_init), camera_distance(camera_distance_init), render_queue(max_depth)
 {
 
 }
@@ -57,7 +81,7 @@ float LabyrinthView::depthOffset(float depth, bool x, bool left) const {
 	return static_cast<float>(retVal);
 }
 
-RenderQueue::RenderQueue() { 
+RenderQueue::RenderQueue(int depth) : max_depth(depth) { 
 	reset();
 };
 
@@ -68,7 +92,7 @@ void RenderQueue::reset() {
 }
 
 bool RenderQueue::push(RenderStep step) {
-	if (!rendered.contains(step)) {
+	if (!rendered.contains(step) && isInFOV(step)) {
 		queue.push(step);
 		rendered.insert(step);
 		return true;
@@ -89,6 +113,10 @@ int RenderQueue::size() const {
 
 bool RenderQueue::empty() const {
 	return queue.empty();
+}
+
+bool RenderQueue::isInFOV(RenderStep step) const {
+	return (abs(step.x_offset) <= max_depth + 1) && (step.y_offset <= max_depth);
 }
 
 CoordF LabyrinthView::mapCoordToProjection(float x, float y, float d) const {
@@ -197,7 +225,7 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	GroundInfo ground_info = ground_db.getElement(step.ground_id);
 	TextureInfo texture_info = texture_db.getTexture(ground_info.texture);
 
-	drawPrimitive(ceil1, ceil2, ceil3, ceil4, ground_info.ceiling_color, texture_info.texture.get(), GROUND_TEXTURE, true);
+	drawPrimitive(ceil1, ceil2, ceil3, ceil4, ground_info.ceiling_color, texture_info.texture.get(), GROUND_TEXTURE, false);
 
 	CoordF ground1 = mapCoordToProjection(static_cast<float>(step.x_offset), 1.0f, close_y);
 	CoordF ground2 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 1.0f, close_y);
@@ -205,7 +233,7 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	CoordF ground4 = mapCoordToProjection(static_cast<float>(step.x_offset), 1.0f, far_y);
 
 	//drawPrimitive(ground1, ground2, ground3, ground4, sf::Color(127, 51, 0), &ground_texture, GROUND_TEXTURE, true);
-	drawPrimitive(ground1, ground2, ground3, ground4, ground_info.ground_color, texture_info.texture.get(), GROUND_TEXTURE, true);
+	drawPrimitive(ground1, ground2, ground3, ground4, ground_info.ground_color, texture_info.texture.get(), GROUND_TEXTURE, false);
 
 	ShallowEntityVec entities = labyrinth.getEntities(step.x_offset, step.y_offset);
 	for (const auto& entity : entities) {
@@ -275,69 +303,67 @@ bool LabyrinthView::renderWall(RenderStep step) {
 	WallInfo wall_info = wall_db.getElement(step.wall_id);
 	TextureInfo texture_info = texture_db.getTexture(wall_info.texture);
 
-	drawPrimitive(wall1, wall2, wall3, wall4, wall_info.color, texture_info.texture.get(), texture_type, true);
+	drawPrimitive(wall1, wall2, wall3, wall4, wall_info.color, texture_info.texture.get(), texture_type, false);
 
 	return true;
 }
 
-bool LabyrinthView::render() {
-	std::stack<RenderStep> drawStack;
+bool LabyrinthView::renderBackground() {
+	CoordF top_left = { 0.0f, 0.0f };
+	CoordF bottom_left = {0.0f, rt.getSize().y };
+	CoordF bottom_right = { rt.getSize().x,rt.getSize().y };
+	CoordF top_right = { rt.getSize().x, 0.0f };
+	
+	drawPrimitive(top_left, bottom_left, bottom_right, top_right, sf::Color::White, texture_db.getTexture(10).texture.get(), GROUND_TEXTURE, false);
+
+	return true;
+}
+
+// Traverses positions front to back, creating a stack of tiles to draw.
+std::stack<RenderStep> LabyrinthView::buildDrawStack() {
+	std::stack<RenderStep> draw_stack;
+	
 	render_queue.reset();
 	while (!render_queue.empty()) {
 		RenderStep current_step = render_queue.pop();
-		//std::cout << "Queue is processing:";
-		//current_step.print();
+
 		if (current_step.ground_render) {
 			GroundId ground_id = labyrinth.getGround(current_step.x_offset, current_step.y_offset);
 			current_step.ground_id = ground_id;
-			// Do actual ground drawing. If we get here, the ground is always shown.
-			drawStack.push(current_step);
+
+			// If we get here, the ground is always shown, so push it to the draw stack.
+			draw_stack.push(current_step);
 
 			// Then add the next steps to the queue.
-			if (current_step.x_offset <= 0 && current_step.x_offset > -max_depth) {
-				render_queue.push(RenderStep({ current_step.x_offset,current_step.y_offset,false, LEFT }));
-			}
-
-			if (current_step.y_offset < max_depth) {
-				render_queue.push(RenderStep({ current_step.x_offset,current_step.y_offset,false, FRONT }));
-			}
-			
-			if (current_step.x_offset >= 0 && current_step.x_offset < max_depth && current_step.x_offset - 1 <= current_step.y_offset) {
-				render_queue.push(RenderStep({ current_step.x_offset,current_step.y_offset,false, RIGHT }));
-			}
-		}
-		else {
-			
+			render_queue.push(current_step.nextWall(RelativeDirection::LEFT));
+			render_queue.push(current_step.nextWall(RelativeDirection::FRONT));
+			render_queue.push(current_step.nextWall(RelativeDirection::RIGHT));
+		} else {
 			WallId wall_id = labyrinth.getWall(current_step.x_offset, current_step.y_offset, current_step.direction);
 			current_step.wall_id = wall_id;
 			if (wall_id) {
 				// There's an actual wall, so let's draw it.
-				drawStack.push(current_step);
-			}
-			else {
+				draw_stack.push(current_step);
+			} else {
 				// No wall, draw the tile beyond.
-				switch (current_step.direction) {
-				case LEFT:
-					render_queue.push(RenderStep({ current_step.x_offset - 1, current_step.y_offset, true, FRONT }));
-					break;
-				case FRONT:
-					render_queue.push(RenderStep({ current_step.x_offset, current_step.y_offset + 1, true, FRONT }));
-					break;
-				case RIGHT:
-					render_queue.push(RenderStep({ current_step.x_offset + 1, current_step.y_offset, true, FRONT }));
-					break;
-				}
+				render_queue.push(current_step.nextGround());
 			}
 		}
 	}
+
+	return draw_stack;
+}
+
+bool LabyrinthView::render() {
+	renderBackground();
+	std::stack<RenderStep> drawStack = buildDrawStack();
 
 	while (!drawStack.empty()) {
 		RenderStep current_step = drawStack.top();
 		drawStack.pop();
 		if (current_step.ground_render) {
 			renderGround(current_step);
-		}
-		else {
+		} else {
 			renderWall(current_step);
 		}
 	}

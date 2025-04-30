@@ -1,6 +1,7 @@
 #pragma once
 #include <set>
 #include <queue>
+#include <stack>
 #include <SFML/Graphics.hpp>
 
 #include "labyrinth_pov.h"
@@ -16,6 +17,8 @@ struct RenderStep {
 
 	bool operator<(const RenderStep& rs) const;
 	void print() const;
+	RenderStep nextWall(RelativeDirection d) const;
+	RenderStep nextGround() const;
 };
 
 typedef std::queue<RenderStep> RenderQueueStd;
@@ -30,16 +33,22 @@ enum TextureType {
 
 class RenderQueue {
 public:
-	RenderQueue();
+	RenderQueue(int max_depth);
 
 	void reset();
 	bool push(RenderStep step);
 	RenderStep pop();
 	int size() const;
 	bool empty() const;
+	int getMaxDepth() const { return max_depth;  }
+	void setMaxDepth(int depth) { assert(depth >= 0);  max_depth = depth; }
+
 private:
+	bool isInFOV(RenderStep step) const;
+
 	RenderQueueStd queue;
 	RenderSetStd rendered;
+	int max_depth;
 };
 
 class LabyrinthView {
@@ -53,6 +62,8 @@ private:
 	bool renderGround(RenderStep step);
 	bool renderWall(RenderStep step);
 	void drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf::Color color, const sf::Texture* texture, TextureType texture_type, bool outline = false);
+	bool renderBackground();
+	std::stack<RenderStep> buildDrawStack();
 	const LabyrinthPOV& labyrinth;
 	sf::RenderTarget& rt;
 
