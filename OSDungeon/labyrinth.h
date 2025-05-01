@@ -51,6 +51,11 @@ public:
 	bool canMove(int from_x, int from_y, CardinalDirection d) const;
 	std::optional<Path> findPath(int from_x, int from_y, int to_x, int to_y) const;
 	bool hasLOS(int from_x, int from_y, int to_x, int to_y) const;
+
+
+	void fillGround(GroundId id);
+	static Labyrinth buildSquareLabyrinth(int size);
+	static Labyrinth buildTriangleLabyrinth(int size);
 private:
 	static int vectorSizeFromGridSize(int x_size, int y_size);
 

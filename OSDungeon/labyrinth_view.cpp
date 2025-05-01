@@ -54,9 +54,9 @@ RenderStep RenderStep::nextGround() const {
 	return retval;
 }
 
-LabyrinthView::LabyrinthView(const LabyrinthPOV& labyrinth_init, GroundDb& ground_db_init, WallDb& wall_db_init, TextureDb& texture_db_init, EntityTemplateDb& template_db_init,
+LabyrinthView::LabyrinthView(const LabyrinthPOV& labyrinth_init, const Databases& db_init,
 							 sf::RenderTarget& rt_init, int x_size_init, int y_size_init, int max_depth_init, float camera_distance_init)
-	: labyrinth(labyrinth_init), ground_db(ground_db_init), wall_db(wall_db_init), texture_db(texture_db_init), template_db(template_db_init), rt(rt_init),
+	: labyrinth(labyrinth_init), db(db_init), rt(rt_init),
 	  x_size(x_size_init), y_size(y_size_init), max_depth(max_depth_init), camera_distance(camera_distance_init), render_queue(max_depth)
 {
 
@@ -120,14 +120,24 @@ bool RenderQueue::isInFOV(RenderStep step) const {
 }
 
 CoordF LabyrinthView::mapCoordToProjection(float x, float y, float d) const {
+	float norm_x = x + (vanish_point.x - x) * (1 - (1 / pow(2, d)));
+	float norm_y = y + (vanish_point.y - y) * (1 - (1 / pow(2, d)));
+	float final_x_ = norm_x * x_size;
+	float final_y_ = norm_y * y_size;
+
+	return CoordF(final_x_, final_y_);
+	
 	// Get origin for given depth.
 	float x0 = depthOffset(d, true, true);
 	float y0 = depthOffset(d, false, true);
-
+	
 	double x_scale = x_size / pow(2, d);
 	double y_scale = y_size / pow(2, d);
+	
+	float final_x = static_cast<float>(x0 + (x * x_scale));
+	float final_y = static_cast<float>(y0 + (y * y_scale));
 
-	return CoordF({ static_cast<float>(x0 + (x * x_scale)), static_cast<float>(y0 + (y * y_scale)) });
+	return CoordF({ final_x, final_y });
 }
 
 sf::IntRect getTexRect(int x1, int y1, int x2, int y2, const sf::RenderTarget& rt, const sf::Texture* texture) {
@@ -182,7 +192,7 @@ void LabyrinthView::drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf
 
 	rt.draw(shape);
 
-	if (outline) {
+	if (show_outline) {
 		std::array line =
 		{
 			sf::Vertex{sf::Vector2f(p1.x, p1.y), sf::Color::Black},
@@ -231,8 +241,8 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	CoordF ceil4 = mapCoordToProjection(static_cast<float>(step.x_offset), 0.0f, far_y);
 
 	//drawPrimitive(ceil1, ceil2, ceil3, ceil4, sf::Color(0, 148, 255), &ground_texture, GROUND_TEXTURE, true);
-	GroundInfo ground_info = ground_db.getElement(step.ground_id);
-	TextureInfo texture_info = texture_db.getTexture(ground_info.texture);
+	GroundInfo ground_info = db.gdb.getElement(step.ground_id);
+	TextureInfo texture_info = db.tdb.getTexture(ground_info.texture);
 
 	drawPrimitive(ceil1, ceil2, ceil3, ceil4, ground_info.ceiling_color, texture_info.texture.get(), GROUND_TEXTURE, false);
 
@@ -247,15 +257,15 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	ShallowEntityVec entities = labyrinth.getEntities(step.x_offset, step.y_offset);
 	for (const auto& entity : entities) {
 		float scale_factor = static_cast<float>(pow(2, step.y_offset));
-		float final_x_size = entity.getXSize(template_db) / scale_factor;
-		float final_y_size = entity.getYSize(template_db) / scale_factor;
+		float final_x_size = entity.getXSize(db.edb) / scale_factor;
+		float final_y_size = entity.getYSize(db.edb) / scale_factor;
 		float tile_center_x = (ground1.x + ground2.x + ground3.x + ground4.x) / 4.0f;
 		float tile_center_y = (ground1.y + ground2.y + ground3.y + ground4.y) / 4.0f;
 
-		TextureInfo tex_info = texture_db.getTexture(entity.getTexture(template_db));
+		TextureInfo tex_info = db.tdb.getTexture(entity.getTexture(db.edb));
 		sf::Sprite sprite(*tex_info.texture);
 		RelativeDirection ent_facing = getEntityFacing(labyrinth.getPov().d, entity.direction);
-		TileVec tiles = entity.getTiles(template_db, ent_facing);
+		TileVec tiles = entity.getTiles(db.edb, ent_facing);
 
 		sf::Time animation_time = animation_clock.getElapsedTime();
 		int millisecond = animation_time.asMilliseconds() % 1000;
@@ -267,8 +277,8 @@ bool LabyrinthView::renderGround(RenderStep step) {
 			mirror_scale = -1;
 		}
 
-		float final_x_offset = tile_center_x + (entity.getXOffset(template_db) / scale_factor) * mirror_scale;
-		float final_y_offset = tile_center_y + (entity.getYOffset(template_db) / scale_factor);
+		float final_x_offset = tile_center_x + (entity.getXOffset(db.edb) / scale_factor) * mirror_scale;
+		float final_y_offset = tile_center_y + (entity.getYOffset(db.edb) / scale_factor);
 
 		sprite.setPosition({ final_x_offset, final_y_offset });
 		sprite.setScale({ 1 / scale_factor * mirror_scale, 1 / scale_factor });
@@ -309,8 +319,8 @@ bool LabyrinthView::renderWall(RenderStep step) {
 	CoordF wall3 = mapCoordToProjection(step.x_offset + right_offset + front_x, 1.0f, far_y);
 	CoordF wall4 = mapCoordToProjection(step.x_offset + right_offset, 1.0f, close_y);
 
-	WallInfo wall_info = wall_db.getElement(step.wall_id);
-	TextureInfo texture_info = texture_db.getTexture(wall_info.texture);
+	WallInfo wall_info = db.wdb.getElement(step.wall_id);
+	TextureInfo texture_info = db.tdb.getTexture(wall_info.texture);
 
 	drawPrimitive(wall1, wall2, wall3, wall4, wall_info.color, texture_info.texture.get(), texture_type, false);
 
@@ -323,7 +333,7 @@ bool LabyrinthView::renderBackground() {
 	CoordF bottom_right = { (float) rt.getSize().x,(float) rt.getSize().y };
 	CoordF top_right = { (float) rt.getSize().x, 0.0f };
 	
-	drawPrimitive(top_left, bottom_left, bottom_right, top_right, sf::Color::White, texture_db.getTexture(10).texture.get(), GROUND_TEXTURE, false);
+	//drawPrimitive(top_left, bottom_left, bottom_right, top_right, sf::Color::White, db.tdb.getTexture(10).texture.get(), GROUND_TEXTURE, false);
 
 	return true;
 }

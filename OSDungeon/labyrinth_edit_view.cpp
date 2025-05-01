@@ -35,6 +35,7 @@ void LabyrinthEditView::render() {
 	top_view.render(window, mouse_x, mouse_y);
 	drawWallBrushInfo();
 	db_editor.render();
+	perspective_editor.render();
 	if (runner) {
 		runner->render();
 	}

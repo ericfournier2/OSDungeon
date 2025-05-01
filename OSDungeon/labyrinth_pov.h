@@ -3,7 +3,7 @@
 
 class LabyrinthPOV {
 public:
-	LabyrinthPOV(const Labyrinth& labyrinth, int x=0, int y=0, CardinalDirection d=CardinalDirection::NORTH);
+	LabyrinthPOV(const Labyrinth& labyrinth);
 	LabyrinthPOV(const Labyrinth& labyrinth, const ShallowEntityManager& entities);
 
 	MoveResult advance();

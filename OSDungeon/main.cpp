@@ -25,6 +25,7 @@ int main()
     ground_db.addElement(GroundInfo({ 1, sf::Color::White, sf::Color::Blue, 4 }));
     ground_db.addElement(GroundInfo({ 2, sf::Color::Green, sf::Color::Blue, 4 }));
     ground_db.addElement(GroundInfo({ 3, sf::Color::Red, sf::Color::Blue, 4 }));
+    ground_db.addElement(GroundInfo({ 4, sf::Color::White, sf::Color::White, 10 }));
 
     WallDb wall_db;
     //wall_db.addElement(WallInfo({ 0, sf::Color::White, 0 }));
@@ -42,6 +43,7 @@ int main()
     texture_db.loadNewTexture(7, "assets/textures/BunnySprite.png");
     texture_db.loadNewTexture(8, "assets/textures/Bunny2.png", 200, 200);
     texture_db.loadNewTexture(9, "assets/textures/BunnyChest.png", 400, 250);
+    texture_db.loadNewTexture(10, "assets/textures/crayon.png");
 
     EntityTemplateDb template_db;
     template_db.addElement({ 1, MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 105.0f, 83.0f, -52.5f, -60.0f, 5, {0}, {0}, {0}, {0} });
@@ -52,25 +54,26 @@ int main()
 
     Databases db(ground_db, wall_db, texture_db, template_db);
 
-    Labyrinth test = Labyrinth(30, 30);
+    //Labyrinth test = Labyrinth(30, 30);
+    Labyrinth test = Labyrinth::buildTriangleLabyrinth(3);
     ShallowEntity chest1 = ShallowEntity( 1, 1, 5, 5, CardinalDirection::NORTH);
     ShallowEntity chest2 = ShallowEntity( 2, 1, 7, 5, CardinalDirection::NORTH);
     ShallowEntity tree1 = ShallowEntity( 3, 2, 5, 7, CardinalDirection::NORTH);
     ShallowEntity tree2 = ShallowEntity( 4, 2, 7, 7, CardinalDirection::NORTH);
-    ShallowEntity bunny1 = ShallowEntity(5, 3, 0, 1, CardinalDirection::NORTH);
-    ShallowEntity bunny2 = ShallowEntity(6, 3, 1, 0, CardinalDirection::NORTH);
-    ShallowEntity bunny3 = ShallowEntity(7, 4, 1, 1, CardinalDirection::NORTH);
+    //ShallowEntity bunny1 = ShallowEntity(5, 3, 0, 1, CardinalDirection::NORTH);
+    //ShallowEntity bunny2 = ShallowEntity(6, 3, 1, 0, CardinalDirection::NORTH);
+    //ShallowEntity bunny3 = ShallowEntity(7, 4, 1, 1, CardinalDirection::NORTH);
     ShallowEntity bunny_chest = ShallowEntity(8, 5, 2, 2, CardinalDirection::SOUTH);
 
 
-    test.getEntityManager().addEntity(chest1);
-    test.getEntityManager().addEntity(chest2);
-    test.getEntityManager().addEntity(tree1);
-    test.getEntityManager().addEntity(tree2);
-    test.getEntityManager().addEntity(bunny1);
-    test.getEntityManager().addEntity(bunny2);
-    test.getEntityManager().addEntity(bunny3);
-    test.getEntityManager().addEntity(bunny_chest);
+    //test.getEntityManager().addEntity(chest1);
+    //test.getEntityManager().addEntity(chest2);
+    //test.getEntityManager().addEntity(tree1);
+    //test.getEntityManager().addEntity(tree2);
+    //test.getEntityManager().addEntity(bunny1);
+    //test.getEntityManager().addEntity(bunny2);
+    //test.getEntityManager().addEntity(bunny3);
+    //test.getEntityManager().addEntity(bunny_chest);
 
     //test.loadFromFile("current.labyrinth");
     //Runner runner = Runner(test, db);

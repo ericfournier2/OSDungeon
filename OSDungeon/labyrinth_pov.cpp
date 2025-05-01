@@ -1,13 +1,15 @@
 #include "labyrinth_pov.h"
 
-LabyrinthPOV::LabyrinthPOV(const Labyrinth& labyrinth_, int x_, int y_, CardinalDirection d_)
-	: labyrinth(labyrinth_), entities(labyrinth.getEntityManager()), x(x_), y(y_), d(d_)
+LabyrinthPOV::LabyrinthPOV(const Labyrinth& labyrinth_)
+	: labyrinth(labyrinth_), entities(labyrinth.getEntityManager())
 {
+	setPov(labyrinth.getPovX(), labyrinth.getPovY(), labyrinth.getPovDirection());
 }
 
 LabyrinthPOV::LabyrinthPOV(const Labyrinth& labyrinth_, const ShallowEntityManager& entities_)
 	: labyrinth(labyrinth_), entities(entities_)
 {
+	setPov(labyrinth.getPovX(), labyrinth.getPovY(), labyrinth.getPovDirection());
 }
 
 void LabyrinthPOV::setPov(int x_, int y_, CardinalDirection d_)

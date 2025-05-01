@@ -314,3 +314,56 @@ bool Labyrinth::loadFromFile(const std::string& filename) {
 
 	return false;
 }
+
+void Labyrinth::fillGround(GroundId id) {
+	for (int x = 0; x < getSizeX(); ++x) {
+		for (int y = 0; y < getSizeY(); ++y) {
+			setGround(x, y, id);
+		}
+	}
+}
+
+Labyrinth Labyrinth::buildSquareLabyrinth(int size) {
+	if (size <= 0) {
+		size = 1;
+	}
+
+	Labyrinth retval(2 * size - 1, size);
+	retval.setPov(size - 1, 0, CardinalDirection::NORTH);
+	retval.fillGround(1);
+
+	for (int x = 0; x < retval.getSizeX(); ++x) {
+		retval.addWall(x, 0, WallOrientation::HORIZONTAL, 1);
+		retval.addWall(x, retval.getSizeY(), WallOrientation::HORIZONTAL, 1);
+	}
+
+	for (int y = 0; y < retval.getSizeY(); ++y) {
+		retval.addWall(0, y, WallOrientation::VERTICAL, 1);
+		retval.addWall(retval.getSizeX(), y, WallOrientation::VERTICAL, 1);
+	}
+
+	return retval;
+}
+
+Labyrinth Labyrinth::buildTriangleLabyrinth(int size) {
+	if (size <= 0) {
+		size = 1;
+	}
+
+	Labyrinth retval(2 * size - 1, size);
+	retval.setPov(size - 1, 0, CardinalDirection::NORTH);
+	retval.fillGround(1);
+
+	for (int x = 0; x < retval.getSizeX(); ++x) {
+		retval.addWall(x, 0, WallOrientation::HORIZONTAL, 1);
+		retval.addWall(x, x + 1, WallOrientation::HORIZONTAL, 1);
+		retval.addWall(x, retval.getSizeX() - x, WallOrientation::HORIZONTAL, 1);
+	}
+
+	for (int y = 0; y < retval.getSizeY(); ++y) {
+		retval.addWall(y, y, WallOrientation::VERTICAL, 1);
+		retval.addWall(retval.getSizeX() - y, y, WallOrientation::VERTICAL, 1);
+	}
+
+	return retval;
+}

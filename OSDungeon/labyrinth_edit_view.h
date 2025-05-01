@@ -8,6 +8,7 @@
 #include "labyrinth_top_view.h"
 #include "db_editor.h"
 #include "runner.h"
+#include "perspective_editor.h"
 
 #pragma once
 class LabyrinthEditView
@@ -40,5 +41,6 @@ private:
 	LabyrinthTopView top_view;
 	DatabaseEditor db_editor;
 	std::shared_ptr<Runner> runner;
+	PerspectiveEditor perspective_editor;
 };
 

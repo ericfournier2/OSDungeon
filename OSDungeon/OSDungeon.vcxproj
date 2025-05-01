@@ -152,6 +152,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="databases.cpp" />
     <ClCompile Include="db_editor.cpp" />
+    <ClCompile Include="perspective_editor.cpp" />
     <ClCompile Include="runner.cpp" />
     <ClCompile Include="shallow_entities.cpp" />
   </ItemGroup>
@@ -172,6 +173,7 @@
     <ClInclude Include="labyrinth_view.h" />
     <ClInclude Include="databases.h" />
     <ClInclude Include="db_editor.h" />
+    <ClInclude Include="perspective_editor.h" />
     <ClInclude Include="runner.h" />
     <ClInclude Include="shallow_entities.h" />
   </ItemGroup>
