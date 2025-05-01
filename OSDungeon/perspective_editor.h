@@ -37,4 +37,5 @@ private:
 
 	Databases db;
 	std::vector<std::shared_ptr<PerspectiveView>> perspectives;
+	bool menu_selected;
 };

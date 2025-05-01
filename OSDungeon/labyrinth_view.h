@@ -87,7 +87,7 @@ private:
 	int y_size = 300;
 	int max_depth = 5;
 	float camera_distance = 0.7f;
-	CoordF vanish_point;
+	CoordF vanish_point = { 0.5f, 0.5f };
 	RenderQueue render_queue;
 	bool verbose = false;
 	bool show_outline = false;
