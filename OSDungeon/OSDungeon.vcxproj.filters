@@ -19,21 +19,30 @@
     <Filter Include="Fichiers d%27en-tête\imgui">
       <UniqueIdentifier>{428dfbed-392b-4793-a0c0-27aa00a4f21e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers sources\Editors">
+      <UniqueIdentifier>{f732958c-c7e3-474c-83fd-073809046f72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Editors">
+      <UniqueIdentifier>{7364c6a2-2bed-4616-a603-3e63f3e071a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Logic">
+      <UniqueIdentifier>{cf359283-b8e8-4db9-af8e-7b80004ac4bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Logic">
+      <UniqueIdentifier>{7b82f4f4-d9b7-4416-82e5-3a2d624bfaa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Views">
+      <UniqueIdentifier>{9f683427-6d7a-43f4-a048-e1a82d71bae3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Views">
+      <UniqueIdentifier>{c5b74753-f804-4846-bda6-3ac6f692af99}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="labyrinth.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="labyrinth_test.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="labyrinth_view.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="labyrinth_edit_view.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="entity.cpp">
@@ -57,53 +66,50 @@
     <ClCompile Include="imgui\imgui-SFML.cpp">
       <Filter>Fichiers sources\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="databases.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="db_editor.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="brush.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="brush_editor.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="labyrinth_top_view.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="labyrinth_print.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="runner.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="shallow_entities.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="labyrinth_pov.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="game_state.cpp">
-      <Filter>Fichiers sources</Filter>
+    <ClCompile Include="brush_editor.cpp">
+      <Filter>Fichiers sources\Editors</Filter>
     </ClCompile>
     <ClCompile Include="perspective_editor.cpp">
-      <Filter>Fichiers sources</Filter>
+      <Filter>Fichiers sources\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="db_editor.cpp">
+      <Filter>Fichiers sources\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="labyrinth_edit_view.cpp">
+      <Filter>Fichiers sources\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="databases.cpp">
+      <Filter>Fichiers sources\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="labyrinth.cpp">
+      <Filter>Fichiers sources\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="labyrinth_pov.cpp">
+      <Filter>Fichiers sources\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="shallow_entities.cpp">
+      <Filter>Fichiers sources\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="brush.cpp">
+      <Filter>Fichiers sources\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="game_state.cpp">
+      <Filter>Fichiers sources\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="labyrinth_view.cpp">
+      <Filter>Fichiers sources\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="labyrinth_top_view.cpp">
+      <Filter>Fichiers sources\Views</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="labyrinth.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="labyrinth_view.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="labyrinth_edit_view.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="common.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="entity.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -116,19 +122,7 @@
     <ClInclude Include="imgui\imgui-SFML.h">
       <Filter>Fichiers d%27en-tête\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="db_editor.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="databases.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="brush.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="brush_editor.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="labyrinth_top_view.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="labyrinth_print.h">
@@ -137,17 +131,41 @@
     <ClInclude Include="runner.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="shallow_entities.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+    <ClInclude Include="perspective_editor.h">
+      <Filter>Fichiers d%27en-tête\Editors</Filter>
     </ClInclude>
-    <ClInclude Include="labyrinth_pov.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+    <ClInclude Include="labyrinth_edit_view.h">
+      <Filter>Fichiers d%27en-tête\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="db_editor.h">
+      <Filter>Fichiers d%27en-tête\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="brush_editor.h">
+      <Filter>Fichiers d%27en-tête\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>Fichiers d%27en-tête\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="databases.h">
+      <Filter>Fichiers d%27en-tête\Logic</Filter>
     </ClInclude>
     <ClInclude Include="game_state.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="perspective_editor.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+    <ClInclude Include="labyrinth.h">
+      <Filter>Fichiers d%27en-tête\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="labyrinth_pov.h">
+      <Filter>Fichiers d%27en-tête\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="shallow_entities.h">
+      <Filter>Fichiers d%27en-tête\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="labyrinth_top_view.h">
+      <Filter>Fichiers d%27en-tête\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="labyrinth_view.h">
+      <Filter>Fichiers d%27en-tête\Views</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
