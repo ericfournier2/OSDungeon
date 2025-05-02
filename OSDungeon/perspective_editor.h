@@ -20,6 +20,10 @@ public:
 	PerspectiveEditor();
 	void render();
 private:
+	void renderMenu();
+	bool renderWidgets();
+	void refreshViews(sf::Color clear_color = sf::Color::Black);
+	void saveImagesToFile();
 
 	float camera_distance = 0.7f;
 	unsigned int base_size = 400;
@@ -37,5 +41,5 @@ private:
 
 	Databases db;
 	std::vector<std::shared_ptr<PerspectiveView>> perspectives;
-	bool menu_selected;
+	bool menu_selected = false;
 };
