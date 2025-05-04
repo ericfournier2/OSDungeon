@@ -15,14 +15,13 @@ sf::IntRect TextureInfo::getTextureRect(int index) const {
 	return sf::IntRect({ pos_x, pos_y }, { tile_size_x, tile_size_y });
 }
 
-
 TextureDb::TextureDb() {
 	empty_info.id = 0;
 	empty_info.texture_filename = "";
 	empty_info.texture = empty_texture;
 }
 
-TextureId TextureDb::loadNewTexture(TextureId id, const std::string& filename, int tile_size_x, int tile_size_y) {
+TextureId TextureDb::loadNewTexture(TextureId id, const std::string& filename, const std::string& name, int tile_size_x, int tile_size_y) {
 	std::string full_filename("assets\\textures\\");
 	full_filename.append(filename);
 	auto ptr = std::make_shared<sf::Texture>(filename);
@@ -30,7 +29,7 @@ TextureId TextureDb::loadNewTexture(TextureId id, const std::string& filename, i
 		tile_size_x = ptr->getSize().x;
 		tile_size_y = ptr->getSize().y;
 	}
-	TextureInfo info = TextureInfo({ id, tile_size_x, tile_size_y, filename, ptr });
+	TextureInfo info = TextureInfo({ id, tile_size_x, tile_size_y, filename, name, ptr });
 	texture_map.emplace(id, info);
 
 	return id;
@@ -65,7 +64,9 @@ bool TextureDb::readFromStream(std::ifstream& stream) {
 		stream.read(reinterpret_cast<char*>(&tile_size_y), sizeof(tile_size_y));
 		std::string filename;
 		std::getline(stream, filename, '\0');
-		loadNewTexture(id, filename, tile_size_x, tile_size_y);
+		std::string name;
+		std::getline(stream, name, '\0');
+		loadNewTexture(id, filename, name, tile_size_x, tile_size_y);
 	}
 	return !stream.fail();
 }
@@ -89,6 +90,7 @@ bool TextureDb::writeToStream(std::ofstream& stream) const {
 		stream.write(reinterpret_cast<const char*>(&value.tile_size_y), sizeof(value.tile_size_y));
 		//stream.write(reinterpret_cast<const char*>(value.texture_filename.c_str()), value.texture_filename.size() + 1);
 		stream << value.texture_filename << '\0';
+		stream << value.name << '\0';
 	}
 	return !stream.fail();
 }
@@ -113,6 +115,7 @@ void writeTileVec(TileVec tiles, std::ofstream& stream) {
 
 bool EntityTemplateInfo::write(std::ofstream& stream) const {
 	stream.write(reinterpret_cast<const char*>(&id), sizeof(EntityTemplateId));
+	stream << name << "\0";
 	stream.write(reinterpret_cast<const char*>(&movement), sizeof(MovementType));
 	stream.write(reinterpret_cast<const char*>(&collision), sizeof(CollisionType));
 	stream.write(reinterpret_cast<const char*>(&x_size), sizeof(float));
@@ -145,6 +148,7 @@ TileVec readTileVec(std::ifstream& stream) {
 
 bool EntityTemplateInfo::read(std::ifstream& stream) {
 	stream.read(reinterpret_cast<char*>(&id), sizeof(EntityTemplateId));
+	std::getline(stream, name, '\0');
 	stream.read(reinterpret_cast<char*>(&movement), sizeof(MovementType));
 	stream.read(reinterpret_cast<char*>(&collision), sizeof(CollisionType));
 	stream.read(reinterpret_cast<char*>(&x_size), sizeof(float));

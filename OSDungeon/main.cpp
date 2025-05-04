@@ -34,23 +34,23 @@ int main()
     wall_db.addElement(WallInfo({ 3, sf::Color::Red, 3 }));
 
     TextureDb texture_db;
-    texture_db.loadNewTexture(1, "assets/textures/Elora.png");
-    texture_db.loadNewTexture(2, "assets/textures/Coralie.png");
-    texture_db.loadNewTexture(3, "assets/textures/BigBricksTexture20.png");
-    texture_db.loadNewTexture(4, "assets/textures/Ground2.png");
-    texture_db.loadNewTexture(5, "assets/textures/ChestSprite.png");
-    texture_db.loadNewTexture(6, "assets/textures/TreeSprite.png");
-    texture_db.loadNewTexture(7, "assets/textures/BunnySprite.png");
-    texture_db.loadNewTexture(8, "assets/textures/Bunny2.png", 200, 200);
-    texture_db.loadNewTexture(9, "assets/textures/BunnyChest.png", 400, 250);
-    texture_db.loadNewTexture(10, "assets/textures/crayon.png");
+    texture_db.loadNewTexture(1, "assets/textures/Elora.png", "Volcan");
+    texture_db.loadNewTexture(2, "assets/textures/Coralie.png", "Mur colore");
+    texture_db.loadNewTexture(3, "assets/textures/BigBricksTexture20.png", "Mur briques blanc");
+    texture_db.loadNewTexture(4, "assets/textures/Ground2.png", "Sol briques blanc");
+    texture_db.loadNewTexture(5, "assets/textures/ChestSprite.png", "Tresor");
+    texture_db.loadNewTexture(6, "assets/textures/TreeSprite.png", "Arbre");
+    texture_db.loadNewTexture(7, "assets/textures/BunnySprite.png", "Petit lapin");
+    texture_db.loadNewTexture(8, "assets/textures/Bunny2.png", "Gros lapin", 200, 200);
+    texture_db.loadNewTexture(9, "assets/textures/BunnyChest.png", "Tresor lapin", 400, 250);
+    texture_db.loadNewTexture(10, "assets/textures/crayon.png", "Plaine cire");
 
     EntityTemplateDb template_db;
-    template_db.addElement({ 1, MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 105.0f, 83.0f, -52.5f, -60.0f, 5, {0}, {0}, {0}, {0} });
-    template_db.addElement({ 2, MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 100.0f, 300.0f, -50.0f, -250.0f, 6, {0}, {0}, {0}, {0} });
-    template_db.addElement({ 3, MovementType::FOLLOW, CollisionType::PICKABLE, InteractionType::NONE, 50.0f, 50.0f, -25.0f, -40.0f, 7, {0}, {0}, {0}, {0} });
-    template_db.addElement({ 4, MovementType::WANDER, CollisionType::LETHAL, InteractionType::NONE, 200.0f, 200.0f, -100.0f, -180.0f, 8, {0, 1, 0, 2}, {3, 4, 3, 5}, {6, 7, 8, 7}, {-6, -7, -8, -7} });
-    template_db.addElement({ 5, MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 400.0f, 250.0f, -200.0f, -220.0f, 9, {0}, {1}, {2}, {-2} });
+    template_db.addElement({ 1, "Chest", MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 105.0f, 83.0f, -52.5f, -60.0f, 5, {0}, {0}, {0}, {0}});
+    template_db.addElement({ 2, "Tree", MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 100.0f, 300.0f, -50.0f, -250.0f, 6, {0}, {0}, {0}, {0}});
+    template_db.addElement({ 3, "Small bunny", MovementType::FOLLOW, CollisionType::PICKABLE, InteractionType::NONE, 50.0f, 50.0f, -25.0f, -40.0f, 7, {0}, {0}, {0}, {0}});
+    template_db.addElement({ 4, "Big bunny", MovementType::WANDER, CollisionType::LETHAL, InteractionType::NONE, 200.0f, 200.0f, -100.0f, -180.0f, 8, {0, 1, 0, 2}, {3, 4, 3, 5}, {6, 7, 8, 7}, {-6, -7, -8, -7}});
+    template_db.addElement({ 5, "Bunny chest", MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 400.0f, 250.0f, -200.0f, -220.0f, 9, {0}, {1}, {2}, {-2}});
 
     Databases db(ground_db, wall_db, texture_db, template_db);
 

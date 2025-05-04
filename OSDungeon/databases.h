@@ -74,6 +74,7 @@ typedef std::vector<TileId> TileVec;
 
 struct EntityTemplateInfo {
 	EntityTemplateId id;
+	std::string name;
 	MovementType movement;
 	CollisionType collision;
 	InteractionType interaction;
@@ -198,6 +199,7 @@ struct TextureInfo {
 	int tile_size_x;
 	int tile_size_y;
 	std::string texture_filename;
+	std::string name;
 	std::shared_ptr<sf::Texture> texture;
 
 	sf::IntRect getTextureRect(int index) const;
@@ -206,7 +208,7 @@ struct TextureInfo {
 class TextureDb {
 public:
 	TextureDb();
-	TextureId loadNewTexture(TextureId id, const std::string& filename, int tile_size_x = 0, int tile_size_y = 0);
+	TextureId loadNewTexture(TextureId id, const std::string& filename, const std::string& name, int tile_size_x = 0, int tile_size_y = 0);
 	TextureInfo getTexture(TextureId id) const;
 	std::vector<TextureId> getIds() const;
 	bool writeToFile(const std::string& filename) const;

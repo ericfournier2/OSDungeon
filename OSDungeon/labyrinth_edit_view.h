@@ -9,6 +9,7 @@
 #include "db_editor.h"
 #include "runner.h"
 #include "perspective_editor.h"
+#include "entity_editor.h"
 
 #pragma once
 class LabyrinthEditView
@@ -42,5 +43,6 @@ private:
 	DatabaseEditor db_editor;
 	std::shared_ptr<Runner> runner;
 	PerspectiveEditor perspective_editor;
+	EntityEditor entity_editor;
 };
 

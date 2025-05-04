@@ -135,6 +135,7 @@
     <ClCompile Include="brush.cpp" />
     <ClCompile Include="brush_editor.cpp" />
     <ClCompile Include="entity.cpp" />
+    <ClCompile Include="entity_editor.cpp" />
     <ClCompile Include="game_state.cpp" />
     <ClCompile Include="imgui\imgui-SFML.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -142,6 +143,8 @@
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="imgui\imgui_stdlib.cpp" />
+    <ClCompile Include="imgui_utils.cpp" />
     <ClCompile Include="labyrinth.cpp" />
     <ClCompile Include="labyrinth_pov.cpp" />
     <ClCompile Include="labyrinth_print.cpp" />
@@ -155,16 +158,20 @@
     <ClCompile Include="perspective_editor.cpp" />
     <ClCompile Include="runner.cpp" />
     <ClCompile Include="shallow_entities.cpp" />
+    <ClCompile Include="static_view.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="brush.h" />
     <ClInclude Include="brush_editor.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="entity.h" />
+    <ClInclude Include="entity_editor.h" />
     <ClInclude Include="game_state.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui-SFML.h" />
     <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\imgui_stdlib.h" />
+    <ClInclude Include="imgui_utils.h" />
     <ClInclude Include="labyrinth.h" />
     <ClInclude Include="labyrinth_edit_view.h" />
     <ClInclude Include="labyrinth_pov.h" />
@@ -176,6 +183,7 @@
     <ClInclude Include="perspective_editor.h" />
     <ClInclude Include="runner.h" />
     <ClInclude Include="shallow_entities.h" />
+    <ClInclude Include="static_view.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

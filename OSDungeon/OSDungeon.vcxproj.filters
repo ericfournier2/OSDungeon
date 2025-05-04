@@ -108,6 +108,18 @@
     <ClCompile Include="labyrinth_top_view.cpp">
       <Filter>Fichiers sources\Views</Filter>
     </ClCompile>
+    <ClCompile Include="entity_editor.cpp">
+      <Filter>Fichiers sources\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="static_view.cpp">
+      <Filter>Fichiers sources\Views</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_stdlib.cpp">
+      <Filter>Fichiers sources\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_utils.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="entity.h">
@@ -121,9 +133,6 @@
     </ClInclude>
     <ClInclude Include="imgui\imgui-SFML.h">
       <Filter>Fichiers d%27en-tête\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="brush.h">
-      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="labyrinth_print.h">
       <Filter>Fichiers d%27en-tête</Filter>
@@ -166,6 +175,21 @@
     </ClInclude>
     <ClInclude Include="labyrinth_view.h">
       <Filter>Fichiers d%27en-tête\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="entity_editor.h">
+      <Filter>Fichiers d%27en-tête\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="static_view.h">
+      <Filter>Fichiers d%27en-tête\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_stdlib.h">
+      <Filter>Fichiers d%27en-tête\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="brush.h">
+      <Filter>Fichiers d%27en-tête\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_utils.h">
+      <Filter>Fichiers d%27en-tête\Editors</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

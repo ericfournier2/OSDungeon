@@ -11,7 +11,8 @@ LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, Databases& db_in
 	  brush(db.edb),
 	  brush_editor(brush, db),
 	  top_view(labyrinth, labyrinth.getEntityManager(), db, &brush),
-	  db_editor(db)
+	  db_editor(db),
+	  entity_editor(db)
 {
 	ImGui::SFML::Init(window);
 	window.setPosition({ 0,0 });
@@ -36,6 +37,7 @@ void LabyrinthEditView::render() {
 	drawWallBrushInfo();
 	db_editor.render();
 	perspective_editor.render();
+	entity_editor.render();
 	if (runner) {
 		runner->render();
 	}

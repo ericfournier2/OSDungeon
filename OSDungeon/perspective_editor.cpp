@@ -2,25 +2,18 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
 
-PerspectiveView::PerspectiveView(Labyrinth lab, const Databases& db, unsigned int size_x, unsigned int size_y)
-	: labyrinth(lab), pov(labyrinth), texture({ size_x, size_y }), view(pov, db, texture, size_x, size_y)
-{
-	view.setShowOutline(true);
-	view.render();
-}
-
 PerspectiveEditor::PerspectiveEditor()
 	: db({ gdb, wdb, tdb, edb })
 {
 	db.gdb.addElement(GroundInfo({ 1, sf::Color::Green, sf::Color::Blue, 0 }));
 	db.wdb.addElement(WallInfo({ 1, sf::Color::White, 0 }));
 
-	perspectives.push_back(std::make_shared<PerspectiveView>(Labyrinth::buildTriangleLabyrinth(1), db, size_x, size_y));
-	perspectives.push_back(std::make_shared<PerspectiveView>(Labyrinth::buildTriangleLabyrinth(2), db, size_x, size_y));
-	perspectives.push_back(std::make_shared<PerspectiveView>(Labyrinth::buildTriangleLabyrinth(3), db, size_x, size_y));
-	perspectives.push_back(std::make_shared<PerspectiveView>(Labyrinth::buildTriangleLabyrinth(4), db, size_x, size_y));
-	perspectives.push_back(std::make_shared<PerspectiveView>(Labyrinth::buildTriangleLabyrinth(5), db, size_x, size_y));
-	perspectives.push_back(std::make_shared<PerspectiveView>(Labyrinth::buildSquareLabyrinth(10), db, size_x, size_y));
+	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(1), db, size_x, size_y));
+	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(2), db, size_x, size_y));
+	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(3), db, size_x, size_y));
+	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(4), db, size_x, size_y));
+	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(5), db, size_x, size_y));
+	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildSquareLabyrinth(10), db, size_x, size_y));
 }
 
 void PerspectiveEditor::saveImagesToFile() {

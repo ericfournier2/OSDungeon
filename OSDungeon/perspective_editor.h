@@ -4,16 +4,7 @@
 #include "labyrinth.h"
 #include "labyrinth_pov.h"
 #include "labyrinth_view.h"
-
-
-struct PerspectiveView {
-	Labyrinth labyrinth;
-	LabyrinthPOV pov;
-	sf::RenderTexture texture;
-	LabyrinthView view;
-
-	PerspectiveView(Labyrinth lab, const Databases& db, unsigned int size_x, unsigned int size_y);
-};
+#include "static_view.h"
 
 class PerspectiveEditor {
 public:
@@ -40,6 +31,6 @@ private:
 	EntityTemplateDb edb;
 
 	Databases db;
-	std::vector<std::shared_ptr<PerspectiveView>> perspectives;
+	std::vector<std::shared_ptr<StaticView>> perspectives;
 	bool menu_selected = false;
 };
