@@ -2,6 +2,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "imgui/imgui.h"
+#include "imgui_utils.h"
 #include "databases.h"
 
 template <typename TDb>
@@ -34,3 +35,16 @@ auto brushPopUp(const std::string& popup_label, typename TDb::IdType* id, const 
 }
 
 bool textureSelect(const std::string& label, TextureId* id, const TextureDb& tdb);
+
+class AnimatedEntity {
+public:
+	AnimatedEntity(const EntityTemplateInfo& info, const TextureDb& tdb, RelativeDirection facing = RelativeDirection::FRONT, bool loop = true);
+	sf::Sprite getSprite(int size_x, int size_y);
+private:
+	EntityTemplateInfo info;
+	const TextureDb& tdb;
+	sf::Clock clock;
+	bool loop = true;
+	RelativeDirection facing;
+
+};

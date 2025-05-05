@@ -810,6 +810,18 @@ void Image(const sf::Sprite& sprite, const sf::Color& tintColor, const sf::Color
 void Image(const sf::Sprite& sprite, const sf::Vector2f& size, const sf::Color& tintColor, const sf::Color& borderColor)
 {
     auto [uv0, uv1, textureID] = getSpriteTextureData(sprite);
+    if (sprite.getScale().x < 0) {
+        auto old_x = uv0.x;
+        uv0.x = uv1.x;
+        uv1.x = old_x;
+    }
+
+    if (sprite.getScale().y < 0) {
+        auto old_y = uv0.y;
+        uv0.y = uv1.y;
+        uv1.y = old_y;
+    }
+
     ImGui::Image(textureID, toImVec2(size), uv0, uv1, toImColor(tintColor), toImColor(borderColor));
 }
 
