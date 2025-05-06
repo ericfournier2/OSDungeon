@@ -16,7 +16,6 @@ bool enumSlider(std::string label, int* value, std::vector<std::string> enum_nam
 	}
 
 	return ImGui::SliderInt(label.c_str(), value, 0, enum_names.size() - 1, display_name.c_str(), ImGuiSliderFlags_NoInput); // Use ImGuiSliderFlags_NoInput flag to disable CTRL+Click here.
-
 }
 
 std::string tileVecToString(const TileVec& tiles) {
@@ -71,9 +70,6 @@ void EntityEditor::renderSelectionWidget() {
 	}
 }
 
-
-
-
 TileVec stringToTileVec(const std::string& str) {
 	TileVec retval;
 	std::istringstream iss(str);
@@ -91,7 +87,6 @@ TileVec stringToTileVec(const std::string& str) {
 	return retval;
 }
 
-
 int tileVecFilter(ImGuiInputTextCallbackData* data)
 {
 	if ((data->EventChar >= '0' && data->EventChar <= '9') || (data->EventChar == ';') || (data->EventChar == '-')) {
@@ -100,7 +95,6 @@ int tileVecFilter(ImGuiInputTextCallbackData* data)
 
 	return 1;
 }
-
 
 void EntityEditor::render() {
 	if (ImGui::Begin("Entity editor", NULL, 0)) {

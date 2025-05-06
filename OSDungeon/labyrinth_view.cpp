@@ -126,18 +126,6 @@ CoordF LabyrinthView::mapCoordToProjection(float x, float y, float d) const {
 	float final_y_ = norm_y * y_size;
 
 	return CoordF(final_x_, final_y_);
-	
-	// Get origin for given depth.
-	float x0 = depthOffset(d, true, true);
-	float y0 = depthOffset(d, false, true);
-	
-	double x_scale = x_size / pow(2, d);
-	double y_scale = y_size / pow(2, d);
-	
-	float final_x = static_cast<float>(x0 + (x * x_scale));
-	float final_y = static_cast<float>(y0 + (y * y_scale));
-
-	return CoordF({ final_x, final_y });
 }
 
 sf::IntRect getTexRect(int x1, int y1, int x2, int y2, const sf::RenderTarget& rt, const sf::Texture* texture) {
@@ -158,19 +146,16 @@ void LabyrinthView::drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf
 			int min_y = static_cast<int>(std::min({ p1.y, p2.y, p3.y, p4.y }));
 			int max_x = static_cast<int>(std::max({ p1.x, p2.x, p3.x, p4.x }));
 			int max_y = static_cast<int>(std::max({ p1.y, p2.y, p3.y, p4.y }));
-			//shape.setTextureRect(sf::IntRect({ min_x, min_y }, { max_x - min_x, max_y - min_y }));
 			shape.setTextureRect(getTexRect(min_x, min_y, max_x - min_x, max_y - min_y, rt, texture));
 		}
 		else if (texture_type == TextureType::FRONT_WALL_TEXTURE) {
 			CoordF wall1 = mapCoordToProjection(0.0f, 0.0f, camera_distance);
 			CoordF wall3 = mapCoordToProjection(1.0f, 1.0f, camera_distance);
-			//shape.setTextureRect(sf::IntRect({ (int)wall1.x, (int)wall1.y}, { (int)(wall3.x - wall1.x), (int)(wall3.y - wall1.y) }));
 			shape.setTextureRect(getTexRect((int)wall1.x, (int)wall1.y, (int)(wall3.x - wall1.x), (int)(wall3.y - wall1.y), rt, texture));
 		} else if (texture_type == TextureType::LEFT_WALL_TEXTURE) {
 			CoordF wall1 = mapCoordToProjection(0.0f, 0.0f, 0.0f);
 			CoordF wall2 = mapCoordToProjection(0.0f, 0.0f, camera_distance);
 			CoordF wall4 = mapCoordToProjection(0.0f, 1.0f, 0.0f);
-			//shape.setTextureRect(sf::IntRect({ (int)wall1.x, (int)wall1.y }, { (int) (wall2.x - wall1.x), (int)(wall4.y - wall1.y) }));
 			shape.setTextureRect(getTexRect((int)wall1.x, (int)wall1.y, (int)(wall2.x - wall1.x), (int)(wall4.y - wall1.y), rt, texture));
 		} else if (texture_type == TextureType::RIGHT_WALL_TEXTURE) {
 			CoordF wall1 = mapCoordToProjection(1.0f, 0.0f, 0.0f);
@@ -178,7 +163,6 @@ void LabyrinthView::drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf
 			CoordF wall3 = mapCoordToProjection(1.0f, 1.0f, camera_distance);
 			CoordF wall4 = mapCoordToProjection(1.0f, 1.0f, 0.0f);
 
-			//shape.setTextureRect(sf::IntRect({ (int)wall3.x, (int)wall1.y }, { (int)(wall1.x - wall3.x), (int)(wall4.y - wall1.y) }));
 			shape.setTextureRect(getTexRect((int)wall3.x, (int)wall1.y, (int)(wall1.x - wall3.x), (int)(wall4.y - wall1.y), rt, texture));
 		}
 		
@@ -256,12 +240,6 @@ bool LabyrinthView::renderGround(RenderStep step) {
 
 	ShallowEntityVec entities = labyrinth.getEntities(step.x_offset, step.y_offset);
 	for (const auto& entity : entities) {
-		float scale_factor = static_cast<float>(pow(2, step.y_offset));
-		float final_x_size = entity.getXSize(db.edb) / scale_factor;
-		float final_y_size = entity.getYSize(db.edb) / scale_factor;
-		float tile_center_x = (ground1.x + ground2.x + ground3.x + ground4.x) / 4.0f;
-		float tile_center_y = (ground1.y + ground2.y + ground3.y + ground4.y) / 4.0f;
-
 		TextureInfo tex_info = db.tdb.getTexture(entity.getTexture(db.edb));
 		sf::Sprite sprite(*tex_info.texture);
 		RelativeDirection ent_facing = getEntityFacing(labyrinth.getPov().d, entity.direction);
@@ -272,17 +250,64 @@ bool LabyrinthView::renderGround(RenderStep step) {
 		auto tile = (millisecond / (1000 / tiles.size())) % tiles.size();
 		sprite.setTextureRect(tex_info.getTextureRect(abs(tiles[tile])));
 
-		float mirror_scale = 1;
-		if (tiles[tile] < 0) {
-			mirror_scale = -1;
+		if (entity.fixed_position) {
+			float map_x_offset = (float)step.x_offset;
+			float map_y_offset = (float)step.y_offset - (1.0f - camera_distance);
+			switch (labyrinth.getPov().d) {
+			case CardinalDirection::NORTH:
+				map_x_offset += entity.x_sub;
+				map_y_offset += entity.y_sub;
+				break;
+			case CardinalDirection::EAST:
+				map_x_offset += (1 - entity.y_sub);
+				map_y_offset += entity.x_sub;
+				break;
+			case CardinalDirection::SOUTH:
+				map_x_offset += (1 - entity.x_sub);
+				map_y_offset += (1 - entity.y_sub);
+				break;
+			case CardinalDirection::WEST:
+				map_x_offset += entity.y_sub;
+				map_y_offset += (1 - entity.x_sub);
+				break;
+			}
+
+			CoordF sprite_center = mapCoordToProjection(map_x_offset, 1.0f, map_y_offset);
+			float scale_factor = static_cast<float>(pow(2, map_y_offset));
+			float final_x_size = entity.getXSize(db.edb) / scale_factor;
+			float final_y_size = entity.getYSize(db.edb) / scale_factor;
+
+			float mirror_scale = 1;
+			if (tiles[tile] < 0) {
+				mirror_scale = -1;
+			}
+
+			float final_x_offset = sprite_center.x - (final_x_size / 2);
+			float final_y_offset = sprite_center.y - final_y_size;
+
+			sprite.setPosition({ final_x_offset, final_y_offset });
+			sprite.setScale({ 1 / scale_factor * mirror_scale, 1 / scale_factor });
+			rt.draw(sprite);
+
+		} else {
+			float scale_factor = static_cast<float>(pow(2, step.y_offset));
+			float final_x_size = entity.getXSize(db.edb) / scale_factor;
+			float final_y_size = entity.getYSize(db.edb) / scale_factor;
+			float tile_center_x = (ground1.x + ground2.x + ground3.x + ground4.x) / 4.0f;
+			float tile_center_y = (ground1.y + ground2.y + ground3.y + ground4.y) / 4.0f;
+
+			float mirror_scale = 1;
+			if (tiles[tile] < 0) {
+				mirror_scale = -1;
+			}
+
+			float final_x_offset = tile_center_x + (entity.getXOffset(db.edb) / scale_factor) * mirror_scale;
+			float final_y_offset = tile_center_y + (entity.getYOffset(db.edb) / scale_factor);
+
+			sprite.setPosition({ final_x_offset, final_y_offset });
+			sprite.setScale({ 1 / scale_factor * mirror_scale, 1 / scale_factor });
+			rt.draw(sprite);
 		}
-
-		float final_x_offset = tile_center_x + (entity.getXOffset(db.edb) / scale_factor) * mirror_scale;
-		float final_y_offset = tile_center_y + (entity.getYOffset(db.edb) / scale_factor);
-
-		sprite.setPosition({ final_x_offset, final_y_offset });
-		sprite.setScale({ 1 / scale_factor * mirror_scale, 1 / scale_factor });
-		rt.draw(sprite);
 	}
 
 	return true;

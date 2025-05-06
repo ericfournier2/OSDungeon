@@ -58,8 +58,8 @@ int main()
     Labyrinth test = Labyrinth::buildTriangleLabyrinth(3);
     ShallowEntity chest1 = ShallowEntity( 1, 1, 5, 5, CardinalDirection::NORTH);
     ShallowEntity chest2 = ShallowEntity( 2, 1, 7, 5, CardinalDirection::NORTH);
-    ShallowEntity tree1 = ShallowEntity( 3, 2, 5, 7, CardinalDirection::NORTH);
-    ShallowEntity tree2 = ShallowEntity( 4, 2, 7, 7, CardinalDirection::NORTH);
+    ShallowEntity tree1 = ShallowEntity( 3, 2, 2, 0, CardinalDirection::NORTH, true, 0.75f, 0.75f);
+    ShallowEntity tree2 = ShallowEntity( 4, 2, 2, 0, CardinalDirection::NORTH, true, 0.25f, 0.75f);
     //ShallowEntity bunny1 = ShallowEntity(5, 3, 0, 1, CardinalDirection::NORTH);
     //ShallowEntity bunny2 = ShallowEntity(6, 3, 1, 0, CardinalDirection::NORTH);
     //ShallowEntity bunny3 = ShallowEntity(7, 4, 1, 1, CardinalDirection::NORTH);
@@ -68,8 +68,8 @@ int main()
 
     //test.getEntityManager().addEntity(chest1);
     //test.getEntityManager().addEntity(chest2);
-    //test.getEntityManager().addEntity(tree1);
-    //test.getEntityManager().addEntity(tree2);
+    test.getEntityManager().addEntity(tree1);
+    test.getEntityManager().addEntity(tree2);
     //test.getEntityManager().addEntity(bunny1);
     //test.getEntityManager().addEntity(bunny2);
     //test.getEntityManager().addEntity(bunny3);
