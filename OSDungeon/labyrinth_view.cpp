@@ -208,6 +208,67 @@ RelativeDirection getEntityFacing(CardinalDirection pov_d, CardinalDirection ent
 
 static sf::Clock animation_clock;
 
+CoordF LabyrinthView::placeEntityCenter(const ShallowEntity& entity, int x_offset, int y_offset) const {
+	CoordF retval = { (float)x_offset, y_offset - (1.0f - camera_distance) };
+	if (entity.fixed_position) {
+		switch (labyrinth.getPov().d) {
+		case CardinalDirection::NORTH:
+			retval.x += entity.x_sub;
+			retval.y += entity.y_sub;
+			break;
+		case CardinalDirection::EAST:
+			retval.x += (1 - entity.y_sub);
+			retval.y += entity.x_sub;
+			break;
+		case CardinalDirection::SOUTH:
+			retval.x += (1 - entity.x_sub);
+			retval.y += (1 - entity.y_sub);
+			break;
+		case CardinalDirection::WEST:
+			retval.x += entity.y_sub;
+			retval.y += (1 - entity.x_sub);
+			break;
+		}
+	} else {
+		retval.x += 0.5f;
+		retval.y += 0.5f;
+	}
+
+	return retval;
+}
+
+void LabyrinthView::drawEntity(const ShallowEntity& entity, int x_offset, int y_offset) {
+	TextureInfo tex_info = db.tdb.getTexture(entity.getTexture(db.edb));
+	sf::Sprite sprite(*tex_info.texture);
+	RelativeDirection ent_facing = getEntityFacing(labyrinth.getPov().d, entity.direction);
+	TileVec tiles = entity.getTiles(db.edb, ent_facing);
+
+	sf::Time animation_time = animation_clock.getElapsedTime();
+	int millisecond = animation_time.asMilliseconds() % 1000;
+	auto tile = (millisecond / (1000 / tiles.size())) % tiles.size();
+	sprite.setTextureRect(tex_info.getTextureRect(abs(tiles[tile])));
+
+	CoordF sprite_map_center = placeEntityCenter(entity, x_offset, y_offset);
+	CoordF sprite_screen_center = mapCoordToProjection(sprite_map_center.x, 1.0f, sprite_map_center.y);
+	float scale_factor = static_cast<float>(pow(2, sprite_map_center.y));
+	float final_x_size = entity.getXSize(db.edb) / scale_factor;
+	float final_y_size = entity.getYSize(db.edb) / scale_factor;
+
+	float mirror_scale = 1;
+	float mirror_x_offset = 0.0f;
+	if (tiles[tile] < 0) {
+		mirror_scale = -1;
+		mirror_x_offset = final_x_size;
+	}
+
+	float final_x_offset = sprite_screen_center.x - (final_x_size / 2) + mirror_x_offset;
+	float final_y_offset = sprite_screen_center.y - final_y_size;
+
+	sprite.setPosition({ final_x_offset, final_y_offset });
+	sprite.setScale({ 1 / scale_factor * mirror_scale, 1 / scale_factor });
+	rt.draw(sprite);
+}
+
 bool LabyrinthView::renderGround(RenderStep step) {
 	//std::cout << "Currently rendering: ";
 	//step.print();
@@ -240,74 +301,7 @@ bool LabyrinthView::renderGround(RenderStep step) {
 
 	ShallowEntityVec entities = labyrinth.getEntities(step.x_offset, step.y_offset);
 	for (const auto& entity : entities) {
-		TextureInfo tex_info = db.tdb.getTexture(entity.getTexture(db.edb));
-		sf::Sprite sprite(*tex_info.texture);
-		RelativeDirection ent_facing = getEntityFacing(labyrinth.getPov().d, entity.direction);
-		TileVec tiles = entity.getTiles(db.edb, ent_facing);
-
-		sf::Time animation_time = animation_clock.getElapsedTime();
-		int millisecond = animation_time.asMilliseconds() % 1000;
-		auto tile = (millisecond / (1000 / tiles.size())) % tiles.size();
-		sprite.setTextureRect(tex_info.getTextureRect(abs(tiles[tile])));
-
-		if (entity.fixed_position) {
-			float map_x_offset = (float)step.x_offset;
-			float map_y_offset = (float)step.y_offset - (1.0f - camera_distance);
-			switch (labyrinth.getPov().d) {
-			case CardinalDirection::NORTH:
-				map_x_offset += entity.x_sub;
-				map_y_offset += entity.y_sub;
-				break;
-			case CardinalDirection::EAST:
-				map_x_offset += (1 - entity.y_sub);
-				map_y_offset += entity.x_sub;
-				break;
-			case CardinalDirection::SOUTH:
-				map_x_offset += (1 - entity.x_sub);
-				map_y_offset += (1 - entity.y_sub);
-				break;
-			case CardinalDirection::WEST:
-				map_x_offset += entity.y_sub;
-				map_y_offset += (1 - entity.x_sub);
-				break;
-			}
-
-			CoordF sprite_center = mapCoordToProjection(map_x_offset, 1.0f, map_y_offset);
-			float scale_factor = static_cast<float>(pow(2, map_y_offset));
-			float final_x_size = entity.getXSize(db.edb) / scale_factor;
-			float final_y_size = entity.getYSize(db.edb) / scale_factor;
-
-			float mirror_scale = 1;
-			if (tiles[tile] < 0) {
-				mirror_scale = -1;
-			}
-
-			float final_x_offset = sprite_center.x - (final_x_size / 2);
-			float final_y_offset = sprite_center.y - final_y_size;
-
-			sprite.setPosition({ final_x_offset, final_y_offset });
-			sprite.setScale({ 1 / scale_factor * mirror_scale, 1 / scale_factor });
-			rt.draw(sprite);
-
-		} else {
-			float scale_factor = static_cast<float>(pow(2, step.y_offset));
-			float final_x_size = entity.getXSize(db.edb) / scale_factor;
-			float final_y_size = entity.getYSize(db.edb) / scale_factor;
-			float tile_center_x = (ground1.x + ground2.x + ground3.x + ground4.x) / 4.0f;
-			float tile_center_y = (ground1.y + ground2.y + ground3.y + ground4.y) / 4.0f;
-
-			float mirror_scale = 1;
-			if (tiles[tile] < 0) {
-				mirror_scale = -1;
-			}
-
-			float final_x_offset = tile_center_x + (entity.getXOffset(db.edb) / scale_factor) * mirror_scale;
-			float final_y_offset = tile_center_y + (entity.getYOffset(db.edb) / scale_factor);
-
-			sprite.setPosition({ final_x_offset, final_y_offset });
-			sprite.setScale({ 1 / scale_factor * mirror_scale, 1 / scale_factor });
-			rt.draw(sprite);
-		}
+		drawEntity(entity, step.x_offset, step.y_offset);
 	}
 
 	return true;

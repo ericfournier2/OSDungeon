@@ -49,7 +49,7 @@ int main()
     template_db.addElement({ 1, "Chest", MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 105.0f, 83.0f, -52.5f, -60.0f, 5, {0}, {0}, {0}, {0}});
     template_db.addElement({ 2, "Tree", MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 100.0f, 300.0f, -50.0f, -250.0f, 6, {0}, {0}, {0}, {0}});
     template_db.addElement({ 3, "Small bunny", MovementType::FOLLOW, CollisionType::PICKABLE, InteractionType::NONE, 50.0f, 50.0f, -25.0f, -40.0f, 7, {0}, {0}, {0}, {0}});
-    template_db.addElement({ 4, "Big bunny", MovementType::WANDER, CollisionType::LETHAL, InteractionType::NONE, 200.0f, 200.0f, -100.0f, -180.0f, 8, {0, 1, 0, 2}, {3, 4, 3, 5}, {6, 7, 8, 7}, {-6, -7, -8, -7}});
+    template_db.addElement({ 4, "Big bunny", MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 200.0f, 200.0f, -100.0f, -180.0f, 8, {0, 1, 0, 2}, {3, 4, 3, 5}, {6, 7, 8, 7}, {-6, -7, -8, -7}});
     template_db.addElement({ 5, "Bunny chest", MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 400.0f, 250.0f, -200.0f, -220.0f, 9, {0}, {1}, {2}, {-2}});
 
     Databases db(ground_db, wall_db, texture_db, template_db);
@@ -62,7 +62,7 @@ int main()
     ShallowEntity tree2 = ShallowEntity( 4, 2, 2, 0, CardinalDirection::NORTH, true, 0.25f, 0.75f);
     //ShallowEntity bunny1 = ShallowEntity(5, 3, 0, 1, CardinalDirection::NORTH);
     //ShallowEntity bunny2 = ShallowEntity(6, 3, 1, 0, CardinalDirection::NORTH);
-    //ShallowEntity bunny3 = ShallowEntity(7, 4, 1, 1, CardinalDirection::NORTH);
+    ShallowEntity bunny3 = ShallowEntity(7, 4, 2, 0, CardinalDirection::NORTH);
     ShallowEntity bunny_chest = ShallowEntity(8, 5, 2, 2, CardinalDirection::SOUTH);
 
 
@@ -72,7 +72,7 @@ int main()
     test.getEntityManager().addEntity(tree2);
     //test.getEntityManager().addEntity(bunny1);
     //test.getEntityManager().addEntity(bunny2);
-    //test.getEntityManager().addEntity(bunny3);
+    test.getEntityManager().addEntity(bunny3);
     //test.getEntityManager().addEntity(bunny_chest);
 
     //test.loadFromFile("current.labyrinth");
