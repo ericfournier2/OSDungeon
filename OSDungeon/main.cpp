@@ -64,7 +64,7 @@ int main()
     //ShallowEntity bunny2 = ShallowEntity(6, 3, 1, 0, CardinalDirection::NORTH);
     ShallowEntity bunny3 = ShallowEntity(7, 4, 2, 0, CardinalDirection::NORTH);
     ShallowEntity bunny_chest = ShallowEntity(8, 5, 2, 2, CardinalDirection::SOUTH);
-
+    ShallowEntity bunny4 = ShallowEntity(9, 4, 2, 0, CardinalDirection::NORTH);
 
     //test.getEntityManager().addEntity(chest1);
     //test.getEntityManager().addEntity(chest2);
@@ -74,6 +74,7 @@ int main()
     //test.getEntityManager().addEntity(bunny2);
     test.getEntityManager().addEntity(bunny3);
     //test.getEntityManager().addEntity(bunny_chest);
+    test.getEntityManager().addEntity(bunny4);
 
     //test.loadFromFile("current.labyrinth");
     //Runner runner = Runner(test, db);

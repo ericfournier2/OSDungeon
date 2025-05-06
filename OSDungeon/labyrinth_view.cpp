@@ -208,7 +208,7 @@ RelativeDirection getEntityFacing(CardinalDirection pov_d, CardinalDirection ent
 
 static sf::Clock animation_clock;
 
-CoordF LabyrinthView::placeEntityCenter(const ShallowEntity& entity, int x_offset, int y_offset) const {
+CoordF LabyrinthView::placeEntityCenter(const ShallowEntity& entity, int x_offset, int y_offset, int n_free_entities, int free_entity_index) const {
 	CoordF retval = { (float)x_offset, y_offset - (1.0f - camera_distance) };
 	if (entity.fixed_position) {
 		switch (labyrinth.getPov().d) {
@@ -230,14 +230,15 @@ CoordF LabyrinthView::placeEntityCenter(const ShallowEntity& entity, int x_offse
 			break;
 		}
 	} else {
-		retval.x += 0.5f;
+		float step = 1.0f / (n_free_entities + 1);
+		retval.x += step * (free_entity_index + 1);
 		retval.y += 0.5f;
 	}
 
 	return retval;
 }
 
-void LabyrinthView::drawEntity(const ShallowEntity& entity, int x_offset, int y_offset) {
+void LabyrinthView::drawEntity(const ShallowEntity& entity, int x_offset, int y_offset, int n_free_entities, int free_entity_index) {
 	TextureInfo tex_info = db.tdb.getTexture(entity.getTexture(db.edb));
 	sf::Sprite sprite(*tex_info.texture);
 	RelativeDirection ent_facing = getEntityFacing(labyrinth.getPov().d, entity.direction);
@@ -248,7 +249,7 @@ void LabyrinthView::drawEntity(const ShallowEntity& entity, int x_offset, int y_
 	auto tile = (millisecond / (1000 / tiles.size())) % tiles.size();
 	sprite.setTextureRect(tex_info.getTextureRect(abs(tiles[tile])));
 
-	CoordF sprite_map_center = placeEntityCenter(entity, x_offset, y_offset);
+	CoordF sprite_map_center = placeEntityCenter(entity, x_offset, y_offset, n_free_entities, free_entity_index);
 	CoordF sprite_screen_center = mapCoordToProjection(sprite_map_center.x, 1.0f, sprite_map_center.y);
 	float scale_factor = static_cast<float>(pow(2, sprite_map_center.y));
 	float final_x_size = entity.getXSize(db.edb) / scale_factor;
@@ -300,8 +301,19 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	drawPrimitive(ground1, ground2, ground3, ground4, ground_info.ground_color, texture_info.texture.get(), GROUND_TEXTURE, false);
 
 	ShallowEntityVec entities = labyrinth.getEntities(step.x_offset, step.y_offset);
+	int n_free_entities = 0;
 	for (const auto& entity : entities) {
-		drawEntity(entity, step.x_offset, step.y_offset);
+		if (!entity.fixed_position) {
+			++n_free_entities;
+		}
+	}
+
+	int free_entity_index = 0;
+	for (const auto& entity : entities) {
+		drawEntity(entity, step.x_offset, step.y_offset, n_free_entities, free_entity_index);
+		if (!entity.fixed_position) {
+			++free_entity_index;
+		}
 	}
 
 	return true;
