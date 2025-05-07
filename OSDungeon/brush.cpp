@@ -1,7 +1,6 @@
 #include "brush.h"
 
-Brush::Brush(const EntityTemplateDb& template_db_init) 
-	: template_db(template_db_init)
+Brush::Brush() 
 {
 }
 

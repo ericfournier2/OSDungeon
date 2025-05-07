@@ -8,7 +8,7 @@ LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, Databases& db_in
 	: labyrinth(labyrinth_init), 
 	  window(sf::VideoMode({ 1600, 900 }), "Edit maze"),
 	  db(db_init), 
-	  brush(db.edb),
+	  brush(),
 	  brush_editor(brush, db),
 	  top_view(labyrinth, labyrinth.getEntityManager(), db, &brush),
 	  db_editor(db),

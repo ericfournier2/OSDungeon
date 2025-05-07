@@ -29,7 +29,7 @@ struct BrushPreview {
 
 class Brush {
 public:
-	Brush(const EntityTemplateDb& template_db);
+	Brush();
 
 	void apply(Labyrinth& labyrinth, float x, float y) const;
 	BrushPreview preview(const Labyrinth& labyrinth, float x, float y) const;
@@ -68,6 +68,5 @@ private:
 	WallId wall_id = 1;
 	EntityTemplateId entity_id = 1;
 
-	const EntityTemplateDb& template_db;
 	float wall_dead_zone = 0.3f;
 };
