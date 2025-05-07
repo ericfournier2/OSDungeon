@@ -29,6 +29,7 @@ private:
 	WallDb wdb;
 	TextureDb tdb;
 	EntityTemplateDb edb;
+	SpriteDb sdb;
 
 	Databases db;
 	std::vector<std::shared_ptr<StaticView>> perspectives;

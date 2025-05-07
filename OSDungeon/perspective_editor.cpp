@@ -3,7 +3,7 @@
 #include "imgui/imgui-SFML.h"
 
 PerspectiveEditor::PerspectiveEditor()
-	: db({ gdb, wdb, tdb, edb })
+	: db({ gdb, wdb, tdb, edb, sdb })
 {
 	db.gdb.addElement(GroundInfo({ 1, sf::Color::Green, sf::Color::Blue, 0 }));
 	db.wdb.addElement(WallInfo({ 1, sf::Color::White, 0 }));

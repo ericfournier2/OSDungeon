@@ -89,7 +89,7 @@ void Runner::tick()
 {
 	std::set<EntityId> to_remove;
 	for (auto& [id, dummy_entity] : entities.getAllEntities()) {
-		Entity ent(entities.getAllEntities().at(id), db.edb);
+		Entity ent(entities.getAllEntities().at(id), db.edb, db.sdb);
 		ent.move(labyrinth, gs);
 		if (ent.getX() == pov.getPov().x && ent.getY() == pov.getPov().y) {
 			if (ent.collide(labyrinth, gs)) {

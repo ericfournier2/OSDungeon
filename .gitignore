@@ -362,3 +362,9 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /OSDungeon/imgui.ini
+/OSDungeon/Perspective 0.png
+/OSDungeon/Perspective 1.png
+/OSDungeon/Perspective 2.png
+/OSDungeon/Perspective 3.png
+/OSDungeon/Perspective 4.png
+/OSDungeon/Perspective 5.png

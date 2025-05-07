@@ -8,7 +8,7 @@ StaticView::StaticView(Labyrinth lab, const Databases& db, unsigned int size_x, 
 }
 
 UnitStaticView::UnitStaticView(unsigned int size_x, unsigned int size_y)
-	: db(gdb, wdb, tdb, edb), static_view(Labyrinth::buildSquareLabyrinth(1), db, size_x, size_y)
+	: db(gdb, wdb, tdb, edb, sdb), static_view(Labyrinth::buildSquareLabyrinth(1), db, size_x, size_y)
 {
 
 }

@@ -25,6 +25,7 @@ private:
 	WallDb wdb;
 	TextureDb tdb;
 	EntityTemplateDb edb;
+	SpriteDb sdb;
 	Databases db;
 
 	StaticView static_view;
