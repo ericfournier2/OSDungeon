@@ -40,7 +40,7 @@ void Brush::applyPreview(Labyrinth& labyrinth, const BrushPreview& brush_preview
 
 	for (auto const& [key, val] : brush_preview.entities) {
 		if (val == 0) {
-			ShallowEntityVec entities = labyrinth.getEntityManager().getEntityAbs(key.x, key.y);
+			EntityStateVec entities = labyrinth.getEntityManager().getEntityAbs(key.x, key.y);
 			for (auto const& entity : entities) {
 				labyrinth.getEntityManager().removeEntity(entity.id);
 			}

@@ -6,7 +6,7 @@ LabyrinthPOV::LabyrinthPOV(const Labyrinth& labyrinth_)
 	setPov(labyrinth.getPovX(), labyrinth.getPovY(), labyrinth.getPovDirection());
 }
 
-LabyrinthPOV::LabyrinthPOV(const Labyrinth& labyrinth_, const ShallowEntityManager& entities_)
+LabyrinthPOV::LabyrinthPOV(const Labyrinth& labyrinth_, const EntityStateManager& entities_)
 	: labyrinth(labyrinth_), entities(entities_)
 {
 	setPov(labyrinth.getPovX(), labyrinth.getPovY(), labyrinth.getPovDirection());
@@ -76,7 +76,7 @@ WallId LabyrinthPOV::getWall(int x_offset, int y_offset, RelativeDirection direc
 	return labyrinth.getWallCardinal(t_coord.x, t_coord.y, t_coord.d);
 }
 
-ShallowEntityVec LabyrinthPOV::getEntities(int x, int y) const {
+EntityStateVec LabyrinthPOV::getEntities(int x, int y) const {
 	Coord t_coord = transformCoord(Coord(x, y));
 
 	return entities.getEntityAbs(t_coord.x, t_coord.y);

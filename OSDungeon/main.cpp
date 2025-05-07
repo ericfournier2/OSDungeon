@@ -64,15 +64,15 @@ int main()
 
     //Labyrinth test = Labyrinth(30, 30);
     Labyrinth test = Labyrinth::buildTriangleLabyrinth(3);
-    ShallowEntity chest1 = ShallowEntity( 1, chest_template, 5, 5, CardinalDirection::NORTH);
-    ShallowEntity chest2 = ShallowEntity( 2, chest_template, 7, 5, CardinalDirection::NORTH);
-    ShallowEntity tree1 = ShallowEntity( 3, tree_template, 2, 0, CardinalDirection::NORTH, true, 0.75f, 0.75f);
-    ShallowEntity tree2 = ShallowEntity( 4, tree_template, 2, 0, CardinalDirection::NORTH, true, 0.25f, 0.75f);
+    EntityState chest1 = EntityState( 1, chest_template, 5, 5, CardinalDirection::NORTH);
+    EntityState chest2 = EntityState( 2, chest_template, 7, 5, CardinalDirection::NORTH);
+    EntityState tree1 = EntityState( 3, tree_template, 2, 0, CardinalDirection::NORTH, true, 0.75f, 0.75f);
+    EntityState tree2 = EntityState( 4, tree_template, 2, 0, CardinalDirection::NORTH, true, 0.25f, 0.75f);
     //ShallowEntity bunny1 = ShallowEntity(5, small_bunny_template, 0, 1, CardinalDirection::NORTH);
     //ShallowEntity bunny2 = ShallowEntity(6, small_bunny_template, 1, 0, CardinalDirection::NORTH);
-    ShallowEntity bunny3 = ShallowEntity(7, big_bunny_template, 2, 0, CardinalDirection::NORTH);
-    ShallowEntity bunny_chest = ShallowEntity(8, bunny_chest_template, 2, 2, CardinalDirection::SOUTH);
-    ShallowEntity bunny4 = ShallowEntity(9, big_bunny_template, 2, 0, CardinalDirection::NORTH);
+    EntityState bunny3 = EntityState(7, big_bunny_template, 2, 0, CardinalDirection::NORTH);
+    EntityState bunny_chest = EntityState(8, bunny_chest_template, 2, 2, CardinalDirection::SOUTH);
+    EntityState bunny4 = EntityState(9, big_bunny_template, 2, 0, CardinalDirection::NORTH);
 
     //test.getEntityManager().addEntity(chest1);
     //test.getEntityManager().addEntity(chest2);

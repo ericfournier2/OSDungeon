@@ -4,7 +4,7 @@
 class LabyrinthPOV {
 public:
 	LabyrinthPOV(const Labyrinth& labyrinth);
-	LabyrinthPOV(const Labyrinth& labyrinth, const ShallowEntityManager& entities);
+	LabyrinthPOV(const Labyrinth& labyrinth, const EntityStateManager& entities);
 
 	MoveResult advance();
 	//MoveResult strafeLeft();
@@ -19,7 +19,7 @@ public:
 
 	WallId getWall(int x, int y, RelativeDirection d) const;
 	GroundId getGround(int x, int y) const;
-	ShallowEntityVec getEntities(int x, int y) const;
+	EntityStateVec getEntities(int x, int y) const;
 	bool canMove(RelativeDirection d) const;
 private:
 	Coord transformCoord(Coord coord) const;
@@ -27,7 +27,7 @@ private:
 	CardinalCoord transformCoord(RelativeCoord coord) const;
 
 	const Labyrinth& labyrinth;
-	const ShallowEntityManager& entities;
+	const EntityStateManager& entities;
 	int x = 0;
 	int y = 0;
 	CardinalDirection d = CardinalDirection::NORTH;

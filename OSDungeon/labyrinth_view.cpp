@@ -208,7 +208,7 @@ RelativeDirection getEntityFacing(CardinalDirection pov_d, CardinalDirection ent
 
 static sf::Clock animation_clock;
 
-CoordF LabyrinthView::placeEntityCenter(const ShallowEntity& entity, int x_offset, int y_offset, int n_free_entities, int free_entity_index) const {
+CoordF LabyrinthView::placeEntityCenter(const EntityState& entity, int x_offset, int y_offset, int n_free_entities, int free_entity_index) const {
 	CoordF retval = { (float)x_offset, y_offset - (1.0f - camera_distance) };
 	if (entity.fixed_position) {
 		switch (labyrinth.getPov().d) {
@@ -238,11 +238,11 @@ CoordF LabyrinthView::placeEntityCenter(const ShallowEntity& entity, int x_offse
 	return retval;
 }
 
-void LabyrinthView::drawEntity(const ShallowEntity& entity, int x_offset, int y_offset, int n_free_entities, int free_entity_index) {
-	TextureInfo tex_info = db.tdb.getTexture(entity.getTexture(db.sdb, db.edb));
+void LabyrinthView::drawEntity(const Entity& entity, int x_offset, int y_offset, int n_free_entities, int free_entity_index) {
+	TextureInfo tex_info = db.tdb.getTexture(entity.getTexture());
 	sf::Sprite sprite(*tex_info.texture);
-	RelativeDirection ent_facing = getEntityFacing(labyrinth.getPov().d, entity.direction);
-	TileVec tiles = entity.getTiles(db.sdb, db.edb, ent_facing);
+	RelativeDirection ent_facing = getEntityFacing(labyrinth.getPov().d, entity.getDirection());
+	TileVec tiles = entity.getTiles(ent_facing);
 
 	sf::Time animation_time = animation_clock.getElapsedTime();
 	int millisecond = animation_time.asMilliseconds() % 1000;
@@ -252,8 +252,8 @@ void LabyrinthView::drawEntity(const ShallowEntity& entity, int x_offset, int y_
 	CoordF sprite_map_center = placeEntityCenter(entity, x_offset, y_offset, n_free_entities, free_entity_index);
 	CoordF sprite_screen_center = mapCoordToProjection(sprite_map_center.x, 1.0f, sprite_map_center.y);
 	float scale_factor = static_cast<float>(pow(2, sprite_map_center.y));
-	float final_x_size = entity.getXSize(db.edb) / scale_factor;
-	float final_y_size = entity.getYSize(db.edb) / scale_factor;
+	float final_x_size = entity.getXSize() / scale_factor;
+	float final_y_size = entity.getYSize() / scale_factor;
 
 	float mirror_scale = 1;
 	float mirror_x_offset = 0.0f;
@@ -301,7 +301,7 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	//drawPrimitive(ground1, ground2, ground3, ground4, sf::Color(127, 51, 0), &ground_texture, GROUND_TEXTURE, true);
 	drawPrimitive(ground1, ground2, ground3, ground4, ground_info.ground_color, texture_info.texture.get(), GROUND_TEXTURE, false);
 
-	ShallowEntityVec entities = labyrinth.getEntities(step.x_offset, step.y_offset);
+	EntityStateVec entities = labyrinth.getEntities(step.x_offset, step.y_offset);
 	int n_free_entities = 0;
 	for (const auto& entity : entities) {
 		if (!entity.fixed_position) {
@@ -311,7 +311,8 @@ bool LabyrinthView::renderGround(RenderStep step) {
 
 	int free_entity_index = 0;
 	for (const auto& entity : entities) {
-		drawEntity(entity, step.x_offset, step.y_offset, n_free_entities, free_entity_index);
+		Entity this_entity(entity, db.edb, db.sdb);
+		drawEntity(this_entity, step.x_offset, step.y_offset, n_free_entities, free_entity_index);
 		if (!entity.fixed_position) {
 			++free_entity_index;
 		}

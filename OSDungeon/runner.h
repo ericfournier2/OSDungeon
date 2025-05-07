@@ -39,7 +39,7 @@ private:
 	int dialog_char_size = 24;
 
 	Labyrinth labyrinth;
-	ShallowEntityManager entities;
+	EntityStateManager entities;
 	LabyrinthPOV pov;
 	const Databases& db;
 	sf::RenderWindow window;

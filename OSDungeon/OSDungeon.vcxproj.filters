@@ -120,6 +120,9 @@
     <ClCompile Include="imgui_utils.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="labyrinth_background.cpp">
+      <Filter>Fichiers sources\Logic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="entity.h">
@@ -190,6 +193,9 @@
     </ClInclude>
     <ClInclude Include="imgui_utils.h">
       <Filter>Fichiers d%27en-tête\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="labyrinth_background.h">
+      <Filter>Fichiers d%27en-tête\Logic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 #include "shallow_entities.h"
 
-EntityId ShallowEntityManager::findFreeId() const {
+EntityId EntityStateManager::findFreeId() const {
 	// Get first free ID
 	EntityId id = 1;
 	while (entities.contains(id)) {
@@ -10,10 +10,10 @@ EntityId ShallowEntityManager::findFreeId() const {
 	return id;
 }
 
-EntityId ShallowEntityManager::addEntity(const ShallowEntity& entity) {
+EntityId EntityStateManager::addEntity(const EntityState& entity) {
 	if (entities.contains(entity.id)) {
 		EntityId new_id = findFreeId();
-		ShallowEntity new_info = entity;
+		EntityState new_info = entity;
 		new_info.id = new_id;
 		entities.emplace(new_id, new_info);
 		return new_id;
@@ -23,13 +23,13 @@ EntityId ShallowEntityManager::addEntity(const ShallowEntity& entity) {
 	}
 }
 
-EntityId ShallowEntityManager::addEntity(EntityTemplateId template_id, int x, int y, CardinalDirection d) {
+EntityId EntityStateManager::addEntity(EntityTemplateId template_id, int x, int y, CardinalDirection d) {
 	EntityId id = findFreeId();
-	entities.emplace(id, ShallowEntity(id, template_id, x, y, d));
+	entities.emplace(id, EntityState(id, template_id, x, y, d));
 	return id;
 }
 
-bool ShallowEntityManager::updateEntity(const ShallowEntity& entity) {
+bool EntityStateManager::updateEntity(const EntityState& entity) {
 	if (entities.contains(entity.id)) {
 		entities[entity.id] = entity;
 		return true;
@@ -38,20 +38,20 @@ bool ShallowEntityManager::updateEntity(const ShallowEntity& entity) {
 	return false;
 }
 
-void ShallowEntityManager::removeEntity(EntityId id) {
+void EntityStateManager::removeEntity(EntityId id) {
 	entities.erase(id);
 }
 
-ShallowEntity ShallowEntityManager::getEntity(EntityId id) const {
+EntityState EntityStateManager::getEntity(EntityId id) const {
 	if (entities.contains(id)) {
 		return entities.at(id);
 	} else {
-		return ShallowEntity();
+		return EntityState();
 	}
 }
 
-ShallowEntityVec ShallowEntityManager::getEntityAbs(int x, int y) const {
-	ShallowEntityVec retval;
+EntityStateVec EntityStateManager::getEntityAbs(int x, int y) const {
+	EntityStateVec retval;
 	for (auto const& [key, val] : entities) {
 		if (val.x == x && val.y == y) {
 			retval.push_back(val);
@@ -61,7 +61,7 @@ ShallowEntityVec ShallowEntityManager::getEntityAbs(int x, int y) const {
 	return retval;
 }
 
-bool ShallowEntityManager::writeToStream(std::ofstream& stream) const {
+bool EntityStateManager::writeToStream(std::ofstream& stream) const {
 	auto db_size = entities.size();
 	stream.write(reinterpret_cast<char*>(&db_size), sizeof(db_size));
 	for (const auto& [key, value] : entities) {
@@ -70,14 +70,14 @@ bool ShallowEntityManager::writeToStream(std::ofstream& stream) const {
 	return !stream.fail();
 }
 
-bool ShallowEntityManager::readFromStream(std::ifstream& stream) {
+bool EntityStateManager::readFromStream(std::ifstream& stream) {
 	entities.clear();
 
 	auto db_size = entities.size();
 	stream.read(reinterpret_cast<char*>(&db_size), sizeof(db_size));
 	for (int i = 0; i < db_size; ++i) {
-		ShallowEntity info;
-		stream.read(reinterpret_cast<char*>(&info), sizeof(ShallowEntity));
+		EntityState info;
+		stream.read(reinterpret_cast<char*>(&info), sizeof(EntityState));
 		entities.emplace(info.id, info);
 	}
 	return !stream.fail();

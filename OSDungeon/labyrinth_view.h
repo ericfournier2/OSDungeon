@@ -77,8 +77,8 @@ private:
 	CoordF mapCoordToProjection(float x, float y, float d) const;
 	bool renderGround(RenderStep step);
 	bool renderWall(RenderStep step);
-	CoordF placeEntityCenter(const ShallowEntity& entity, int x_offset, int y_offset, int n_free_entities, int free_entity_index) const;
-	void drawEntity(const ShallowEntity& entity, int x_offset, int y_offset, int n_free_entities, int free_entity_index);
+	CoordF placeEntityCenter(const EntityState& entity, int x_offset, int y_offset, int n_free_entities, int free_entity_index) const;
+	void drawEntity(const Entity& entity, int x_offset, int y_offset, int n_free_entities, int free_entity_index);
 	void drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf::Color color, const sf::Texture* texture, TextureType texture_type, bool outline = false);
 	bool renderBackground();
 	std::stack<RenderStep> buildDrawStack();

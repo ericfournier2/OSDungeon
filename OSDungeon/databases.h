@@ -81,7 +81,7 @@ struct SpriteInfo {
 
 	bool write(std::ofstream& stream) const;
 	bool read(std::ifstream& stream);
-	const TileVec& getTileVec(RelativeDirection d) const;
+	TileVec getTileVec(RelativeDirection d) const;
 };
 
 struct EntityTemplateInfo {

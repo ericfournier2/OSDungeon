@@ -44,9 +44,9 @@ public:
 	bool writeToFile(const std::string& filename) const;
 	bool loadFromFile(const std::string& filename);
 
-	ShallowEntityManager& getEntityManager() { return entities; }
-	const ShallowEntityManager& getEntityManager() const { return entities; }
-	ShallowEntityVec getEntityRel(int x, int y) const;
+	EntityStateManager& getEntityManager() { return entities; }
+	const EntityStateManager& getEntityManager() const { return entities; }
+	EntityStateVec getEntityRel(int x, int y) const;
 
 	bool canMove(int from_x, int from_y, CardinalDirection d) const;
 	std::optional<Path> findPath(int from_x, int from_y, int to_x, int to_y) const;
@@ -70,5 +70,5 @@ private:
 	int pov_y = 0;
 	CardinalDirection pov_direction = CardinalDirection::NORTH;
 
-	ShallowEntityManager entities;
+	EntityStateManager entities;
 };

@@ -146,6 +146,7 @@
     <ClCompile Include="imgui\imgui_stdlib.cpp" />
     <ClCompile Include="imgui_utils.cpp" />
     <ClCompile Include="labyrinth.cpp" />
+    <ClCompile Include="labyrinth_background.cpp" />
     <ClCompile Include="labyrinth_pov.cpp" />
     <ClCompile Include="labyrinth_print.cpp" />
     <ClCompile Include="labyrinth_top_view.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="imgui\imgui_stdlib.h" />
     <ClInclude Include="imgui_utils.h" />
     <ClInclude Include="labyrinth.h" />
+    <ClInclude Include="labyrinth_background.h" />
     <ClInclude Include="labyrinth_edit_view.h" />
     <ClInclude Include="labyrinth_pov.h" />
     <ClInclude Include="labyrinth_print.h" />

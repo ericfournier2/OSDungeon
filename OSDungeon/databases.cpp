@@ -176,7 +176,7 @@ bool EntityTemplateInfo::read(std::ifstream& stream) {
 	return !stream.fail();
 }
 
-const TileVec& SpriteInfo::getTileVec(RelativeDirection d) const {
+TileVec SpriteInfo::getTileVec(RelativeDirection d) const {
 	switch (d) {
 	case RelativeDirection::FRONT:
 		return front;
