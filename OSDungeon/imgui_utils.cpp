@@ -29,7 +29,7 @@ bool textureSelect(const std::string& label, TextureId* id, const TextureDb& tdb
 	return retval;
 }
 
-AnimatedEntity::AnimatedEntity(const EntityTemplateInfo& info_, const TextureDb& tdb_, RelativeDirection facing_, bool loop_) 
+AnimatedEntity::AnimatedEntity(const SpriteInfo& info_, const TextureDb& tdb_, RelativeDirection facing_, bool loop_) 
 	: info(info_), tdb(tdb_), loop(loop_), facing(facing_) 
 {
 }

@@ -19,12 +19,24 @@ sf::Color getTextureButtonColor(EntityTemplateInfo info) {
 	return sf::Color::White;
 }
 
+TextureInfo getTextureFromInfo(const GroundInfo& info, const TextureDb& texture_db, const SpriteDb& sprite_db) {
+	return texture_db.getTexture(info.texture);
+}
+
+TextureInfo getTextureFromInfo(const WallInfo& info, const TextureDb& texture_db, const SpriteDb& sprite_db) {
+	return texture_db.getTexture(info.texture);
+}
+
+TextureInfo getTextureFromInfo(const EntityTemplateInfo& info, const TextureDb& texture_db, const SpriteDb& sprite_db) {
+	return texture_db.getTexture(sprite_db.getElement(info.sprite_id).texture);
+}
+
 template <typename TDb>
-auto brushPopUp(const std::string& popup_label, typename TDb::IdType* id, const TDb& db, const TextureDb& texture_db) {
+auto brushPopUp(const std::string& popup_label, typename TDb::IdType* id, const TDb& db, const TextureDb& texture_db, const SpriteDb& sprite_db) {
 	typename TDb::InfoType info = db.getElement(*id);
 	std::string texture_label = popup_label;
 	texture_label.append("_texture");
-	TextureInfo tex_info = texture_db.getTexture(info.texture);
+	TextureInfo tex_info = getTextureFromInfo(info, texture_db, sprite_db);
 	sf::Vector2f tex_size = { 100.0f, 100.0f };
 	if (ImGui::ImageButton(texture_label.c_str(), *(tex_info.texture.get()), tex_size, sf::Color::Black, getTextureButtonColor(info))) {
 		ImGui::OpenPopup(popup_label.c_str());
@@ -86,19 +98,19 @@ void BrushEditor::render() {
 
 	ImGui::SeparatorText("Wall");
 	WallId wall_id = brush.getWallId();
-	if (brushPopUp<WallDb>("Wall brush", &wall_id, db.wdb, db.tdb)) {
+	if (brushPopUp<WallDb>("Wall brush", &wall_id, db.wdb, db.tdb, db.sdb)) {
 		brush.setWallId(wall_id);
 	}
 
 	ImGui::SeparatorText("Ground");
 	GroundId ground_id = brush.getGroundId();
-	if (brushPopUp<GroundDb>("Ground brush", &ground_id, db.gdb, db.tdb)) {
+	if (brushPopUp<GroundDb>("Ground brush", &ground_id, db.gdb, db.tdb, db.sdb)) {
 		brush.setGroundId(ground_id);
 	}
 
 	ImGui::SeparatorText("Entity");
 	EntityTemplateId entity_id = brush.getEntityId();
-	if (brushPopUp<EntityTemplateDb>("Entity brush", &entity_id, db.edb, db.tdb)) {
+	if (brushPopUp<EntityTemplateDb>("Entity brush", &entity_id, db.edb, db.tdb, db.sdb)) {
 		brush.setEntityId(entity_id);
 	}
 	ImGui::End();

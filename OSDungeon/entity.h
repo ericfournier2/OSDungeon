@@ -11,7 +11,7 @@ class Labyrinth;
 
 class Entity {
 public:
-	Entity(ShallowEntity& info, const EntityTemplateDb& template_db);
+	Entity(ShallowEntity& info, const EntityTemplateDb& template_db, const SpriteDb& sprite_db);
 	operator ShallowEntity() const { return info; }
 
 	ShallowEntity getShallowEntity() const { return info; }
@@ -19,26 +19,26 @@ public:
 	EntityTemplateId getTemplateId() const { return info.template_id; }
 	int getX() const { return info.x; }
 	int getY() const { return info.y; }
-	float getXOffset() const { return getTemplate().x_offset; }
-	float getYOffset() const { return getTemplate().y_offset; }
 	float getXSize() const { return getTemplate().x_size;; }
 	float getYSize() const { return getTemplate().y_size; }
 	MovementType getMovementType() const { return getTemplate().movement; }
 	CollisionType getCollisionType() const { return getTemplate().collision; }
 	InteractionType getInteractionType() const { return getTemplate().interaction; }
 	//void setLabyrinth(Labyrinth* labyrinth_init) { labyrinth = labyrinth_init; }
-	TextureId getTexture() const { return getTemplate().texture; }
-	const TileVec& getTiles(RelativeDirection d) const { return getTemplate().getTileVec(d); };
+	TextureId getTexture() const { return getSprite().texture; }
+	const TileVec& getTiles(RelativeDirection d) const { return getSprite().getTileVec(d); };
 
 	void move(const Labyrinth& labyrinth, GameState& state);
 	bool collide(const Labyrinth& labyrinth, GameState& state);
 protected:
 	EntityTemplateInfo getTemplate() const { return template_db.getElement(info.template_id); }
+	SpriteInfo getSprite() const { return sprite_db.getElement(getTemplate().sprite_id); }
 	bool moveCardinal(const Labyrinth& labyrinth, CardinalDirection d);
 
 	ShallowEntity& info;
 	//Labyrinth* labyrinth = nullptr;
 	const EntityTemplateDb& template_db;
+	const SpriteDb& sprite_db;
 };
 
 // Manages a set of entities inside a labyrinth.

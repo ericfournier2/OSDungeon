@@ -113,21 +113,27 @@ void writeTileVec(TileVec tiles, std::ofstream& stream) {
 	}
 }
 
-bool EntityTemplateInfo::write(std::ofstream& stream) const {
-	stream.write(reinterpret_cast<const char*>(&id), sizeof(EntityTemplateId));
+bool SpriteInfo::write(std::ofstream& stream) const {
+	stream.write(reinterpret_cast<const char*>(&id), sizeof(SpriteId));
 	stream << name << "\0";
-	stream.write(reinterpret_cast<const char*>(&movement), sizeof(MovementType));
-	stream.write(reinterpret_cast<const char*>(&collision), sizeof(CollisionType));
-	stream.write(reinterpret_cast<const char*>(&x_size), sizeof(float));
-	stream.write(reinterpret_cast<const char*>(&y_size), sizeof(float));
-	stream.write(reinterpret_cast<const char*>(&x_offset), sizeof(float));
-	stream.write(reinterpret_cast<const char*>(&y_offset), sizeof(float));
 	stream.write(reinterpret_cast<const char*>(&texture), sizeof(TextureId));
 
 	writeTileVec(front, stream);
 	writeTileVec(back, stream);
 	writeTileVec(left, stream);
 	writeTileVec(right, stream);
+
+	return !stream.fail();
+}
+
+bool EntityTemplateInfo::write(std::ofstream& stream) const {
+	stream.write(reinterpret_cast<const char*>(&id), sizeof(EntityTemplateId));
+	stream.write(reinterpret_cast<const char*>(&sprite_id), sizeof(SpriteId));
+	stream << name << "\0";
+	stream.write(reinterpret_cast<const char*>(&movement), sizeof(MovementType));
+	stream.write(reinterpret_cast<const char*>(&collision), sizeof(CollisionType));
+	stream.write(reinterpret_cast<const char*>(&x_size), sizeof(float));
+	stream.write(reinterpret_cast<const char*>(&y_size), sizeof(float));
 
 	return !stream.fail();
 }
@@ -146,15 +152,9 @@ TileVec readTileVec(std::ifstream& stream) {
 	return retval;
 }
 
-bool EntityTemplateInfo::read(std::ifstream& stream) {
-	stream.read(reinterpret_cast<char*>(&id), sizeof(EntityTemplateId));
+bool SpriteInfo::read(std::ifstream& stream) {
+	stream.read(reinterpret_cast<char*>(&id), sizeof(SpriteId));
 	std::getline(stream, name, '\0');
-	stream.read(reinterpret_cast<char*>(&movement), sizeof(MovementType));
-	stream.read(reinterpret_cast<char*>(&collision), sizeof(CollisionType));
-	stream.read(reinterpret_cast<char*>(&x_size), sizeof(float));
-	stream.read(reinterpret_cast<char*>(&y_size), sizeof(float));
-	stream.read(reinterpret_cast<char*>(&x_offset), sizeof(float));
-	stream.read(reinterpret_cast<char*>(&y_offset), sizeof(float));
 	stream.read(reinterpret_cast<char*>(&texture), sizeof(TextureId));
 
 	front = readTileVec(stream);
@@ -164,7 +164,19 @@ bool EntityTemplateInfo::read(std::ifstream& stream) {
 	return !stream.fail();
 }
 
-const TileVec& EntityTemplateInfo::getTileVec(RelativeDirection d) const {
+bool EntityTemplateInfo::read(std::ifstream& stream) {
+	stream.read(reinterpret_cast<char*>(&id), sizeof(EntityTemplateId));
+	stream.read(reinterpret_cast<char*>(&sprite_id), sizeof(SpriteId));
+	std::getline(stream, name, '\0');
+	stream.read(reinterpret_cast<char*>(&movement), sizeof(MovementType));
+	stream.read(reinterpret_cast<char*>(&collision), sizeof(CollisionType));
+	stream.read(reinterpret_cast<char*>(&x_size), sizeof(float));
+	stream.read(reinterpret_cast<char*>(&y_size), sizeof(float));
+
+	return !stream.fail();
+}
+
+const TileVec& SpriteInfo::getTileVec(RelativeDirection d) const {
 	switch (d) {
 	case RelativeDirection::FRONT:
 		return front;

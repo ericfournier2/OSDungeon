@@ -15,6 +15,7 @@ private:
 	Databases& db;
 	EntityTemplateId current_id = 0;
 	EntityTemplateInfo current_info;
+	SpriteInfo current_sprite;
 
 	std::string tile_vec_string_front;
 	std::string tile_vec_string_back;

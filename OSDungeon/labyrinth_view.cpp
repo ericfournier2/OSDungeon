@@ -239,10 +239,10 @@ CoordF LabyrinthView::placeEntityCenter(const ShallowEntity& entity, int x_offse
 }
 
 void LabyrinthView::drawEntity(const ShallowEntity& entity, int x_offset, int y_offset, int n_free_entities, int free_entity_index) {
-	TextureInfo tex_info = db.tdb.getTexture(entity.getTexture(db.edb));
+	TextureInfo tex_info = db.tdb.getTexture(entity.getTexture(db.sdb, db.edb));
 	sf::Sprite sprite(*tex_info.texture);
 	RelativeDirection ent_facing = getEntityFacing(labyrinth.getPov().d, entity.direction);
-	TileVec tiles = entity.getTiles(db.edb, ent_facing);
+	TileVec tiles = entity.getTiles(db.sdb, db.edb, ent_facing);
 
 	sf::Time animation_time = animation_clock.getElapsedTime();
 	int millisecond = animation_time.asMilliseconds() % 1000;
@@ -281,16 +281,17 @@ bool LabyrinthView::renderGround(RenderStep step) {
 		far_y = camera_distance + step.y_offset;
 	}
 
-	CoordF ceil1 = mapCoordToProjection(static_cast<float>(step.x_offset), 0.0f, close_y);
-	CoordF ceil2 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 0.0f, close_y);
-	CoordF ceil3 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 0.0f, far_y);
-	CoordF ceil4 = mapCoordToProjection(static_cast<float>(step.x_offset), 0.0f, far_y);
-
-	//drawPrimitive(ceil1, ceil2, ceil3, ceil4, sf::Color(0, 148, 255), &ground_texture, GROUND_TEXTURE, true);
 	GroundInfo ground_info = db.gdb.getElement(step.ground_id);
 	TextureInfo texture_info = db.tdb.getTexture(ground_info.texture);
 
-	drawPrimitive(ceil1, ceil2, ceil3, ceil4, ground_info.ceiling_color, texture_info.texture.get(), GROUND_TEXTURE, false);
+	if (ground_info.draw_ceiling) {
+		CoordF ceil1 = mapCoordToProjection(static_cast<float>(step.x_offset), 0.0f, close_y);
+		CoordF ceil2 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 0.0f, close_y);
+		CoordF ceil3 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 0.0f, far_y);
+		CoordF ceil4 = mapCoordToProjection(static_cast<float>(step.x_offset), 0.0f, far_y);
+
+		drawPrimitive(ceil1, ceil2, ceil3, ceil4, ground_info.ceiling_color, texture_info.texture.get(), GROUND_TEXTURE, false);
+	}
 
 	CoordF ground1 = mapCoordToProjection(static_cast<float>(step.x_offset), 1.0f, close_y);
 	CoordF ground2 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 1.0f, close_y);

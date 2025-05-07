@@ -38,10 +38,10 @@ bool textureSelect(const std::string& label, TextureId* id, const TextureDb& tdb
 
 class AnimatedEntity {
 public:
-	AnimatedEntity(const EntityTemplateInfo& info, const TextureDb& tdb, RelativeDirection facing = RelativeDirection::FRONT, bool loop = true);
+	AnimatedEntity(const SpriteInfo& info, const TextureDb& tdb, RelativeDirection facing = RelativeDirection::FRONT, bool loop = true);
 	sf::Sprite getSprite(int size_x, int size_y);
 private:
-	EntityTemplateInfo info;
+	SpriteInfo info;
 	const TextureDb& tdb;
 	sf::Clock clock;
 	bool loop = true;

@@ -32,8 +32,11 @@ void EntityEditor::renderSelectionWidget() {
 	if (ImGui::Button("+##Add entity")) {
 		current_info = EntityTemplateInfo();
 		current_info.name = "New entity";
+		auto sprite_id = db.sdb.addElement(SpriteInfo());
+		current_sprite = db.sdb.getElement(sprite_id);
 		current_id = db.edb.addElement(current_info);
 		current_info.id = current_id;
+		current_info.sprite_id = sprite_id;
 		current_info.name.append(std::to_string(current_id));
 		db.edb.updateElement(current_info);
 	}
@@ -55,15 +58,17 @@ void EntityEditor::renderSelectionWidget() {
 			if (ImGui::Selectable(item_label.c_str())) {
 				current_id = id;
 				current_info = db.edb.getElement(id);
-				tile_vec_string_front = tileVecToString(current_info.front);
-				tile_vec_string_back = tileVecToString(current_info.back);
-				tile_vec_string_left = tileVecToString(current_info.left);
-				tile_vec_string_right = tileVecToString(current_info.right);
+				current_sprite = db.sdb.getElement(current_info.sprite_id);
+				tile_vec_string_front = tileVecToString(current_sprite.front);
+				tile_vec_string_back = tileVecToString(current_sprite.back);
+				tile_vec_string_left = tileVecToString(current_sprite.left);
+				tile_vec_string_right = tileVecToString(current_sprite.right);
 
-				animated_entities.emplace(RelativeDirection::FRONT, AnimatedEntity(current_info, db.tdb, RelativeDirection::FRONT));
-				animated_entities.emplace(RelativeDirection::BACK, AnimatedEntity(current_info, db.tdb, RelativeDirection::BACK));
-				animated_entities.emplace(RelativeDirection::LEFT, AnimatedEntity(current_info, db.tdb, RelativeDirection::LEFT));
-				animated_entities.emplace(RelativeDirection::RIGHT, AnimatedEntity(current_info, db.tdb, RelativeDirection::RIGHT));
+				animated_entities.clear();
+				animated_entities.emplace(RelativeDirection::FRONT, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::FRONT));
+				animated_entities.emplace(RelativeDirection::BACK, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::BACK));
+				animated_entities.emplace(RelativeDirection::LEFT, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::LEFT));
+				animated_entities.emplace(RelativeDirection::RIGHT, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::RIGHT));
 			}
 		}
 		ImGui::EndCombo();
@@ -109,7 +114,7 @@ void EntityEditor::render() {
 			update = enumSlider("Collision type", reinterpret_cast<int*>(&current_info.collision), collision_names) || update;
 			static std::vector<std::string> interaction_names({ "None", "Dialog" });
 			update = enumSlider("Interaction type", reinterpret_cast<int*>(&current_info.interaction), interaction_names) || update;
-			update = textureSelect("Texture", &current_info.texture, db.tdb) || update;
+			update = textureSelect("Texture", &current_sprite.texture, db.tdb) || update;
 			update = ImGui::InputText("Front", &tile_vec_string_front, 0, tileVecFilter ) || update;
 			ImGui::Image(animated_entities.at(RelativeDirection::FRONT).getSprite(100, 100));
 			update = ImGui::InputText("Back", &tile_vec_string_back, 0, tileVecFilter) || update;
@@ -120,18 +125,19 @@ void EntityEditor::render() {
 			ImGui::Image(animated_entities.at(RelativeDirection::RIGHT).getSprite(100, 100));
 
 			if (update) {
-				current_info.front = stringToTileVec(tile_vec_string_front);
-				current_info.back = stringToTileVec(tile_vec_string_back);
-				current_info.left = stringToTileVec(tile_vec_string_left);
-				current_info.right = stringToTileVec(tile_vec_string_right);
+				current_sprite.front = stringToTileVec(tile_vec_string_front);
+				current_sprite.back = stringToTileVec(tile_vec_string_back);
+				current_sprite.left = stringToTileVec(tile_vec_string_left);
+				current_sprite.right = stringToTileVec(tile_vec_string_right);
 
 				animated_entities.clear();
-				animated_entities.emplace(RelativeDirection::FRONT, AnimatedEntity(current_info, db.tdb, RelativeDirection::FRONT));
-				animated_entities.emplace(RelativeDirection::BACK, AnimatedEntity(current_info, db.tdb, RelativeDirection::BACK));
-				animated_entities.emplace(RelativeDirection::LEFT, AnimatedEntity(current_info, db.tdb, RelativeDirection::LEFT));
-				animated_entities.emplace(RelativeDirection::RIGHT, AnimatedEntity(current_info, db.tdb, RelativeDirection::RIGHT));
+				animated_entities.emplace(RelativeDirection::FRONT, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::FRONT));
+				animated_entities.emplace(RelativeDirection::BACK, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::BACK));
+				animated_entities.emplace(RelativeDirection::LEFT, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::LEFT));
+				animated_entities.emplace(RelativeDirection::RIGHT, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::RIGHT));
 
 				db.edb.updateElement(current_info);
+				db.sdb.updateElement(current_sprite);
 			}
 
 		}

@@ -156,13 +156,11 @@ void DatabaseEditor::renderEntityRow(EntityTemplateId id) {
 	auto template_info = db.edb.getElement(id);
 	floatColumn("##x_size", &template_info.x_size, id, &template_info, db.edb);
 	floatColumn("##y_size", &template_info.y_size, id, &template_info, db.edb);
-	floatColumn("##x_offset", &template_info.x_offset, id, &template_info, db.edb);
-	floatColumn("##y_offset", &template_info.y_offset, id, &template_info, db.edb);
 
-	ImGui::TableNextColumn();
-	if (selectTextureButton(&(template_info.texture), id)) {
-		db.edb.updateElement(template_info);
-	}
+	//ImGui::TableNextColumn();
+	//if (selectTextureButton(&(template_info.texture), id)) {
+	//	db.edb.updateElement(template_info);
+	//}
 }
 
 void DatabaseEditor::renderEntityTable() {
@@ -170,9 +168,7 @@ void DatabaseEditor::renderEntityTable() {
 		ImGui::TableSetupColumn("id", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableSetupColumn("x size", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableSetupColumn("y size", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableSetupColumn("x offset", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableSetupColumn("y offset", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableSetupColumn("Texture", ImGuiTableColumnFlags_WidthStretch);
+		//ImGui::TableSetupColumn("Texture", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableHeadersRow();
 		auto all_ids = db.edb.getIds();
 		for (auto id : all_ids) {

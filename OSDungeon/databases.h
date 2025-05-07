@@ -11,7 +11,9 @@
 typedef unsigned int WallId;
 typedef unsigned int GroundId;
 typedef unsigned int TextureId;
-typedef int EntityTemplateId;
+typedef unsigned int SpriteId;
+typedef unsigned int EntityTemplateId;
+
 
 struct WallInfo {
 	WallId id = 0;
@@ -33,6 +35,7 @@ struct GroundInfo {
 	sf::Color ground_color = sf::Color::White;
 	sf::Color ceiling_color = sf::Color::White;
 	TextureId texture = 0;
+	bool draw_ceiling = false;
 
 	bool write(std::ofstream& stream) const {
 		stream.write(reinterpret_cast<const char*>(this), sizeof(GroundInfo));
@@ -64,33 +67,35 @@ enum class InteractionType {
 	DIALOG
 };
 
-struct AnimationInfo {
-	TextureId texture_id;
-	std::vector<int> tiles;
-};
-
 typedef int TileId;
 typedef std::vector<TileId> TileVec;
 
+struct SpriteInfo {
+	SpriteId id = 0;
+	TextureId texture = 0;
+	std::string name = "";
+	TileVec front = { 0 };
+	TileVec back = { 0 };
+	TileVec left = { 0 };
+	TileVec right = { 0 };
+
+	bool write(std::ofstream& stream) const;
+	bool read(std::ifstream& stream);
+	const TileVec& getTileVec(RelativeDirection d) const;
+};
+
 struct EntityTemplateInfo {
 	EntityTemplateId id;
+	SpriteId sprite_id;
 	std::string name;
 	MovementType movement;
 	CollisionType collision;
 	InteractionType interaction;
 	float x_size = 0.0f;
 	float y_size = 0.0f;
-	float x_offset = 0.0f;
-	float y_offset = 0.0f;
-	TextureId texture = 0;
-	TileVec front;
-	TileVec back;
-	TileVec left;
-	TileVec right;
 
 	bool write(std::ofstream& stream) const;
 	bool read(std::ifstream& stream);
-	const TileVec& getTileVec(RelativeDirection d) const;
 };
 
 template <typename TId, typename TInfo>
@@ -193,6 +198,7 @@ private:
 typedef TemplateDb<WallId, WallInfo> WallDb;
 typedef TemplateDb<GroundId, GroundInfo> GroundDb;
 typedef TemplateDb<EntityTemplateId, EntityTemplateInfo> EntityTemplateDb;
+typedef TemplateDb<SpriteId, SpriteInfo> SpriteDb;
 
 struct TextureInfo {
 	TextureId id;
@@ -226,4 +232,5 @@ struct Databases {
 	WallDb& wdb;
 	TextureDb& tdb;
 	EntityTemplateDb& edb;
+	SpriteDb& sdb;
 };
