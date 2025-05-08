@@ -22,7 +22,7 @@ private:
 	void handleKeyPressWaitingForInput(const sf::Event::KeyPressed* keyPressed);
 	void handleKeyPressOther(const sf::Event::KeyPressed* keyPressed);
 
-	unsigned int window_width = 1200;
+	unsigned int window_width = 1600;
 	unsigned int window_height = 900;
 	int lv_width = window_width;
 	int lv_height = window_height;

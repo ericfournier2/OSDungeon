@@ -19,7 +19,7 @@ private:
 	float camera_distance = 0.7f;
 	unsigned int base_size = 400;
 	float aspect_ratio = 4.0f / 3.0f;
-	unsigned int size_x = (unsigned int)(base_size * aspect_ratio);
+	unsigned int size_x = (unsigned int)(base_size);
 	unsigned int size_y = (unsigned int)(base_size / aspect_ratio);
 	
 	int max_depth = 5;
