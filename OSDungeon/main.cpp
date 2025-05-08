@@ -3,6 +3,8 @@
 #include <chrono>
 #include <thread>
 
+#include "common.h"
+#include "labyrinth_background.h"
 #include "labyrinth.h"
 #include "labyrinth_edit_view.h"
 #include "entity.h"
@@ -44,6 +46,10 @@ int main()
     auto big_bunny_texture = texture_db.loadNewTexture(8, "assets/textures/Bunny2.png", "Gros lapin", 200, 200);
     auto bunny_chest_texture = texture_db.loadNewTexture(9, "assets/textures/BunnyChest.png", "Tresor lapin", 400, 250);
     auto crayon_texture = texture_db.loadNewTexture(10, "assets/textures/crayon.png", "Plaine cire");
+    auto soleil_paint_texture = texture_db.loadNewTexture(11, "assets/textures/soleil paint.png", "Soleil paint", 200, 200);
+    auto nuage_paint_texture = texture_db.loadNewTexture(12, "assets/textures/nuage paint.png", "Nuage paint", 200, 150);
+    auto montagne_paint_texture = texture_db.loadNewTexture(13, "assets/textures/montagne paint.png", "Montagne paint");
+    auto bleu_degrade_texture = texture_db.loadNewTexture(14, "assets/textures/bleu degrade.png", "Bleu degrade");
 
     SpriteDb sprite_db;
     auto chest_sprite = sprite_db.addElement({ 1, chest_texture, "Chest", {0}, {0}, {0}, {0} });
@@ -51,7 +57,9 @@ int main()
     auto small_bunny_sprite = sprite_db.addElement({ 3, small_bunny_texture, "Small bunny", {0}, {0}, {0}, {0} });
     auto big_bunny_sprite = sprite_db.addElement({ 4, big_bunny_texture, "Big bunny",  {0, 1, 0, 2}, {3, 4, 3, 5}, {6, 7, 8, 7}, {-6, -7, -8, -7} });
     auto bunny_chest_sprite = sprite_db.addElement({ 5, bunny_chest_texture, "Bunny chest", {0}, {1}, {2}, {-2} });
-
+    auto soleil_paint_sprite = sprite_db.addElement({ 5, soleil_paint_texture, "Soleil paint", {0, 1, 2}, {0, 1, 2}, {0, 1, 2}, {0, 1, 2} });
+    auto nuage_paint_sprite = sprite_db.addElement({ 5, nuage_paint_texture, "Nuage paint", {0, 1, 2}, {0, 1, 2}, {0, 1, 2}, {0, 1, 2} });
+    auto montagne_paint_sprite = sprite_db.addElement({ 5, montagne_paint_texture, "Montagne paint", {0}, {0}, {0}, {0} });
 
     EntityTemplateDb template_db;
     auto chest_template = template_db.addElement({ 1, chest_sprite, "Chest", MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 105.0f, 83.0f});
@@ -61,6 +69,19 @@ int main()
     auto bunny_chest_template = template_db.addElement({ 5, bunny_chest_sprite, "Bunny chest", MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 400.0f, 250.0f});
 
     Databases db(ground_db, wall_db, texture_db, template_db, sprite_db);
+
+    BackgroundEntity background_sun({ "Soleil", soleil_paint_sprite, 0.0f, 0.0f, {900.0f, 25.0f}, 1.0f, 1 });
+    BackgroundEntity background_mountain({ "Montagne", montagne_paint_sprite, 0.0f, 0.0f, {300.0f, 100.0f}, 1.0f, 2 });
+    BackgroundEntity background_cloud_1({ "Nuage 1", nuage_paint_sprite, 10.0f, 0.0f, {50.0f, 50.0f}, 1.0f, 4 });
+    BackgroundEntity background_cloud_2({ "Nuage 2", nuage_paint_sprite, 5.0f, 0.0f, {100.0f, 100.0f}, 0.5f, 3 });
+
+
+    LabyrinthBackground background;
+    background.texture = bleu_degrade_texture;
+    background.entities.push_back(background_sun);
+    background.entities.push_back(background_mountain);
+    background.entities.push_back(background_cloud_1);
+    background.entities.push_back(background_cloud_2);
 
     //Labyrinth test = Labyrinth(30, 30);
     Labyrinth test = Labyrinth::buildTriangleLabyrinth(3);
@@ -86,7 +107,7 @@ int main()
 
     //test.loadFromFile("current.labyrinth");
     //Runner runner = Runner(test, db);
-    LabyrinthEditView lve = LabyrinthEditView(test, db);
+    LabyrinthEditView lve = LabyrinthEditView(test, background, db);
     bool closed = false;
     sf::Clock fps_clock;
     while (!closed)

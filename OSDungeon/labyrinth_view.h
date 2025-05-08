@@ -6,6 +6,7 @@
 
 #include "labyrinth_pov.h"
 #include "common.h"
+#include "labyrinth_background.h"
 
 struct RenderStep {
 	int x_offset;
@@ -53,7 +54,7 @@ private:
 
 class LabyrinthView {
 public:
-	LabyrinthView(const LabyrinthPOV& labyrinth, const Databases& db,
+	LabyrinthView(const LabyrinthPOV& labyrinth, const LabyrinthBackground& background, const Databases& db,
 				  sf::RenderTarget& rt, int x_size=400, int y_size=300, int max_depth=5, float camera_distance=0.7f);
 	bool render();
 	bool getShowOutline() const { return show_outline; }
@@ -83,6 +84,7 @@ private:
 	bool renderBackground();
 	std::stack<RenderStep> buildDrawStack();
 	const LabyrinthPOV& labyrinth;
+	const LabyrinthBackground& background;
 	sf::RenderTarget& rt;
 
 	int x_size = 400;
@@ -96,4 +98,5 @@ private:
 	bool show_textures = true;
 
 	const Databases& db;
+	BackgroundView background_view;
 };

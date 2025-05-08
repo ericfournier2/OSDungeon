@@ -1,16 +1,26 @@
 #include <cstdlib>
 #include "runner.h"
 
-Runner::Runner(const Labyrinth& labyrinth_init, const Databases& db_init)
-	: labyrinth(labyrinth_init), entities(labyrinth.getEntityManager()), pov(labyrinth, entities), db(db_init), window(sf::VideoMode({ window_width, window_height }), "Maze 1st person view", sf::Style::Close),
-	lv(pov, db, window, lv_width, lv_height)
+Runner::Runner(const Labyrinth& labyrinth_init, const LabyrinthBackground& background_init, const Databases& db_init)
+	: labyrinth(labyrinth_init), background(background_init), entities(labyrinth.getEntityManager()), pov(labyrinth, entities), db(db_init), window(sf::VideoMode({ window_width, window_height }), "Maze 1st person view", sf::Style::Close),
+	lv(pov, background, db, window, lv_width, lv_height)
 {
 	window.setPosition({ 2000, 100 });
 	font.openFromFile("assets/MorrisRomanBlack.otf");
 }
 
+void Runner::tickBackground() {
+	sf::Time elapsed = animation_clock.restart();
+	auto milli_elapsed = elapsed.asMilliseconds();
+	for (auto& entity : background.entities) {
+		entity.position.x += entity.scroll_speed_x * milli_elapsed / 1000.0f;
+		entity.position.y += entity.scroll_speed_y * milli_elapsed / 1000.0f;
+	}
+}
+
 void Runner::render() {
 	window.clear();
+	tickBackground();
 	lv.render();
 	if (gs.getGlobalState() == GameGlobalState::MESSAGE_BOX || gs.getGlobalState() == GameGlobalState::GAME_OVER) {
 		displayMessageBox();

@@ -8,13 +8,14 @@
 
 class Runner {
 public:
-	Runner(const Labyrinth& labyrinth, const Databases& db);
+	Runner(const Labyrinth& labyrinth, const LabyrinthBackground& background, const Databases& db);
 
 	void render();
 	
 	bool processEvents();
 private:
 	void tick();
+	void tickBackground();
 	void printCenteredDialogText(const std::string& message, int line_number, float text_left_start, float text_top_start, float text_max_width);
 	void displayMessageBox();
 	void handleKeyPress(const sf::Event::KeyPressed* keyPressed);
@@ -39,6 +40,7 @@ private:
 	int dialog_char_size = 24;
 
 	Labyrinth labyrinth;
+	LabyrinthBackground background;
 	EntityStateManager entities;
 	LabyrinthPOV pov;
 	const Databases& db;
@@ -56,4 +58,7 @@ private:
 
 	sf::Font font;
 	bool should_exit = false;
+
+	sf::Clock animation_clock;
+	sf::Time last_time = animation_clock.getElapsedTime();
 };

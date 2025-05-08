@@ -4,8 +4,8 @@
 #include "labyrinth_edit_view.h"
 
 
-LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, Databases& db_init)
-	: labyrinth(labyrinth_init), 
+LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, LabyrinthBackground& background_init, Databases& db_init)
+	: labyrinth(labyrinth_init), background(background_init),
 	  window(sf::VideoMode({ 1600, 900 }), "Edit maze"),
 	  db(db_init), 
 	  brush(),
@@ -74,7 +74,7 @@ void LabyrinthEditView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) 
 		db.edb.readFromFile("assets/saves/entities.db");
 	} else if (keyPressed->scancode == sf::Keyboard::Scancode::R) {
 		if (!runner) {
-			runner = std::make_shared<Runner>(labyrinth, db);
+			runner = std::make_shared<Runner>(labyrinth, background, db);
 		}
 	}
 }

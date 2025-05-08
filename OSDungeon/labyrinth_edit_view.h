@@ -1,6 +1,7 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 #include "labyrinth.h"
+#include "labyrinth_background.h"
 #include "common.h"
 #include "databases.h"
 #include "brush.h"
@@ -15,7 +16,7 @@
 class LabyrinthEditView
 {
 public:
-	LabyrinthEditView(Labyrinth& labyrinth, Databases& db);
+	LabyrinthEditView(Labyrinth& labyrinth, LabyrinthBackground& background, Databases& db);
 	~LabyrinthEditView();
 
 	void render();
@@ -31,6 +32,7 @@ private:
 	void drawWallBrushInfo();
 
 	Labyrinth& labyrinth;
+	LabyrinthBackground& background;
 	sf::RenderWindow window;
 	float mouse_x = 0.0f;
 	float mouse_y = 0.0f;

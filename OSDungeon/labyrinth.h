@@ -46,7 +46,6 @@ public:
 
 	EntityStateManager& getEntityManager() { return entities; }
 	const EntityStateManager& getEntityManager() const { return entities; }
-	EntityStateVec getEntityRel(int x, int y) const;
 
 	bool canMove(int from_x, int from_y, CardinalDirection d) const;
 	std::optional<Path> findPath(int from_x, int from_y, int to_x, int to_y) const;

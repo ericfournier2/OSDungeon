@@ -4,10 +4,11 @@
 #include "labyrinth.h"
 #include "labyrinth_pov.h"
 #include "labyrinth_view.h"
-
+#include "labyrinth_background.h"
 
 struct StaticView {
 	Labyrinth labyrinth;
+	LabyrinthBackground background;
 	LabyrinthPOV pov;
 	sf::RenderTexture texture;
 	LabyrinthView view;

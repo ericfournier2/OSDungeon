@@ -54,10 +54,11 @@ RenderStep RenderStep::nextGround() const {
 	return retval;
 }
 
-LabyrinthView::LabyrinthView(const LabyrinthPOV& labyrinth_init, const Databases& db_init,
+LabyrinthView::LabyrinthView(const LabyrinthPOV& labyrinth_init, const LabyrinthBackground& background_init, const Databases& db_init,
 							 sf::RenderTarget& rt_init, int x_size_init, int y_size_init, int max_depth_init, float camera_distance_init)
-	: labyrinth(labyrinth_init), db(db_init), rt(rt_init),
-	  x_size(x_size_init), y_size(y_size_init), max_depth(max_depth_init), camera_distance(camera_distance_init), render_queue(max_depth)
+	: labyrinth(labyrinth_init), background(background_init), db(db_init), rt(rt_init),
+	  x_size(x_size_init), y_size(y_size_init), max_depth(max_depth_init), camera_distance(camera_distance_init), render_queue(max_depth),
+	  background_view(db)
 {
 
 }
@@ -407,7 +408,7 @@ std::stack<RenderStep> LabyrinthView::buildDrawStack() {
 }
 
 bool LabyrinthView::render() {
-	renderBackground();
+	background_view.render(rt, background);
 	std::stack<RenderStep> drawStack = buildDrawStack();
 
 	while (!drawStack.empty()) {

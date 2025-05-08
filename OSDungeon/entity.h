@@ -20,7 +20,7 @@ public:
 	int getX() const { return info.x; }
 	int getY() const { return info.y; }
 	CardinalDirection getDirection() const { return info.direction;  }
-	float getXSize() const { return getTemplate().x_size;; }
+	float getXSize() const { return getTemplate().x_size; }
 	float getYSize() const { return getTemplate().y_size; }
 	MovementType getMovementType() const { return getTemplate().movement; }
 	CollisionType getCollisionType() const { return getTemplate().collision; }
