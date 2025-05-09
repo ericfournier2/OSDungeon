@@ -271,6 +271,31 @@ void LabyrinthView::drawEntity(const Entity& entity, int x_offset, int y_offset,
 	rt.draw(sprite);
 }
 
+class ZComparer {
+public:
+	ZComparer(CardinalDirection d_) : d(d_) {}
+	bool operator()(const EntityState& a, const EntityState& b) {
+		switch (d) {
+		case CardinalDirection::NORTH:
+			return a.y_sub > b.y_sub;
+			break;
+		case CardinalDirection::EAST:
+			return a.x_sub > b.x_sub;
+			break;
+		case CardinalDirection::SOUTH:
+			return b.y_sub > a.y_sub;
+			break;
+		case CardinalDirection::WEST:
+			return b.x_sub > a.x_sub;
+			break;
+		}
+
+		return false;
+	}
+private:
+	CardinalDirection d;
+};
+
 bool LabyrinthView::renderGround(RenderStep step) {
 	//std::cout << "Currently rendering: ";
 	//step.print();
@@ -303,6 +328,10 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	drawPrimitive(ground1, ground2, ground3, ground4, ground_info.ground_color, texture_info.texture.get(), GROUND_TEXTURE, false);
 
 	EntityStateVec entities = labyrinth.getEntities(step.x_offset, step.y_offset);
+	// Sort entities by  "z" position.
+	ZComparer z_comp(labyrinth.getPov().d);
+	//std::sort(entities.begin(), entities.end(), z_comp);
+
 	int n_free_entities = 0;
 	for (const auto& entity : entities) {
 		if (!entity.fixed_position) {

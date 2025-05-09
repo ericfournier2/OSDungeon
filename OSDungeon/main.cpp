@@ -78,8 +78,8 @@ int main()
     auto montagne_cire_sprite = sprite_db.addElement({ 11, montagne_cire_texture, "Montagne cire", {0}, {0}, {0}, {0} });
     auto colline_cire_1_sprite = sprite_db.addElement({ 12, colline_cire_1_texture, "Colline cire 1", {0}, {0}, {0}, {0} });
     auto colline_cire_2_sprite = sprite_db.addElement({ 13, colline_cire_2_texture, "Colline cire 2", {0}, {0}, {0}, {0} });
-    auto animated_flower_sprite = sprite_db.addElement({ 14, animated_flower_texture, "Animated flower",  {0, 1, 2, 1}, {3, 4, 5, 3}, {6, 7, 8, 7}, {-6, -7, -8, -7} });
-    auto animated_shrub_sprite = sprite_db.addElement({ 15, animated_flower_texture, "Animated flower",  {9, 10, 11}, {9, 10, 11}, {9, 10, 11}, {9, 10, 11} });
+    auto animated_flower_sprite = sprite_db.addElement({ 14, animated_flower_texture, "Animated flower",  {0, 1, 2, 1}, {3, 4, 5, 4}, {6, 7, 8, 7}, {-6, -7, -8, -7} });
+    auto animated_shrub_sprite = sprite_db.addElement({ 15, animated_flower_texture, "Animated shrub",  {9, 10, 11}, {9, 10, 11}, {9, 10, 11}, {9, 10, 11} });
 
 
     EntityTemplateDb template_db;
@@ -88,8 +88,8 @@ int main()
     auto small_bunny_template = template_db.addElement({ 3, small_bunny_sprite, "Small bunny", MovementType::FOLLOW, CollisionType::PICKABLE, InteractionType::NONE, 50.0f});
     auto big_bunny_template = template_db.addElement({ 4, big_bunny_sprite, "Big bunny", MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 200.0f, 200.0f});
     auto bunny_chest_template = template_db.addElement({ 5, bunny_chest_sprite, "Bunny chest", MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 400.0f, 250.0f});
-    auto flower_template = template_db.addElement({ 6, animated_flower_sprite, "Bunny chest", MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 75.0f, 75.0f });
-    auto shrub_template = template_db.addElement({ 7, animated_shrub_sprite, "Bunny chest", MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 75.0f, 75.0f });
+    auto flower_template = template_db.addElement({ 6, animated_flower_sprite, "Flower", MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 75.0f, 75.0f });
+    auto shrub_template = template_db.addElement({ 7, animated_shrub_sprite, "Shrub", MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 75.0f, 75.0f });
 
 
     Databases db(ground_db, wall_db, texture_db, template_db, sprite_db);
@@ -136,7 +136,7 @@ int main()
     //test.getEntityManager().addEntity(tree2);
     //test.getEntityManager().addEntity(bunny1);
     //test.getEntityManager().addEntity(bunny2);
-    //test.getEntityManager().addEntity(bunny3);
+    test.getEntityManager().addEntity(bunny3);
     ////test.getEntityManager().addEntity(bunny_chest);
     //test.getEntityManager().addEntity(bunny4);//
     //test.getEntityManager().addEntity(shrub_1);
