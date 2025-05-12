@@ -72,7 +72,7 @@ public:
 
 	CoordF getVanishingPoint() const { return vanish_point; }
 	void setVanishingPoint(CoordF p) { assert(p.x >= 0.0f && p.x <= 1.0f && p.y >= 0.0f && p.y <= 1.0f);  vanish_point = p; }
-
+	EntityId mouseHit(CoordF coord) const;
 private:
 	float depthOffset(float depth, bool x, bool left) const;
 	CoordF mapCoordToProjection(float x, float y, float d) const;
@@ -96,6 +96,8 @@ private:
 	bool verbose = false;
 	bool show_outline = false;
 	bool show_textures = true;
+
+	std::vector<std::pair<EntityId, sf::Sprite>> sprites_on_screen;
 
 	const Databases& db;
 	BackgroundView background_view;

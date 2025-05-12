@@ -275,7 +275,7 @@ void LabyrinthView::drawEntity(const Entity& entity, int x_offset, int y_offset,
 		rt.draw(shadow_shape);
 	}
 
-
+	sprites_on_screen.push_back(std::pair<EntityId, sf::Sprite>(entity.getId(), sprite));
 	rt.draw(sprite);
 }
 
@@ -445,6 +445,7 @@ std::stack<RenderStep> LabyrinthView::buildDrawStack() {
 }
 
 bool LabyrinthView::render() {
+	sprites_on_screen.clear();
 	background_view.render(rt, background);
 	std::stack<RenderStep> drawStack = buildDrawStack();
 
@@ -459,4 +460,15 @@ bool LabyrinthView::render() {
 	}
 
 	return true;
+}
+
+EntityId LabyrinthView::mouseHit(CoordF coord) const {
+	for (int c = sprites_on_screen.size() - 1; c >= 0; --c) {
+		auto sprite_rect = sprites_on_screen[c].second.getGlobalBounds();
+		if (sprite_rect.contains(coord)) {
+			return sprites_on_screen[c].first;
+		}
+	}
+
+	return 0;
 }

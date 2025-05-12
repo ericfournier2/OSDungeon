@@ -83,12 +83,18 @@ bool Runner::processEvents()
 	}
 
 	while (const std::optional event = window.pollEvent()) {
-
 		if (event->is<sf::Event::Closed>()) {
 			window.close();
 			return true;
 		} else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
 			handleKeyPress(keyPressed);
+		} else if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
+			if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
+				EntityId hit = lv.mouseHit({ (float)mouseButtonPressed->position.x, (float)mouseButtonPressed->position.y });
+				if (hit) {
+					gs.showDialog(db.edb.getElement(entities.getEntity(hit).template_id).name);
+				}
+			}
 		}
 	}
 
