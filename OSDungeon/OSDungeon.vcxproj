@@ -134,6 +134,7 @@
   <ItemGroup>
     <ClCompile Include="brush.cpp" />
     <ClCompile Include="brush_editor.cpp" />
+    <ClCompile Include="common.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="entity_editor.cpp" />
     <ClCompile Include="game_state.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="runner.cpp" />
     <ClCompile Include="shallow_entities.cpp" />
     <ClCompile Include="static_view.cpp" />
+    <ClCompile Include="view_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="brush.h" />
@@ -186,6 +188,7 @@
     <ClInclude Include="runner.h" />
     <ClInclude Include="shallow_entities.h" />
     <ClInclude Include="static_view.h" />
+    <ClInclude Include="view_utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

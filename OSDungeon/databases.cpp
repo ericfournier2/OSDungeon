@@ -134,6 +134,7 @@ bool EntityTemplateInfo::write(std::ofstream& stream) const {
 	stream.write(reinterpret_cast<const char*>(&collision), sizeof(CollisionType));
 	stream.write(reinterpret_cast<const char*>(&x_size), sizeof(float));
 	stream.write(reinterpret_cast<const char*>(&y_size), sizeof(float));
+	stream.write(reinterpret_cast<const char*>(&cast_shadow), sizeof(bool));
 
 	return !stream.fail();
 }
@@ -172,6 +173,7 @@ bool EntityTemplateInfo::read(std::ifstream& stream) {
 	stream.read(reinterpret_cast<char*>(&collision), sizeof(CollisionType));
 	stream.read(reinterpret_cast<char*>(&x_size), sizeof(float));
 	stream.read(reinterpret_cast<char*>(&y_size), sizeof(float));
+	stream.read(reinterpret_cast<char*>(&cast_shadow), sizeof(bool));
 
 	return !stream.fail();
 }

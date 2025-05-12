@@ -86,7 +86,7 @@ int main()
     auto chest_template = template_db.addElement({ 1, chest_sprite, "Chest", MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 105.0f, 83.0f});
     auto tree_template = template_db.addElement({ 2, tree_sprite, "Tree", MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 100.0f, 300.0f});
     auto small_bunny_template = template_db.addElement({ 3, small_bunny_sprite, "Small bunny", MovementType::FOLLOW, CollisionType::PICKABLE, InteractionType::NONE, 50.0f});
-    auto big_bunny_template = template_db.addElement({ 4, big_bunny_sprite, "Big bunny", MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 200.0f, 200.0f});
+    auto big_bunny_template = template_db.addElement({ 4, big_bunny_sprite, "Big bunny", MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 200.0f, 200.0f, true });
     auto bunny_chest_template = template_db.addElement({ 5, bunny_chest_sprite, "Bunny chest", MovementType::STATIC, CollisionType::PICKABLE, InteractionType::NONE, 400.0f, 250.0f});
     auto flower_template = template_db.addElement({ 6, animated_flower_sprite, "Flower", MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 75.0f, 75.0f });
     auto shrub_template = template_db.addElement({ 7, animated_shrub_sprite, "Shrub", MovementType::STATIC, CollisionType::NONE, InteractionType::NONE, 75.0f, 75.0f });

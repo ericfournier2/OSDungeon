@@ -93,6 +93,7 @@ struct EntityTemplateInfo {
 	InteractionType interaction;
 	float x_size = 0.0f;
 	float y_size = 0.0f;
+	bool cast_shadow = false;
 
 	bool write(std::ofstream& stream) const;
 	bool read(std::ifstream& stream);

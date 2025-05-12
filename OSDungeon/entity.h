@@ -13,6 +13,10 @@ class Entity {
 public:
 	Entity(const EntityState& info, const EntityTemplateDb& template_db, const SpriteDb& sprite_db);
 	operator EntityState() const { return info; }
+	EntityState getState() const { return info; }
+	EntityTemplateInfo getTemplate() const { return template_db.getElement(info.template_id); }
+
+
 
 	EntityState getShallowEntity() const { return info; }
 	EntityId getId() const { return info.id; }
@@ -32,7 +36,6 @@ public:
 	void move(const Labyrinth& labyrinth, GameState& state);
 	bool collide(const Labyrinth& labyrinth, GameState& state);
 protected:
-	EntityTemplateInfo getTemplate() const { return template_db.getElement(info.template_id); }
 	SpriteInfo getSprite() const { return sprite_db.getElement(getTemplate().sprite_id); }
 	bool moveCardinal(const Labyrinth& labyrinth, CardinalDirection d);
 

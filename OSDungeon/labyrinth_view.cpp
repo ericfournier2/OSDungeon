@@ -1,4 +1,5 @@
 #include "labyrinth_view.h"
+#include "view_utils.h"
 #include <cmath>
 #include <iostream>
 #include <cstdlib>
@@ -240,15 +241,8 @@ CoordF LabyrinthView::placeEntityCenter(const EntityState& entity, int x_offset,
 }
 
 void LabyrinthView::drawEntity(const Entity& entity, int x_offset, int y_offset, int n_free_entities, int free_entity_index) {
-	TextureInfo tex_info = db.tdb.getTexture(entity.getTexture());
-	sf::Sprite sprite(*tex_info.texture);
 	RelativeDirection ent_facing = getEntityFacing(labyrinth.getPov().d, entity.getDirection());
-	TileVec tiles = entity.getTiles(ent_facing);
-
-	sf::Time animation_time = animation_clock.getElapsedTime();
-	int millisecond = animation_time.asMilliseconds() % 1000;
-	auto tile = (millisecond / (1000 / tiles.size())) % tiles.size();
-	sprite.setTextureRect(tex_info.getTextureRect(abs(tiles[tile])));
+	sf::Sprite sprite = getAnimationSprite(entity.getTemplate().sprite_id, ent_facing, animation_clock, db.tdb, db.sdb);
 
 	CoordF sprite_map_center = placeEntityCenter(entity, x_offset, y_offset, n_free_entities, free_entity_index);
 	CoordF sprite_screen_center = mapCoordToProjection(sprite_map_center.x, 1.0f, sprite_map_center.y);
@@ -256,18 +250,32 @@ void LabyrinthView::drawEntity(const Entity& entity, int x_offset, int y_offset,
 	float final_x_size = entity.getXSize() / scale_factor;
 	float final_y_size = entity.getYSize() / scale_factor;
 
-	float mirror_scale = 1;
-	float mirror_x_offset = 0.0f;
-	if (tiles[tile] < 0) {
-		mirror_scale = -1;
-		mirror_x_offset = final_x_size;
-	}
+	float mirror_x_offset = sprite.getScale().x < 0 ? final_x_size : 0.0f;
 
 	float final_x_offset = sprite_screen_center.x - (final_x_size / 2) + mirror_x_offset;
 	float final_y_offset = sprite_screen_center.y - final_y_size;
 
 	sprite.setPosition({ final_x_offset, final_y_offset });
-	sprite.setScale({ 1 / scale_factor * mirror_scale, 1 / scale_factor });
+	sprite.scale({ 1 / scale_factor, 1 / scale_factor });
+
+	// Draw shadow.
+	sf::FloatRect sprite_bounds = sprite.getGlobalBounds();
+	if (entity.getTemplate().cast_shadow) {
+		sf::CircleShape shadow_shape(sprite_bounds.size.x / 2);
+		shadow_shape.setScale({ 0.6f, 0.20f });
+		shadow_shape.setOutlineThickness(0.0f);
+		auto shadow_bounds = shadow_shape.getGlobalBounds();
+
+		float shadow_x = sprite_bounds.position.x + (sprite_bounds.size.x / 2.0f) - (shadow_bounds.size.x / 2.0f);
+		float shadow_y = (sprite_bounds.position.y + sprite_bounds.size.y) - (shadow_bounds.size.y / 2.0f);
+
+		shadow_shape.setPosition({ shadow_x, shadow_y });
+		shadow_shape.setFillColor(sf::Color(0, 0, 0, 75));
+
+		rt.draw(shadow_shape);
+	}
+
+
 	rt.draw(sprite);
 }
 
@@ -330,7 +338,7 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	EntityStateVec entities = labyrinth.getEntities(step.x_offset, step.y_offset);
 	// Sort entities by  "z" position.
 	ZComparer z_comp(labyrinth.getPov().d);
-	//std::sort(entities.begin(), entities.end(), z_comp);
+	std::sort(entities.begin(), entities.end(), z_comp);
 
 	int n_free_entities = 0;
 	for (const auto& entity : entities) {

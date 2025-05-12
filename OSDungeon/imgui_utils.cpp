@@ -1,5 +1,6 @@
 #include "imgui/imgui-SFML.h"
 #include "imgui_utils.h"
+#include "view_utils.h"
 
 bool textureSelect(const std::string& label, TextureId* id, const TextureDb& tdb) {
 	std::string popup_label = label;
@@ -35,36 +36,14 @@ AnimatedEntity::AnimatedEntity(const SpriteInfo& info_, const TextureDb& tdb_, R
 }
 
 sf::Sprite AnimatedEntity::getSprite(int size_x, int size_y) {
-	TextureInfo tex_info = tdb.getTexture(info.texture);
-	sf::Sprite sprite(*tex_info.texture);
-	TileVec tiles = info.front;
-	switch (facing) {
-	case RelativeDirection::BACK:
-		tiles = info.back;
-		break;
-	case RelativeDirection::LEFT:
-		tiles = info.left;
-		break;
-	case RelativeDirection::RIGHT:
-		tiles = info.right;
-		break;
-	}
-
-	sf::Time animation_time = clock.getElapsedTime();
-	int millisecond = animation_time.asMilliseconds() % 1000;
-	auto tile = (millisecond / (1000 / tiles.size())) % tiles.size();
-	sprite.setTextureRect(tex_info.getTextureRect(abs(tiles[tile])));
-
-	float mirror_scale = 1.0f;
-	if (tiles[tile] < 0) {
-		mirror_scale = -1.0f;
-	}
-
-	float x_scale = (float) size_x / tex_info.tile_size_x * mirror_scale;
-	float y_scale = (float) size_y / tex_info.tile_size_y;
+	sf::Sprite sprite = getAnimationSprite(info, facing, clock, tdb);
+	
+	sf::Vector2f sprite_size = sprite.getLocalBounds().size;
+	float x_scale = (float) size_x / sprite_size.x;
+	float y_scale = (float) size_y / sprite_size.y;
 
 	//sprite.setPosition({ (float)-size_x, 0.0f });
-	sprite.setScale({ 1 * x_scale, 1 * y_scale });
+	sprite.setScale({ x_scale, y_scale });
 
 	return sprite;
 }
