@@ -3,14 +3,29 @@
 
 sf::IntRect TextureInfo::getTextureRect(int index) const {
 	auto tex_size = texture->getSize();
-	int tile_per_row = tex_size.x / tile_size_x;
-	int tile_per_col = tex_size.y / tile_size_y;
+	if (tex_size.x == 0 || tex_size.y == 0) {
+		return sf::IntRect({ 0, 0 }, { 1, 1 });
+	}
+
+	int tile_per_row = 1;
+	int tile_per_col = 1;
+	if (tile_size_x != 0) {
+		tile_per_row = tex_size.x / tile_size_x;
+	}
+
+	if (tile_size_y != 0) {
+		tile_per_col = tex_size.y / tile_size_y;
+	}
 	
 	int row = index / tile_per_row;
 	int col = index % tile_per_row;
 
 	int pos_x = col * tile_size_x;
 	int pos_y = row * tile_size_y;
+
+	if (tile_size_x == 0 || tile_size_y == 0) {
+		return sf::IntRect({ pos_x, pos_y }, { (int)tex_size.x, (int)tex_size.y });
+	}
 
 	return sf::IntRect({ pos_x, pos_y }, { tile_size_x, tile_size_y });
 }

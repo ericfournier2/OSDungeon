@@ -32,11 +32,9 @@ void EntityEditor::renderSelectionWidget() {
 	if (ImGui::Button("+##Add entity")) {
 		current_info = EntityTemplateInfo();
 		current_info.name = "New entity";
-		auto sprite_id = db.sdb.addElement(SpriteInfo());
-		current_sprite = db.sdb.getElement(sprite_id);
 		current_id = db.edb.addElement(current_info);
 		current_info.id = current_id;
-		current_info.sprite_id = sprite_id;
+		current_info.sprite_id = 0;
 		current_info.name.append(std::to_string(current_id));
 		db.edb.updateElement(current_info);
 	}
@@ -58,17 +56,7 @@ void EntityEditor::renderSelectionWidget() {
 			if (ImGui::Selectable(item_label.c_str())) {
 				current_id = id;
 				current_info = db.edb.getElement(id);
-				current_sprite = db.sdb.getElement(current_info.sprite_id);
-				tile_vec_string_front = tileVecToString(current_sprite.front);
-				tile_vec_string_back = tileVecToString(current_sprite.back);
-				tile_vec_string_left = tileVecToString(current_sprite.left);
-				tile_vec_string_right = tileVecToString(current_sprite.right);
-
-				animated_entities.clear();
-				animated_entities.emplace(RelativeDirection::FRONT, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::FRONT));
-				animated_entities.emplace(RelativeDirection::BACK, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::BACK));
-				animated_entities.emplace(RelativeDirection::LEFT, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::LEFT));
-				animated_entities.emplace(RelativeDirection::RIGHT, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::RIGHT));
+				sprite_preview = std::unique_ptr<AnimatedEntity>(new AnimatedEntity(db.sdb.getElement(current_info.sprite_id), db.tdb));
 			}
 		}
 		ImGui::EndCombo();
@@ -114,33 +102,110 @@ void EntityEditor::render() {
 			update = enumSlider("Collision type", reinterpret_cast<int*>(&current_info.collision), collision_names) || update;
 			static std::vector<std::string> interaction_names({ "None", "Dialog" });
 			update = enumSlider("Interaction type", reinterpret_cast<int*>(&current_info.interaction), interaction_names) || update;
-			update = textureSelect("Texture", &current_sprite.texture, db.tdb) || update;
-			update = ImGui::InputText("Front", &tile_vec_string_front, 0, tileVecFilter ) || update;
-			ImGui::Image(animated_entities.at(RelativeDirection::FRONT).getSprite(100, 100));
-			update = ImGui::InputText("Back", &tile_vec_string_back, 0, tileVecFilter) || update;
-			ImGui::Image(animated_entities.at(RelativeDirection::BACK).getSprite(100, 100));
-			update = ImGui::InputText("Left", &tile_vec_string_left, 0, tileVecFilter) || update;
-			ImGui::Image(animated_entities.at(RelativeDirection::LEFT).getSprite(100, 100));
-			update = ImGui::InputText("Right", &tile_vec_string_right, 0, tileVecFilter) || update;
-			ImGui::Image(animated_entities.at(RelativeDirection::RIGHT).getSprite(100, 100));
+			if (current_info.sprite_id != 0) {
+				ImGui::Image(sprite_preview->getSprite(100, 100));
+			} else {
+				ImGui::Text("No sprite selected.");
+			}
+
+			if (update) {
+				db.edb.updateElement(current_info);
+			}
+		}
+	}
+	ImGui::End();
+}
+
+SpriteEditor::SpriteEditor(Databases& db_)
+	: db(db_)
+{
+}
+
+void SpriteEditor::refreshStrings() {
+	tile_vec_string_front = tileVecToString(current_sprite.front);
+	tile_vec_string_back = tileVecToString(current_sprite.back);
+	tile_vec_string_left = tileVecToString(current_sprite.left);
+	tile_vec_string_right = tileVecToString(current_sprite.right);
+}
+
+void SpriteEditor::refreshAnimations() {
+	animated_entities.clear();
+	animated_entities.emplace(RelativeDirection::FRONT, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::FRONT));
+	animated_entities.emplace(RelativeDirection::BACK, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::BACK));
+	animated_entities.emplace(RelativeDirection::LEFT, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::LEFT));
+	animated_entities.emplace(RelativeDirection::RIGHT, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::RIGHT));
+}
+
+void SpriteEditor::render() {
+	if (ImGui::Begin("Sprite editor", NULL, 0)) {
+		renderSelectionWidget();
+
+		if (current_sprite.id != 0) {
+			bool update = false;
+			update = ImGui::InputText("Name", &current_sprite.name);
+			if (textureSelect("Texture", &current_sprite.texture, db.tdb)) {
+				update = true;
+
+			} else if (current_sprite.texture != 0) {
+				update = ImGui::InputText("Front", &tile_vec_string_front, ImGuiInputTextFlags_CallbackCharFilter, tileVecFilter) || update;
+				ImGui::Image(animated_entities.at(RelativeDirection::FRONT).getSprite(100, 100));
+				update = ImGui::InputText("Back", &tile_vec_string_back, ImGuiInputTextFlags_CallbackCharFilter, tileVecFilter) || update;
+				ImGui::Image(animated_entities.at(RelativeDirection::BACK).getSprite(100, 100));
+				update = ImGui::InputText("Left", &tile_vec_string_left, ImGuiInputTextFlags_CallbackCharFilter, tileVecFilter) || update;
+				ImGui::Image(animated_entities.at(RelativeDirection::LEFT).getSprite(100, 100));
+				update = ImGui::InputText("Right", &tile_vec_string_right, ImGuiInputTextFlags_CallbackCharFilter, tileVecFilter) || update;
+				ImGui::Image(animated_entities.at(RelativeDirection::RIGHT).getSprite(100, 100));
+			}
 
 			if (update) {
 				current_sprite.front = stringToTileVec(tile_vec_string_front);
 				current_sprite.back = stringToTileVec(tile_vec_string_back);
 				current_sprite.left = stringToTileVec(tile_vec_string_left);
 				current_sprite.right = stringToTileVec(tile_vec_string_right);
-
-				animated_entities.clear();
-				animated_entities.emplace(RelativeDirection::FRONT, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::FRONT));
-				animated_entities.emplace(RelativeDirection::BACK, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::BACK));
-				animated_entities.emplace(RelativeDirection::LEFT, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::LEFT));
-				animated_entities.emplace(RelativeDirection::RIGHT, AnimatedEntity(current_sprite, db.tdb, RelativeDirection::RIGHT));
-
-				db.edb.updateElement(current_info);
+				
 				db.sdb.updateElement(current_sprite);
+				refreshAnimations();
 			}
-
+		} else {
+			ImGui::Text("No texture selected.");
 		}
 	}
 	ImGui::End();
+}
+
+void SpriteEditor::renderSelectionWidget() {
+	// Add button.
+	if (ImGui::Button("+##Add sprite")) {
+		current_sprite = SpriteInfo();
+		current_sprite.name = "New sprite (";
+		auto sprite_id = db.sdb.addElement(current_sprite);
+		current_sprite = db.sdb.getElement(sprite_id);
+		
+		current_sprite.name.append(std::to_string(sprite_id));
+		current_sprite.name.append(")");
+		db.sdb.updateElement(current_sprite);
+		refreshStrings();
+		animated_entities.clear();
+	}
+	ImGui::SameLine();
+
+	// Sprite name select combo.
+	std::string combo_display = "Select a sprite to start...";
+	if (current_sprite.id != 0) {
+		combo_display = current_sprite.name;
+	}
+	if (ImGui::BeginCombo("Select sprite", combo_display.c_str())) {
+		auto id_list = db.sdb.getIds();
+		for (const auto& id : id_list) {
+			std::string item_label = db.sdb.getElement(id).name;
+			item_label.append("##");
+			item_label.append(std::to_string(id));
+			if (ImGui::Selectable(item_label.c_str())) {
+				current_sprite = db.sdb.getElement(id);
+				refreshStrings();
+				refreshAnimations();
+			}
+		}
+		ImGui::EndCombo();
+	}
 }

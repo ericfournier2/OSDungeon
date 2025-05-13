@@ -46,5 +46,6 @@ private:
 	std::shared_ptr<Runner> runner;
 	PerspectiveEditor perspective_editor;
 	EntityEditor entity_editor;
+	SpriteEditor sprite_editor;
 };
 

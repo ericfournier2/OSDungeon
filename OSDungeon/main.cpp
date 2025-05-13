@@ -155,7 +155,7 @@ int main()
                 if (rand() % 2 == 0) {
                     ent.template_id = shrub_template;
                 }
-
+              
                 test.getEntityManager().addEntity(ent);
             }
         }

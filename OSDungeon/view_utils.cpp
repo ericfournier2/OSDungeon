@@ -4,15 +4,16 @@ sf::Sprite getAnimationSprite(const SpriteInfo& sprite_info, const TextureInfo& 
 	
 	sf::Sprite sprite(*tex_info.texture);
 	TileVec tiles = sprite_info.getTileVec(d);
-
-	sf::Time animation_time = animation_clock.getElapsedTime();
-	int millisecond = animation_time.asMilliseconds() % 1000;
-	auto tile = (millisecond / (1000 / tiles.size())) % tiles.size();
-	sprite.setTextureRect(tex_info.getTextureRect(abs(tiles[tile])));
-
 	float mirror_scale = 1.0f;
-	if (tiles[tile] < 0) {
-		mirror_scale = -1.0f;
+	if (tiles.size() > 0) {
+		sf::Time animation_time = animation_clock.getElapsedTime();
+		int millisecond = animation_time.asMilliseconds() % 1000;
+		auto tile = (millisecond / (1000 / tiles.size())) % tiles.size();
+		sprite.setTextureRect(tex_info.getTextureRect(abs(tiles[tile])));
+
+		if (tiles[tile] < 0) {
+			mirror_scale = -1.0f;
+		}
 	}
 
 	//sprite.setPosition({ (float)-size_x, 0.0f });

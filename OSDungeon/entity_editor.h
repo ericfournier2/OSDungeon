@@ -15,6 +15,19 @@ private:
 	Databases& db;
 	EntityTemplateId current_id = 0;
 	EntityTemplateInfo current_info;
+	std::unique_ptr<AnimatedEntity> sprite_preview;
+};
+
+class SpriteEditor {
+public:
+	SpriteEditor(Databases& db);
+	void render();
+private:
+	void refreshStrings();
+	void refreshAnimations();
+	void renderSelectionWidget();
+
+	Databases& db;
 	SpriteInfo current_sprite;
 
 	std::string tile_vec_string_front;

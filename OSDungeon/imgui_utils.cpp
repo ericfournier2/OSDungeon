@@ -15,12 +15,13 @@ bool textureSelect(const std::string& label, TextureId* id, const TextureDb& tdb
 	if (ImGui::BeginPopup(popup_label.c_str())) {
 		auto all_ids = tdb.getIds();
 		for (int i = 0; i < all_ids.size(); ++i) {
-			TextureInfo info = tdb.getTexture(i);
+			auto current_id = all_ids[i];
+			TextureInfo info = tdb.getTexture(current_id);
 			std::string selectable_label = info.name;
 			selectable_label.append("###");
-			selectable_label.append(std::to_string(i));
+			selectable_label.append(std::to_string(current_id));
 			if (ImGui::Selectable(selectable_label.c_str())) {
-				*id = all_ids[i];
+				*id = current_id;
 				retval = true;
 			}
 		}
