@@ -335,23 +335,22 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	//drawPrimitive(ground1, ground2, ground3, ground4, sf::Color(127, 51, 0), &ground_texture, GROUND_TEXTURE, true);
 	drawPrimitive(ground1, ground2, ground3, ground4, ground_info.ground_color, texture_info.texture.get(), GROUND_TEXTURE, false);
 
-	EntityStateVec entities = labyrinth.getEntities(step.x_offset, step.y_offset);
+	EntityVec entities = labyrinth.getEntities(step.x_offset, step.y_offset);
 	// Sort entities by  "z" position.
 	ZComparer z_comp(labyrinth.getPov().d);
 	std::sort(entities.begin(), entities.end(), z_comp);
 
 	int n_free_entities = 0;
 	for (const auto& entity : entities) {
-		if (!entity.fixed_position) {
+		if (!entity.getState().fixed_position) {
 			++n_free_entities;
 		}
 	}
 
 	int free_entity_index = 0;
 	for (const auto& entity : entities) {
-		Entity this_entity(entity, db.edb, db.sdb);
-		drawEntity(this_entity, step.x_offset, step.y_offset, n_free_entities, free_entity_index);
-		if (!entity.fixed_position) {
+		drawEntity(entity, step.x_offset, step.y_offset, n_free_entities, free_entity_index);
+		if (!entity.getState().fixed_position) {
 			++free_entity_index;
 		}
 	}

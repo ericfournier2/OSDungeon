@@ -41,7 +41,7 @@ private:
 
 	Labyrinth labyrinth;
 	LabyrinthBackground background;
-	EntityStateManager entities;
+	EntityManager entities;
 	LabyrinthPOV pov;
 	const Databases& db;
 	sf::RenderWindow window;

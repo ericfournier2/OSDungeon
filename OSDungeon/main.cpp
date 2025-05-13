@@ -114,7 +114,7 @@ int main()
 
 
     //Labyrinth test = Labyrinth(30, 30);
-    Labyrinth test = Labyrinth::buildTriangleLabyrinth(5);
+    Labyrinth test = Labyrinth::buildTriangleLabyrinth(5, &db);
     EntityState chest1 = EntityState( 1, chest_template, 5, 5, CardinalDirection::NORTH);
     EntityState chest2 = EntityState( 2, chest_template, 7, 5, CardinalDirection::NORTH);
     EntityState tree1 = EntityState( 3, tree_template, 2, 0, CardinalDirection::NORTH, true, 0.75f, 0.75f);

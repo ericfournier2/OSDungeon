@@ -6,7 +6,7 @@ Runner::Runner(const Labyrinth& labyrinth_init, const LabyrinthBackground& backg
 	lv(pov, background, db, window, lv_width, lv_height)
 {
 	window.setPosition({ 2000, 100 });
-	font.openFromFile("assets/MorrisRomanBlack.otf");
+	font.openFromFile("assets/DkCoolCrayon-xJyV.ttf");
 }
 
 void Runner::tickBackground() {
@@ -92,7 +92,7 @@ bool Runner::processEvents()
 			if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
 				EntityId hit = lv.mouseHit({ (float)mouseButtonPressed->position.x, (float)mouseButtonPressed->position.y });
 				if (hit) {
-					gs.showDialog(db.edb.getElement(entities.getEntity(hit).template_id).name);
+					gs.showDialog(entities.getEntity(hit).getTemplate().name);
 				}
 			}
 		}
@@ -105,7 +105,7 @@ void Runner::tick()
 {
 	std::set<EntityId> to_remove;
 	for (auto& [id, dummy_entity] : entities.getAllEntities()) {
-		Entity ent(entities.getAllEntities().at(id), db.edb, db.sdb);
+		Entity ent = entities.getEntity(id);
 		ent.move(labyrinth, gs);
 		if (ent.getX() == pov.getPov().x && ent.getY() == pov.getPov().y) {
 			if (ent.collide(labyrinth, gs)) {

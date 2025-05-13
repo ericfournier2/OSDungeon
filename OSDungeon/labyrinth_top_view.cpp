@@ -2,9 +2,9 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
 #include "labyrinth_top_view.h"
+#include "shallow_entities.h"
 
-
-LabyrinthTopView::LabyrinthTopView(const Labyrinth& labyrinth_init, const EntityStateManager& entities_init, const Databases& db_init, const Brush* brush_init)
+LabyrinthTopView::LabyrinthTopView(const Labyrinth& labyrinth_init, const EntityManager& entities_init, const Databases& db_init, const Brush* brush_init)
 	: labyrinth(labyrinth_init), entities(entities_init), brush(brush_init), db(db_init)
 {
 }
@@ -76,7 +76,7 @@ void LabyrinthTopView::drawBrush(sf::RenderTarget& render_target, float mouse_x,
 			info.y = key.y;
 			info.direction = CardinalDirection::NORTH;
 			info.template_id = val;
-			Entity entity(info, db.edb, db.sdb);
+			Entity entity(info, db);
 			drawGroundEntity(render_target, entity);
 		}
 	}
@@ -95,7 +95,7 @@ void LabyrinthTopView::drawGroundEntity(sf::RenderTarget& render_target, const E
 	if (tiles.size() > 0) {
 		entity_sprite.setTextureRect(tex_info.getTextureRect(tiles[0]));
 	}
-	entity_sprite.setPosition(getGroundScreenPositionFromMapPosition(entity.getShallowEntity().x, entity.getShallowEntity().y));
+	entity_sprite.setPosition(getGroundScreenPositionFromMapPosition(entity.getState().x, entity.getState().y));
 	float scale_factor = grid_spacing / std::max(entity.getXSize(), entity.getYSize());
 	entity_sprite.setScale({ scale_factor, scale_factor });
 	render_target.draw(entity_sprite);
@@ -103,10 +103,9 @@ void LabyrinthTopView::drawGroundEntity(sf::RenderTarget& render_target, const E
 
 
 void LabyrinthTopView::drawGroundEntities(sf::RenderTarget& render_target) const {
-	const EntityStateMap& entities_map = entities.getAllEntities();
+	const EntityMap& entities_map = entities.getAllEntities();
 	for (auto const& [id, entity] : entities_map) {
-		Entity this_entity(entity, db.edb, db.sdb);
-		drawGroundEntity(render_target, this_entity);
+		drawGroundEntity(render_target, entity);
 	}
 }
 

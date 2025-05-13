@@ -24,26 +24,4 @@ struct EntityState {
 		: id(id_init), template_id(template_id_init), x(x_init), y(y_init), direction(direction_init), fixed_position(fixed), x_sub(x_sub_init), y_sub(y_sub_init) {}
 };
 
-typedef std::vector<EntityState> EntityStateVec;
-typedef std::map<EntityId, EntityState> EntityStateMap;
 
-// Manages a list of shallow entities used to initialize a labyrinth.
-class EntityStateManager {
-public:
-	EntityId addEntity(const EntityState& entity);
-	EntityId addEntity(EntityTemplateId template_id, int x, int y, CardinalDirection d);
-	bool updateEntity(const EntityState& entity);
-	void removeEntity(EntityId id);
-
-	EntityState getEntity(EntityId id) const;
-	EntityStateVec getEntityAbs(int x, int y) const;
-	EntityStateMap& getAllEntities() { return entities; }
-	const EntityStateMap& getAllEntities() const { return entities; }
-
-	bool writeToStream(std::ofstream& stream) const;
-	bool readFromStream(std::ifstream& stream);
-private:
-	EntityId findFreeId() const;
-
-	EntityStateMap entities;
-};

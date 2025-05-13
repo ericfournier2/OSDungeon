@@ -3,61 +3,81 @@
 #include "common.h"
 #include "databases.h"
 #include "shallow_entities.h"
-#include "labyrinth.h"
 #include "game_state.h"
 
 class Labyrinth;
 
-
 class Entity {
 public:
-	Entity(const EntityState& info, const EntityTemplateDb& template_db, const SpriteDb& sprite_db);
-	operator EntityState() const { return info; }
-	EntityState getState() const { return info; }
-	EntityTemplateInfo getTemplate() const { return template_db.getElement(info.template_id); }
+	Entity();
+	Entity(const EntityState& info) : entity_state(info) {}
+	Entity(const EntityState& info, const Databases& db);
+	
+	operator EntityState() const { return entity_state; }
+	EntityState getState() const { return entity_state; }
 
+	operator EntityTemplateInfo() const { return getTemplate(); }
+	EntityTemplateInfo getTemplate() const { return template_info; }
 
+	operator SpriteInfo() const { return sprite_info; }
+	SpriteInfo getSpriteInfo() const { return sprite_info; }
 
-	EntityState getShallowEntity() const { return info; }
-	EntityId getId() const { return info.id; }
-	EntityTemplateId getTemplateId() const { return info.template_id; }
-	int getX() const { return info.x; }
-	int getY() const { return info.y; }
-	CardinalDirection getDirection() const { return info.direction;  }
+	EntityId getId() const { return entity_state.id; }
+	EntityTemplateId getTemplateId() const { return entity_state.template_id; }
+	int getX() const { return entity_state.x; }
+	int getY() const { return entity_state.y; }
+	CardinalDirection getDirection() const { return entity_state.direction;  }
+
 	float getXSize() const { return getTemplate().x_size; }
 	float getYSize() const { return getTemplate().y_size; }
 	MovementType getMovementType() const { return getTemplate().movement; }
 	CollisionType getCollisionType() const { return getTemplate().collision; }
 	InteractionType getInteractionType() const { return getTemplate().interaction; }
-	//void setLabyrinth(Labyrinth* labyrinth_init) { labyrinth = labyrinth_init; }
-	TextureId getTexture() const { return getSprite().texture; }
-	TileVec getTiles(RelativeDirection d) const { return getSprite().getTileVec(d); };
+	
+	TextureId getTexture() const { return getSpriteInfo().texture; }
+	TileVec getTiles(RelativeDirection d) const { return getSpriteInfo().getTileVec(d); };
+
+	sf::Sprite getSprite(RelativeDirection d) const;
+
+	void refresh(const Databases& db);
+	void update(Databases& db) const;
 
 	void move(const Labyrinth& labyrinth, GameState& state);
 	bool collide(const Labyrinth& labyrinth, GameState& state);
+	void clicked(GameState& state);
 protected:
-	SpriteInfo getSprite() const { return sprite_db.getElement(getTemplate().sprite_id); }
+	SpriteInfo getSprite() const { return sprite_info; }
 	bool moveCardinal(const Labyrinth& labyrinth, CardinalDirection d);
 
-	EntityState info;
-	//Labyrinth* labyrinth = nullptr;
-	const EntityTemplateDb& template_db;
-	const SpriteDb& sprite_db;
+	EntityState entity_state;
+	EntityTemplateInfo template_info;
+	SpriteInfo sprite_info;
+	TextureInfo texture;
+	sf::Clock animation_clock;
 };
 
-// Manages a set of entities inside a labyrinth.
-/*class EntityManager {
+typedef std::vector<Entity> EntityVec;
+typedef std::map<EntityId, Entity> EntityMap;
+
+// Manages a list of shallow entities used to initialize a labyrinth.
+class EntityManager {
 public:
-	EntityId addEntity(EntityInfo entity);
+	EntityManager(Databases* db_ = nullptr) : db(db_) {}
+	EntityId addEntity(const EntityState& entity);
+	EntityId addEntity(EntityTemplateId template_id, int x, int y, CardinalDirection d);
+	bool updateEntity(const Entity& entity);
 	void removeEntity(EntityId id);
-	EntityId addEntityFromTemplate(EntityTemplateId template_id, int x, int y, CardinalDirection d, const EntityTemplateDb& template_db);
-	Entity getEntity(EntityId id, const EntityTemplateDb& template_db) const;
+
+	Entity getEntity(EntityId id) const;
 	EntityVec getEntityAbs(int x, int y) const;
-	EntityVec getEntityRel(int x, int y) const;
+	EntityMap& getAllEntities() { return entities; }
 	const EntityMap& getAllEntities() const { return entities; }
 
+	bool writeToStream(std::ofstream& stream) const;
+	bool readFromStream(std::ifstream& stream);
 private:
-	const Labyrinth& labyrinth;
-	EntityMap entities;
+	EntityId findFreeId() const;
 
-};*/
+	Databases* db;
+	EntityMap entities;
+};

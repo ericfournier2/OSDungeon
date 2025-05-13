@@ -40,9 +40,9 @@ void Brush::applyPreview(Labyrinth& labyrinth, const BrushPreview& brush_preview
 
 	for (auto const& [key, val] : brush_preview.entities) {
 		if (val == 0) {
-			EntityStateVec entities = labyrinth.getEntityManager().getEntityAbs(key.x, key.y);
+			EntityVec entities = labyrinth.getEntityManager().getEntityAbs(key.x, key.y);
 			for (auto const& entity : entities) {
-				labyrinth.getEntityManager().removeEntity(entity.id);
+				labyrinth.getEntityManager().removeEntity(entity.getState().id);
 			}
 		} else {
 			//labyrinth.addWall(key.x, key.y, key.o, val);

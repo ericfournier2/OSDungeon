@@ -57,7 +57,8 @@ int Labyrinth::vectorSizeFromGridSize(int x_size, int y_size) {
 	return (x_size + 1) * y_size + (y_size + 1) * x_size;
 }
 
-Labyrinth::Labyrinth(int x_size_init, int y_size_init)
+Labyrinth::Labyrinth(int x_size_init, int y_size_init, Databases* db)
+	: entities(db)
 {
 	x_size = x_size_init;
 	if (x_size > MAX_SIZE)
@@ -323,12 +324,12 @@ void Labyrinth::fillGround(GroundId id) {
 	}
 }
 
-Labyrinth Labyrinth::buildSquareLabyrinth(int size) {
+Labyrinth Labyrinth::buildSquareLabyrinth(int size, Databases* db) {
 	if (size <= 0) {
 		size = 1;
 	}
 
-	Labyrinth retval(2 * size - 1, size);
+	Labyrinth retval(2 * size - 1, size, db);
 	retval.setPov(size - 1, 0, CardinalDirection::NORTH);
 	retval.fillGround(1);
 
@@ -345,12 +346,12 @@ Labyrinth Labyrinth::buildSquareLabyrinth(int size) {
 	return retval;
 }
 
-Labyrinth Labyrinth::buildTriangleLabyrinth(int size) {
+Labyrinth Labyrinth::buildTriangleLabyrinth(int size, Databases* db) {
 	if (size <= 0) {
 		size = 1;
 	}
 
-	Labyrinth retval(2 * size - 1, size);
+	Labyrinth retval(2 * size - 1, size, db);
 	retval.setPov(size - 1, 0, CardinalDirection::NORTH);
 	retval.fillGround(1);
 

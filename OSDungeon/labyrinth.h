@@ -21,7 +21,7 @@ enum MoveResult {
 
 class Labyrinth {
 public:
-	Labyrinth(int x_size, int y_size);
+	Labyrinth(int x_size, int y_size, Databases* db=nullptr);
 	Labyrinth(int x_size, int y_size, WallVec initWalls, GroundVec initGround,
 		      int pov_x_init = 0, int pov_y_init = 0, CardinalDirection pov_direction_init = NORTH);
 
@@ -44,17 +44,16 @@ public:
 	bool writeToFile(const std::string& filename) const;
 	bool loadFromFile(const std::string& filename);
 
-	EntityStateManager& getEntityManager() { return entities; }
-	const EntityStateManager& getEntityManager() const { return entities; }
+	EntityManager& getEntityManager() { return entities; }
+	const EntityManager& getEntityManager() const { return entities; }
 
 	bool canMove(int from_x, int from_y, CardinalDirection d) const;
 	std::optional<Path> findPath(int from_x, int from_y, int to_x, int to_y) const;
 	bool hasLOS(int from_x, int from_y, int to_x, int to_y) const;
 
-
 	void fillGround(GroundId id);
-	static Labyrinth buildSquareLabyrinth(int size);
-	static Labyrinth buildTriangleLabyrinth(int size);
+	static Labyrinth buildSquareLabyrinth(int size, Databases* db=nullptr);
+	static Labyrinth buildTriangleLabyrinth(int size, Databases* db = nullptr);
 private:
 	static int vectorSizeFromGridSize(int x_size, int y_size);
 
@@ -69,5 +68,5 @@ private:
 	int pov_y = 0;
 	CardinalDirection pov_direction = CardinalDirection::NORTH;
 
-	EntityStateManager entities;
+	EntityManager entities;
 };
