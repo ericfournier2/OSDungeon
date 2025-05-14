@@ -48,3 +48,59 @@ sf::Sprite AnimatedEntity::getSprite(int size_x, int size_y) {
 
 	return sprite;
 }
+
+template <typename TId, typename TInfo, typename TDb>
+bool selectionWidget(TId* id, TDb& db, const std::string& display_name, bool add_button = false) {
+	bool retval = false;
+
+	// Add button.
+	if (add_button) {
+		std::string button_name = "+##Add ";
+		button_name.append(display_name);
+		if (ImGui::Button(button_name.c_str())) {
+			TInfo info = TInfo();
+			*id = db.addElement(info);
+			info = db.getElement(*id);
+
+			info.name = "New ";
+			info.name.append(display_name + " (" + std::to_string(*id) + ")");
+			db.updateElement(info);
+
+			retval = true;
+		}
+		ImGui::SameLine();
+	}
+
+	// Sprite name select combo.
+	std::string combo_display = "Select a ";
+	combo_display.append(display_name + " to start...");
+	if (*id != 0) {
+		combo_display = db.getElement(*id).name;
+	}
+	std::string combo_name = "Select ";
+	combo_name.append(display_name);
+	if (ImGui::BeginCombo(combo_name.c_str(), combo_display.c_str())) {
+		auto id_list = db.getIds();
+		for (const auto& current_id : id_list) {
+			std::string item_label = db.getElement(current_id).name;
+			item_label.append("##");
+			item_label.append(std::to_string(current_id));
+			if (ImGui::Selectable(item_label.c_str())) {
+				*id = current_id;
+				retval = true;
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	return retval;
+}
+
+bool entityTemplateSelectionWidget(EntityTemplateId* id, EntityTemplateDb& edb, bool add_button) {
+	return selectionWidget<EntityTemplateId, EntityTemplateInfo, EntityTemplateDb>(id, edb, "entity template", add_button);
+	return false;
+}
+
+bool spriteSelectionWidget(SpriteId* id, SpriteDb& sdb, bool add_button) {
+	return selectionWidget<SpriteId, SpriteInfo, SpriteDb>(id, sdb, "sprite", add_button);
+}

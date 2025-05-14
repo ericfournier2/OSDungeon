@@ -48,3 +48,6 @@ private:
 	RelativeDirection facing;
 
 };
+
+bool entityTemplateSelectionWidget(EntityTemplateId* id, EntityTemplateDb& edb, bool add_button = false);
+bool spriteSelectionWidget(SpriteId* id, SpriteDb& sdb, bool add_button = false);
