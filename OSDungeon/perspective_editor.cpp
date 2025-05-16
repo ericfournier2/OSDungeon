@@ -14,6 +14,8 @@ PerspectiveEditor::PerspectiveEditor()
 	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(4), db, size_x, size_y));
 	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(5), db, size_x, size_y));
 	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildSquareLabyrinth(10), db, size_x, size_y));
+
+	refreshViews();
 }
 
 void PerspectiveEditor::saveImagesToFile() {
@@ -64,6 +66,8 @@ bool PerspectiveEditor::renderWidgets() {
 	refresh = ImGui::SliderFloat("aspect ratio", &aspect_ratio, 0.5f, 2.0f, "aspect ratio = %.2f") || refresh;
 	refresh = ImGui::SliderFloat("vanishing point x", &vanish_point.x, 0.0f, 1.0f, "x vanish point = %.2f") || refresh;
 	refresh = ImGui::SliderFloat("vanishing point y", &vanish_point.y, 0.0f, 1.0f, "y vanish point = %.2f") || refresh;
+	refresh = ImGui::SliderFloat("x tiles per screen", &x_tiles_per_screen, 0.1f, 2.0f, "x tiles per screen = %.2f") || refresh;
+	refresh = ImGui::SliderFloat("y tiles per screen", &y_tiles_per_screen, 0.1f, 2.0f, "y tiles per screen = %.2f") || refresh;
 	refresh = ImGui::SliderInt("max depth", &max_depth, 0, 10, "max_depth = %d") || refresh;
 
 	return refresh;
@@ -79,6 +83,8 @@ void PerspectiveEditor::refreshViews(sf::Color clear_color) {
 		perspectives[c]->view.setMaxDepth(max_depth);
 		perspectives[c]->view.setSizeX(size_x);
 		perspectives[c]->view.setSizeY(size_y);
+		perspectives[c]->view.setScaleX(x_tiles_per_screen);
+		perspectives[c]->view.setScaleY(y_tiles_per_screen);
 		perspectives[c]->texture.resize({ size_x, size_y });
 
 		perspectives[c]->texture.clear(clear_color);

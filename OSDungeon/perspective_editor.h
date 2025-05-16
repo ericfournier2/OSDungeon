@@ -21,9 +21,10 @@ private:
 	float aspect_ratio = 4.0f / 3.0f;
 	unsigned int size_x = (unsigned int)(base_size);
 	unsigned int size_y = (unsigned int)(base_size / aspect_ratio);
-	
 	int max_depth = 5;
 	CoordF vanish_point = { 0.5f, 0.5f };
+	float x_tiles_per_screen = 1.0f;
+	float y_tiles_per_screen = 1.0f;
 
 	GroundDb gdb;
 	WallDb wdb;

@@ -64,25 +64,6 @@ LabyrinthView::LabyrinthView(const LabyrinthPOV& labyrinth_init, const Labyrinth
 
 }
 
-float LabyrinthView::depthOffset(float depth, bool x, bool left) const {
-	unsigned int size = x ? x_size : y_size;
-	double retVal = double(size) / 2;
-	// Don't let depth be negative.
-	if (depth < 0.0f) {
-		depth = 0.0f;
-	}
-	double offset = (retVal / pow(2, depth));
-	
-	if (left) {
-		retVal = retVal - offset;
-	}
-	else {
-		retVal = retVal + offset;
-	}
-
-	return static_cast<float>(retVal);
-}
-
 RenderQueue::RenderQueue(int depth) : max_depth(depth) { 
 	reset();
 };
@@ -122,8 +103,16 @@ bool RenderQueue::isInFOV(RenderStep step) const {
 }
 
 CoordF LabyrinthView::mapCoordToProjection(float x, float y, float d) const {
-	float norm_x = x + (vanish_point.x - x) * (1 - (1 / pow(2, d)));
-	float norm_y = y + (vanish_point.y - y) * (1 - (1 / pow(2, d)));
+	float x0 = (1.0f - (1.0f / x_tiles_in_screen)) / 2;
+	float x_scale = 1.0f / x_tiles_in_screen;
+	float base_x = (x_scale * x) + x0;
+
+	float y0 = 1.0f - (1.0f / y_tiles_in_screen);
+	float y_scale = 1.0f / y_tiles_in_screen;
+	float base_y = (y_scale * y) + y0;
+
+	float norm_x = base_x + (vanish_point.x - base_x) * (1 - (1 / pow(2, d)));
+	float norm_y = base_y + (vanish_point.y - base_y) * (1 - (1 / pow(2, d)));
 	float final_x_ = norm_x * x_size;
 	float final_y_ = norm_y * y_size;
 

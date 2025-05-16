@@ -72,9 +72,15 @@ public:
 
 	CoordF getVanishingPoint() const { return vanish_point; }
 	void setVanishingPoint(CoordF p) { assert(p.x >= 0.0f && p.x <= 1.0f && p.y >= 0.0f && p.y <= 1.0f);  vanish_point = p; }
+
+	float getScaleX() const { return x_tiles_in_screen; }
+	void setScaleX(float scale) { x_tiles_in_screen = scale; }
+	float getScaleY() const { return y_tiles_in_screen; }
+	void setScaleY(float scale) { y_tiles_in_screen = scale; }
+
+
 	EntityId mouseHit(CoordF coord) const;
 private:
-	float depthOffset(float depth, bool x, bool left) const;
 	CoordF mapCoordToProjection(float x, float y, float d) const;
 	bool renderGround(RenderStep step);
 	bool renderWall(RenderStep step);
@@ -92,6 +98,8 @@ private:
 	int max_depth = 5;
 	float camera_distance = 0.7f;
 	CoordF vanish_point = { 0.5f, 0.3333333333f };
+	float x_tiles_in_screen = 1.00f;
+	float y_tiles_in_screen = 1.00f;
 	RenderQueue render_queue;
 	bool verbose = false;
 	bool show_outline = false;
