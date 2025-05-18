@@ -7,6 +7,7 @@
 #include "labyrinth_pov.h"
 #include "common.h"
 #include "labyrinth_background.h"
+#include "one_point_perspective.h"
 
 struct RenderStep {
 	int x_offset;
@@ -55,33 +56,17 @@ private:
 class LabyrinthView {
 public:
 	LabyrinthView(const LabyrinthPOV& labyrinth, const LabyrinthBackground& background, const Databases& db,
-				  sf::RenderTarget& rt, int x_size=400, int y_size=300, int max_depth=5, float camera_distance=0.7f);
+				  sf::RenderTarget& rt, const OnePointPerspective& perspective);
 	bool render();
 	bool getShowOutline() const { return show_outline; }
 	void setShowOutline(bool outline) { show_outline = outline; }
 	bool getShowTextures() const { return show_textures; }
 	void setShowTextures(bool outline) { show_textures = outline; }
-	int getSizeX() const { return x_size; }
-	void setSizeX(int size) { assert(size > 0); assert(size < 5000); x_size = size; }
-	int getSizeY() const { return y_size; }
-	void setSizeY(int size) { assert(size > 0); assert(size < 5000); y_size = size; }
-	int getMaxDepth() const { return max_depth; }
-	void setMaxDepth(int depth) { assert(depth >= 0); assert(depth <= 20); max_depth = depth; render_queue.setMaxDepth(max_depth); }
-	float getCameraDistance() const { return camera_distance; }
-	void setCameraDistance(float distance) { assert(camera_distance >= 0.0f); assert(camera_distance <= 1.0f); camera_distance = distance; }
-
-	CoordF getVanishingPoint() const { return vanish_point; }
-	void setVanishingPoint(CoordF p) { assert(p.x >= 0.0f && p.x <= 1.0f && p.y >= 0.0f && p.y <= 1.0f);  vanish_point = p; }
-
-	float getScaleX() const { return x_tiles_in_screen; }
-	void setScaleX(float scale) { x_tiles_in_screen = scale; }
-	float getScaleY() const { return y_tiles_in_screen; }
-	void setScaleY(float scale) { y_tiles_in_screen = scale; }
-
+	void setPerspective(const OnePointPerspective& perspective);
+	OnePointPerspective getPerspective() const { return perspective; }
 
 	EntityId mouseHit(CoordF coord) const;
 private:
-	CoordF mapCoordToProjection(float x, float y, float d) const;
 	bool renderGround(RenderStep step);
 	bool renderWall(RenderStep step);
 	CoordF placeEntityCenter(const EntityState& entity, int x_offset, int y_offset, int n_free_entities, int free_entity_index) const;
@@ -89,17 +74,12 @@ private:
 	void drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf::Color color, const sf::Texture* texture, TextureType texture_type, bool outline = false);
 	bool renderBackground();
 	std::stack<RenderStep> buildDrawStack();
+
 	const LabyrinthPOV& labyrinth;
 	const LabyrinthBackground& background;
 	sf::RenderTarget& rt;
+	OnePointPerspective perspective;
 
-	int x_size = 400;
-	int y_size = 300;
-	int max_depth = 5;
-	float camera_distance = 0.7f;
-	CoordF vanish_point = { 0.5f, 0.3333333333f };
-	float x_tiles_in_screen = 1.00f;
-	float y_tiles_in_screen = 1.00f;
 	RenderQueue render_queue;
 	bool verbose = false;
 	bool show_outline = false;

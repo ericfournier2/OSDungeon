@@ -77,14 +77,18 @@ void PerspectiveEditor::refreshViews(sf::Color clear_color) {
 	size_x = (unsigned int)(base_size * aspect_ratio);
 	size_y = (unsigned int)(base_size / aspect_ratio);
 
+	OnePointPerspective perspective;
+	perspective.setCameraDistance(camera_distance);
+	perspective.setVanishingPoint(vanish_point);
+	perspective.setMaxDepth(max_depth);
+	perspective.setSizeX(size_x);
+	perspective.setSizeY(size_y);
+	perspective.setScaleX(x_tiles_per_screen);
+	perspective.setScaleY(y_tiles_per_screen);
+
+
 	for (int c = 0; c < perspectives.size(); ++c) {
-		perspectives[c]->view.setCameraDistance(camera_distance);
-		perspectives[c]->view.setVanishingPoint(vanish_point);
-		perspectives[c]->view.setMaxDepth(max_depth);
-		perspectives[c]->view.setSizeX(size_x);
-		perspectives[c]->view.setSizeY(size_y);
-		perspectives[c]->view.setScaleX(x_tiles_per_screen);
-		perspectives[c]->view.setScaleY(y_tiles_per_screen);
+		perspectives[c]->view.setPerspective(perspective);
 		perspectives[c]->texture.resize({ size_x, size_y });
 
 		perspectives[c]->texture.clear(clear_color);

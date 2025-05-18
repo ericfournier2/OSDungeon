@@ -2,8 +2,12 @@
 #include "runner.h"
 
 Runner::Runner(const Labyrinth& labyrinth_init, const LabyrinthBackground& background_init, const Databases& db_init)
-	: labyrinth(labyrinth_init), background(background_init), entities(labyrinth.getEntityManager()), pov(labyrinth, entities), db(db_init), window(sf::VideoMode({ window_width, window_height }), "Maze 1st person view", sf::Style::Close),
-	lv(pov, background, db, window, lv_width, lv_height)
+	: labyrinth(labyrinth_init), background(background_init), 
+	  entities(labyrinth.getEntityManager()),
+	  pov(labyrinth, entities),
+	  db(db_init),
+	  window(sf::VideoMode({ window_width, window_height }), "Maze 1st person view", sf::Style::Close),
+	  lv(pov, background, db, window, perspective)
 {
 	window.setPosition({ 2000, 100 });
 	font.openFromFile("assets/DkCoolCrayon-xJyV.ttf");

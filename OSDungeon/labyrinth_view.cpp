@@ -56,12 +56,10 @@ RenderStep RenderStep::nextGround() const {
 }
 
 LabyrinthView::LabyrinthView(const LabyrinthPOV& labyrinth_init, const LabyrinthBackground& background_init, const Databases& db_init,
-							 sf::RenderTarget& rt_init, int x_size_init, int y_size_init, int max_depth_init, float camera_distance_init)
-	: labyrinth(labyrinth_init), background(background_init), db(db_init), rt(rt_init),
-	  x_size(x_size_init), y_size(y_size_init), max_depth(max_depth_init), camera_distance(camera_distance_init), render_queue(max_depth),
-	  background_view(db)
+							 sf::RenderTarget& rt_init, const OnePointPerspective& perspective_init)
+	: labyrinth(labyrinth_init), background(background_init), db(db_init), rt(rt_init), perspective(perspective_init),
+	  render_queue(perspective.getMaxDepth()), background_view(db)
 {
-
 }
 
 RenderQueue::RenderQueue(int depth) : max_depth(depth) { 
@@ -102,21 +100,9 @@ bool RenderQueue::isInFOV(RenderStep step) const {
 	return (abs(step.x_offset) <= max_depth + 1) && (step.y_offset <= max_depth);
 }
 
-CoordF LabyrinthView::mapCoordToProjection(float x, float y, float d) const {
-	float x0 = (1.0f - (1.0f / x_tiles_in_screen)) / 2;
-	float x_scale = 1.0f / x_tiles_in_screen;
-	float base_x = (x_scale * x) + x0;
-
-	float y0 = 1.0f - (1.0f / y_tiles_in_screen);
-	float y_scale = 1.0f / y_tiles_in_screen;
-	float base_y = (y_scale * y) + y0;
-
-	float norm_x = base_x + (vanish_point.x - base_x) * (1 - (1 / pow(2, d)));
-	float norm_y = base_y + (vanish_point.y - base_y) * (1 - (1 / pow(2, d)));
-	float final_x_ = norm_x * x_size;
-	float final_y_ = norm_y * y_size;
-
-	return CoordF(final_x_, final_y_);
+void LabyrinthView::setPerspective(const OnePointPerspective& perspective_) {
+	perspective = perspective_;
+	render_queue.setMaxDepth(perspective.getMaxDepth());
 }
 
 sf::IntRect getTexRect(int x1, int y1, int x2, int y2, const sf::RenderTarget& rt, const sf::Texture* texture) {
@@ -140,19 +126,19 @@ void LabyrinthView::drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf
 			shape.setTextureRect(getTexRect(min_x, min_y, max_x - min_x, max_y - min_y, rt, texture));
 		}
 		else if (texture_type == TextureType::FRONT_WALL_TEXTURE) {
-			CoordF wall1 = mapCoordToProjection(0.0f, 0.0f, camera_distance);
-			CoordF wall3 = mapCoordToProjection(1.0f, 1.0f, camera_distance);
+			CoordF wall1 = perspective.mapCoordinate(0.0f, 0.0f, perspective.getCameraDistance());
+			CoordF wall3 = perspective.mapCoordinate(1.0f, 1.0f, perspective.getCameraDistance());
 			shape.setTextureRect(getTexRect((int)wall1.x, (int)wall1.y, (int)(wall3.x - wall1.x), (int)(wall3.y - wall1.y), rt, texture));
 		} else if (texture_type == TextureType::LEFT_WALL_TEXTURE) {
-			CoordF wall1 = mapCoordToProjection(0.0f, 0.0f, 0.0f);
-			CoordF wall2 = mapCoordToProjection(0.0f, 0.0f, camera_distance);
-			CoordF wall4 = mapCoordToProjection(0.0f, 1.0f, 0.0f);
+			CoordF wall1 = perspective.mapCoordinate(0.0f, 0.0f, 0.0f);
+			CoordF wall2 = perspective.mapCoordinate(0.0f, 0.0f, perspective.getCameraDistance());
+			CoordF wall4 = perspective.mapCoordinate(0.0f, 1.0f, 0.0f);
 			shape.setTextureRect(getTexRect((int)wall1.x, (int)wall1.y, (int)(wall2.x - wall1.x), (int)(wall4.y - wall1.y), rt, texture));
 		} else if (texture_type == TextureType::RIGHT_WALL_TEXTURE) {
-			CoordF wall1 = mapCoordToProjection(1.0f, 0.0f, 0.0f);
-			CoordF wall2 = mapCoordToProjection(1.0f, 0.0f, camera_distance);
-			CoordF wall3 = mapCoordToProjection(1.0f, 1.0f, camera_distance);
-			CoordF wall4 = mapCoordToProjection(1.0f, 1.0f, 0.0f);
+			CoordF wall1 = perspective.mapCoordinate(1.0f, 0.0f, 0.0f);
+			CoordF wall2 = perspective.mapCoordinate(1.0f, 0.0f, perspective.getCameraDistance());
+			CoordF wall3 = perspective.mapCoordinate(1.0f, 1.0f, perspective.getCameraDistance());
+			CoordF wall4 = perspective.mapCoordinate(1.0f, 1.0f, 0.0f);
 
 			shape.setTextureRect(getTexRect((int)wall3.x, (int)wall1.y, (int)(wall1.x - wall3.x), (int)(wall4.y - wall1.y), rt, texture));
 		}
@@ -200,7 +186,7 @@ RelativeDirection getEntityFacing(CardinalDirection pov_d, CardinalDirection ent
 static sf::Clock animation_clock;
 
 CoordF LabyrinthView::placeEntityCenter(const EntityState& entity, int x_offset, int y_offset, int n_free_entities, int free_entity_index) const {
-	CoordF retval = { (float)x_offset, y_offset - (1.0f - camera_distance) };
+	CoordF retval = { (float)x_offset, y_offset - (1.0f - perspective.getCameraDistance()) };
 	if (entity.fixed_position) {
 		switch (labyrinth.getPov().d) {
 		case CardinalDirection::NORTH:
@@ -234,7 +220,7 @@ void LabyrinthView::drawEntity(const Entity& entity, int x_offset, int y_offset,
 	sf::Sprite sprite = getAnimationSprite(entity.getTemplate().sprite_id, ent_facing, animation_clock, db.tdb, db.sdb);
 
 	CoordF sprite_map_center = placeEntityCenter(entity, x_offset, y_offset, n_free_entities, free_entity_index);
-	CoordF sprite_screen_center = mapCoordToProjection(sprite_map_center.x, 1.0f, sprite_map_center.y);
+	CoordF sprite_screen_center = perspective.mapCoordinate(sprite_map_center.x, 1.0f, sprite_map_center.y);
 	float scale_factor = static_cast<float>(pow(2, sprite_map_center.y));
 	float final_x_size = entity.getXSize() / scale_factor;
 	float final_y_size = entity.getYSize() / scale_factor;
@@ -298,28 +284,28 @@ bool LabyrinthView::renderGround(RenderStep step) {
 	//step.print();
 
 	float close_y = 0.0f;
-	float far_y = camera_distance;
+	float far_y = perspective.getCameraDistance();
 	if (abs(step.y_offset) > 0.00001) {
-		close_y = camera_distance + step.y_offset - 1.0f;
-		far_y = camera_distance + step.y_offset;
+		close_y = perspective.getCameraDistance() + step.y_offset - 1.0f;
+		far_y = perspective.getCameraDistance() + step.y_offset;
 	}
 
 	GroundInfo ground_info = db.gdb.getElement(step.ground_id);
 	TextureInfo texture_info = db.tdb.getTexture(ground_info.texture);
 
 	if (ground_info.draw_ceiling) {
-		CoordF ceil1 = mapCoordToProjection(static_cast<float>(step.x_offset), 0.0f, close_y);
-		CoordF ceil2 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 0.0f, close_y);
-		CoordF ceil3 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 0.0f, far_y);
-		CoordF ceil4 = mapCoordToProjection(static_cast<float>(step.x_offset), 0.0f, far_y);
+		CoordF ceil1 = perspective.mapCoordinate(static_cast<float>(step.x_offset), 0.0f, close_y);
+		CoordF ceil2 = perspective.mapCoordinate(static_cast<float>(step.x_offset) + 1, 0.0f, close_y);
+		CoordF ceil3 = perspective.mapCoordinate(static_cast<float>(step.x_offset) + 1, 0.0f, far_y);
+		CoordF ceil4 = perspective.mapCoordinate(static_cast<float>(step.x_offset), 0.0f, far_y);
 
 		drawPrimitive(ceil1, ceil2, ceil3, ceil4, ground_info.ceiling_color, texture_info.texture.get(), GROUND_TEXTURE, false);
 	}
 
-	CoordF ground1 = mapCoordToProjection(static_cast<float>(step.x_offset), 1.0f, close_y);
-	CoordF ground2 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 1.0f, close_y);
-	CoordF ground3 = mapCoordToProjection(static_cast<float>(step.x_offset) + 1, 1.0f, far_y);
-	CoordF ground4 = mapCoordToProjection(static_cast<float>(step.x_offset), 1.0f, far_y);
+	CoordF ground1 = perspective.mapCoordinate(static_cast<float>(step.x_offset), 1.0f, close_y);
+	CoordF ground2 = perspective.mapCoordinate(static_cast<float>(step.x_offset) + 1, 1.0f, close_y);
+	CoordF ground3 = perspective.mapCoordinate(static_cast<float>(step.x_offset) + 1, 1.0f, far_y);
+	CoordF ground4 = perspective.mapCoordinate(static_cast<float>(step.x_offset), 1.0f, far_y);
 
 	//drawPrimitive(ground1, ground2, ground3, ground4, sf::Color(127, 51, 0), &ground_texture, GROUND_TEXTURE, true);
 	drawPrimitive(ground1, ground2, ground3, ground4, ground_info.ground_color, texture_info.texture.get(), GROUND_TEXTURE, false);
@@ -353,10 +339,10 @@ bool LabyrinthView::renderWall(RenderStep step) {
 
 	//WallTypeId wall_id = labyrinth.getWallRel(step.x_offset, step.y_offset, step.direction);
 	float close_y = 0.0f;
-	float far_y = camera_distance;
+	float far_y = perspective.getCameraDistance();
 	if (abs(step.y_offset) > 0.00001) {
-		close_y = camera_distance + step.y_offset - 1.0f;
-		far_y = camera_distance + step.y_offset;
+		close_y = perspective.getCameraDistance() + step.y_offset - 1.0f;
+		far_y = perspective.getCameraDistance() + step.y_offset;
 	}
 	
 	float front_x = 0.0f;
@@ -373,10 +359,10 @@ bool LabyrinthView::renderWall(RenderStep step) {
 		texture_type = TextureType::RIGHT_WALL_TEXTURE;
 	}
 
-	CoordF wall1 = mapCoordToProjection(step.x_offset + right_offset, 0.0f, close_y);
-	CoordF wall2 = mapCoordToProjection(step.x_offset + right_offset + front_x, 0.0f, far_y);
-	CoordF wall3 = mapCoordToProjection(step.x_offset + right_offset + front_x, 1.0f, far_y);
-	CoordF wall4 = mapCoordToProjection(step.x_offset + right_offset, 1.0f, close_y);
+	CoordF wall1 = perspective.mapCoordinate(step.x_offset + right_offset, 0.0f, close_y);
+	CoordF wall2 = perspective.mapCoordinate(step.x_offset + right_offset + front_x, 0.0f, far_y);
+	CoordF wall3 = perspective.mapCoordinate(step.x_offset + right_offset + front_x, 1.0f, far_y);
+	CoordF wall4 = perspective.mapCoordinate(step.x_offset + right_offset, 1.0f, close_y);
 
 	WallInfo wall_info = db.wdb.getElement(step.wall_id);
 	TextureInfo texture_info = db.tdb.getTexture(wall_info.texture);

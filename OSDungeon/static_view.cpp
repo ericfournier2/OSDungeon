@@ -1,7 +1,7 @@
 #include "static_view.h"
 
 StaticView::StaticView(Labyrinth lab, const Databases& db, unsigned int size_x, unsigned int size_y)
-	: labyrinth(lab), pov(labyrinth), texture({ size_x, size_y }), view(pov, background, db, texture, size_x, size_y)
+	: labyrinth(lab), pov(labyrinth), texture({ size_x, size_y }), view(pov, background, db, texture, OnePointPerspective(size_x, size_y))
 {
 	view.setShowOutline(true);
 	view.render();

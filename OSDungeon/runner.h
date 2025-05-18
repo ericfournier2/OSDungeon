@@ -45,6 +45,7 @@ private:
 	LabyrinthPOV pov;
 	const Databases& db;
 	sf::RenderWindow window;
+	OnePointPerspective perspective;
 	LabyrinthView lv;
 
 	sf::SoundBuffer footsteps_buffer = sf::SoundBuffer("assets/sounds/footstep.wav");
