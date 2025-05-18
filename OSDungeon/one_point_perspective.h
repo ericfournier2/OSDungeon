@@ -3,7 +3,7 @@
 
 class OnePointPerspective {
 public:
-	OnePointPerspective(int size_x = 400, int size_y = 300, int max_depth = 5, float camera_distance = 0.7f, CoordF vanishing_point = { 0.5f, 1.0f / 3.0f }, float x_tiles_in_screen = 1.0f, float y_tiles_in_screen = 1.0f);
+	OnePointPerspective(int size_x = 400, int size_y = 300, int max_depth = 5, float camera_distance = 0.7f, CoordF vanishing_point = { 0.5f, 0.333333f }, float x_tiles_in_screen = 1.0f, float y_tiles_in_screen = 1.0f);
 
 	int getSizeX() const { return x_size; }
 	void setSizeX(int size) { assert(size > 0); assert(size < 5000); x_size = size; }

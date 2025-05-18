@@ -5,7 +5,7 @@ OnePointPerspective::OnePointPerspective(int size_x_, int size_y_, int max_depth
 	float y_tiles_in_screen_)
 	: x_size(size_x_), y_size(size_y_), max_depth(max_depth_), 
 	  camera_distance(camera_distance_), vanish_point(vanishing_point_), 
-	  x_tiles_in_screen(x_tiles_in_screen_), y_tiles_in_screen(y_tiles_in_screen)
+	  x_tiles_in_screen(x_tiles_in_screen_), y_tiles_in_screen(y_tiles_in_screen_)
 {
 
 }
