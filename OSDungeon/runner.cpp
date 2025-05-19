@@ -7,6 +7,7 @@ Runner::Runner(const Labyrinth& labyrinth_init, const LabyrinthBackground& backg
 	  pov(labyrinth, entities),
 	  db(db_init),
 	  window(sf::VideoMode({ window_width, window_height }), "Maze 1st person view", sf::Style::Close),
+	  perspective(lv_width, lv_height),
 	  lv(pov, background, db, window, perspective)
 {
 	window.setPosition({ 2000, 100 });
