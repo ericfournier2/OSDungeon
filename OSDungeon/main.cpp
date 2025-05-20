@@ -49,6 +49,10 @@ int main()
     auto mur_foret_test_texture = texture_db.loadNewTexture(21, "assets/textures/Mur foret cire.png", "Mur foret cire");
     auto bg_plaine_texture = texture_db.loadNewTexture(22, "assets/textures/bg plaine cire.png", "Plaine cire");
     auto animated_flower_texture = texture_db.loadNewTexture(23, "assets/textures/Fleur buisson cire.png", "Animated flower", 107, 110);
+    auto fc_front = texture_db.loadNewTexture(24, "assets/textures/fc-front.png", "fc-front");
+    auto fc_partial = texture_db.loadNewTexture(25, "assets/textures/fc-partial.png", "fc-partial");
+    auto fc_depth_0 = texture_db.loadNewTexture(26, "assets/textures/fc-depth-0.png", "fc-depth-0");
+    auto fc_depth_1 = texture_db.loadNewTexture(27, "assets/textures/fc-depth-1.png", "fc-depth-1");
 
     GroundDb ground_db;
     //ground_db.addElement(GroundInfo({ 0, sf::Color::White, 0 }));
@@ -59,9 +63,16 @@ int main()
 
     WallDb wall_db;
     //wall_db.addElement(WallInfo({ 0, sf::Color::White, 0 }));
-    wall_db.addElement(WallInfo({ 1, sf::Color::White, mur_foret_test_texture }));
-    wall_db.addElement(WallInfo({ 2, sf::Color::Green, 3 }));
-    wall_db.addElement(WallInfo({ 3, sf::Color::Red, 3 }));
+    wall_db.addElement(WallInfo({ 1,
+                                  sf::Color::White,
+                                  {fc_front, {0}},
+                                  {fc_partial, {0}},
+                                  { {0, {fc_depth_0, {0}}},
+                                    {1, {fc_depth_1, {0}}}
+                                  }
+                                }));
+    //wall_db.addElement(WallInfo({ 2, sf::Color::Green, 3 }));
+    //wall_db.addElement(WallInfo({ 3, sf::Color::Red, 3 }));
 
 
     SpriteDb sprite_db;

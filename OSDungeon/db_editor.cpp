@@ -74,7 +74,7 @@ void DatabaseEditor::renderWallRow(WallId id) {
 	}
 
 	ImGui::TableNextColumn();
-	if (selectTextureButton(&(wall_info.texture), id)) {
+	if (selectTextureButton(&(wall_info.front.texture), id)) {
 		db.wdb.updateElement(wall_info);
 	}
 }

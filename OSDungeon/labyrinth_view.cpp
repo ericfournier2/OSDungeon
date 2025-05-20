@@ -115,6 +115,12 @@ sf::IntRect getTexRect(int x1, int y1, int x2, int y2, const sf::RenderTarget& r
 void LabyrinthView::drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf::Color color, const sf::Texture* texture, TextureType texture_type, bool outline) {
 	sf::ConvexShape shape;
 	shape.setPointCount(4);
+	shape.setPoint(0, { p1.x, p1.y });
+	shape.setPoint(1, { p2.x, p2.y });
+	shape.setPoint(2, { p3.x, p3.y });
+	shape.setPoint(3, { p4.x, p4.y });
+	shape.setFillColor(color);
+
 	if (texture) {
 		shape.setTexture(texture);
 
@@ -128,28 +134,29 @@ void LabyrinthView::drawPrimitive(CoordF p1, CoordF p2, CoordF p3, CoordF p4, sf
 		else if (texture_type == TextureType::FRONT_WALL_TEXTURE) {
 			CoordF wall1 = perspective.mapCoordinate(0.0f, 0.0f, perspective.getCameraDistance());
 			CoordF wall3 = perspective.mapCoordinate(1.0f, 1.0f, perspective.getCameraDistance());
-			shape.setTextureRect(getTexRect((int)wall1.x, (int)wall1.y, (int)(wall3.x - wall1.x), (int)(wall3.y - wall1.y), rt, texture));
+			//shape.setTextureRect(getTexRect((int)wall1.x, (int)wall1.y, (int)(wall3.x - wall1.x), (int)(wall3.y - wall1.y), rt, texture));
 		} else if (texture_type == TextureType::LEFT_WALL_TEXTURE) {
 			CoordF wall1 = perspective.mapCoordinate(0.0f, 0.0f, 0.0f);
 			CoordF wall2 = perspective.mapCoordinate(0.0f, 0.0f, perspective.getCameraDistance());
 			CoordF wall4 = perspective.mapCoordinate(0.0f, 1.0f, 0.0f);
-			shape.setTextureRect(getTexRect((int)wall1.x, (int)wall1.y, (int)(wall2.x - wall1.x), (int)(wall4.y - wall1.y), rt, texture));
+			//shape.setTextureRect(getTexRect((int)wall1.x, (int)wall1.y, (int)(wall2.x - wall1.x), (int)(wall4.y - wall1.y), rt, texture));
 		} else if (texture_type == TextureType::RIGHT_WALL_TEXTURE) {
 			CoordF wall1 = perspective.mapCoordinate(1.0f, 0.0f, 0.0f);
 			CoordF wall2 = perspective.mapCoordinate(1.0f, 0.0f, perspective.getCameraDistance());
 			CoordF wall3 = perspective.mapCoordinate(1.0f, 1.0f, perspective.getCameraDistance());
 			CoordF wall4 = perspective.mapCoordinate(1.0f, 1.0f, 0.0f);
 
-			shape.setTextureRect(getTexRect((int)wall3.x, (int)wall1.y, (int)(wall1.x - wall3.x), (int)(wall4.y - wall1.y), rt, texture));
+			//shape.setTextureRect(getTexRect((int)wall3.x, (int)wall1.y, (int)(wall1.x - wall3.x), (int)(wall4.y - wall1.y), rt, texture));
+			auto bounds = shape.getLocalBounds();
+			shape.setPoint(0, { p2.x - bounds.position.x, p1.y - bounds.position.y });
+			shape.setPoint(1, { p1.x - bounds.position.x, p2.y - bounds.position.y });
+			shape.setPoint(2, { p4.x - bounds.position.x, p3.y - bounds.position.y });
+			shape.setPoint(3, { p3.x - bounds.position.x, p4.y - bounds.position.y });
+			shape.setScale({ -1.0f, 1.0f });
+			shape.setPosition({ bounds.position.x + bounds.size.x, bounds.position.y });
 		}
 		
 	}
-
-	shape.setPoint(0, { p1.x, p1.y });
-	shape.setPoint(1, { p2.x, p2.y });
-	shape.setPoint(2, { p3.x, p3.y });
-	shape.setPoint(3, { p4.x, p4.y });
-	shape.setFillColor(color);
 
 	rt.draw(shape);
 
@@ -346,11 +353,24 @@ bool LabyrinthView::renderWall(RenderStep step) {
 	}
 	
 	float front_x = 0.0f;
+	WallInfo wall_info = db.wdb.getElement(step.wall_id);
 	TextureType texture_type = TextureType::LEFT_WALL_TEXTURE;
+	TextureInfo texture_info = db.tdb.getTexture(wall_info.partial.texture);
 	if (step.direction == FRONT) {
 		close_y = far_y;
 		front_x = 1.0f;
 		texture_type = TextureType::FRONT_WALL_TEXTURE;
+		texture_info = db.tdb.getTexture(wall_info.front.texture);
+	}
+
+	if (step.direction == RIGHT || step.direction == LEFT) {
+		if (step.x_offset == 0 && step.y_offset == 0) {
+			texture_info = db.tdb.getTexture(wall_info.partial.texture);
+		} else if (step.x_offset == 0 && step.y_offset > 0 && wall_info.depth_map.contains(0)) {
+			texture_info = db.tdb.getTexture(wall_info.depth_map.at(0).texture);
+		} else if (abs(step.x_offset) >= 1 && step.y_offset > 0 && wall_info.depth_map.contains(1)) {
+			texture_info = db.tdb.getTexture(wall_info.depth_map.at(1).texture);
+		}
 	}
 
 	float right_offset = 0.0f;
@@ -363,9 +383,6 @@ bool LabyrinthView::renderWall(RenderStep step) {
 	CoordF wall2 = perspective.mapCoordinate(step.x_offset + right_offset + front_x, 0.0f, far_y);
 	CoordF wall3 = perspective.mapCoordinate(step.x_offset + right_offset + front_x, 1.0f, far_y);
 	CoordF wall4 = perspective.mapCoordinate(step.x_offset + right_offset, 1.0f, close_y);
-
-	WallInfo wall_info = db.wdb.getElement(step.wall_id);
-	TextureInfo texture_info = db.tdb.getTexture(wall_info.texture);
 
 	drawPrimitive(wall1, wall2, wall3, wall4, wall_info.color, texture_info.texture.get(), texture_type, false);
 

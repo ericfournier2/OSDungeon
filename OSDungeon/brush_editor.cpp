@@ -24,7 +24,7 @@ TextureInfo getTextureFromInfo(const GroundInfo& info, const TextureDb& texture_
 }
 
 TextureInfo getTextureFromInfo(const WallInfo& info, const TextureDb& texture_db, const SpriteDb& sprite_db) {
-	return texture_db.getTexture(info.texture);
+	return texture_db.getTexture(info.front.texture);
 }
 
 TextureInfo getTextureFromInfo(const EntityTemplateInfo& info, const TextureDb& texture_db, const SpriteDb& sprite_db) {

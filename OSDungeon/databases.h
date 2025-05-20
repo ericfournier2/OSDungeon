@@ -14,11 +14,22 @@ typedef unsigned int TextureId;
 typedef unsigned int SpriteId;
 typedef unsigned int EntityTemplateId;
 
+typedef int TileId;
+typedef std::vector<TileId> TileVec;
+
+struct WallTexture {
+	TextureId texture = 0;
+	TileVec tiles = { 0 };
+};
+
+typedef std::map<int, WallTexture> WallTextureMap;
 
 struct WallInfo {
 	WallId id = 0;
 	sf::Color color = sf::Color::White;
-	TextureId texture = 0;
+	WallTexture front;
+	WallTexture partial;
+	WallTextureMap depth_map;
 
 	bool write(std::ofstream& stream) const {
 		stream.write(reinterpret_cast<const char*>(this), sizeof(WallInfo));
@@ -67,8 +78,7 @@ enum class InteractionType {
 	DIALOG
 };
 
-typedef int TileId;
-typedef std::vector<TileId> TileVec;
+
 
 struct SpriteInfo {
 	SpriteId id = 0;
