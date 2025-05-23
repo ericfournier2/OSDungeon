@@ -25,9 +25,9 @@ CoordF LabyrinthTopView::getGroundScreenSize() const {
 	return { grid_spacing - (2 * ground_inset) , grid_spacing - (2 * ground_inset) };
 }
 
-CoordF LabyrinthTopView::getGroundScreenPositionFromMapPosition(int x, int y) const {
-	float rect_x = grid_origin_x + grid_spacing * x + ground_inset;
-	float rect_y = grid_origin_y + ((labyrinth.getSizeY() - y - 1) * grid_spacing) + ground_inset;
+CoordF LabyrinthTopView::getGroundScreenPositionFromMapPosition(int x, int y, float sub_x, float sub_y) const {
+	float rect_x = grid_origin_x + grid_spacing * (x + sub_x) + ground_inset;
+	float rect_y = grid_origin_y + ((labyrinth.getSizeY() - (y + sub_y) - 1) * grid_spacing) + ground_inset;
 
 	return { rect_x, rect_y };
 }
@@ -95,9 +95,25 @@ void LabyrinthTopView::drawGroundEntity(sf::RenderTarget& render_target, const E
 	if (tiles.size() > 0) {
 		entity_sprite.setTextureRect(tex_info.getTextureRect(tiles[0]));
 	}
-	entity_sprite.setPosition(getGroundScreenPositionFromMapPosition(entity.getState().x, entity.getState().y));
-	float scale_factor = grid_spacing / std::max(entity.getXSize(), entity.getYSize());
+
+	CoordF top_left = getGroundScreenPositionFromMapPosition(entity.getState().x, entity.getState().y);
+	float extra_scale_factor = 1.0f;
+	if (entity.getState().fixed_position) {
+		extra_scale_factor = 2.0f;
+	}
+	
+	float scale_factor = grid_spacing / std::max(entity_sprite.getGlobalBounds().size.x, entity_sprite.getGlobalBounds().size.y) / extra_scale_factor;
 	entity_sprite.setScale({ scale_factor, scale_factor });
+
+	if (entity.getState().fixed_position) {
+		CoordF center_position = top_left;
+		center_position.x += (entity.getState().x_sub * grid_spacing) / 2;
+		center_position.y += ((1.0f - entity.getState().y_sub) * grid_spacing) / 2;
+		entity_sprite.setPosition(center_position);
+	} else {
+		entity_sprite.setPosition(top_left);
+	}
+
 	render_target.draw(entity_sprite);
 }
 

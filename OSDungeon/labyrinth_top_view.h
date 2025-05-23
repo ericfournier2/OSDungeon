@@ -23,7 +23,7 @@ public:
 private:
 	sf::Color groundDrawColor(GroundId id) const;
 	CoordF getGroundScreenSize() const;
-	CoordF getGroundScreenPositionFromMapPosition(int x, int y) const;
+	CoordF getGroundScreenPositionFromMapPosition(int x, int y, float sub_x = 0.0f, float sub_y = 0.0f) const;
 	sf::RectangleShape groundRectangle(int x, int y, GroundId id) const;
 	void drawWall(sf::RenderTarget& render_target, int x, int y, WallOrientation o, WallId id) const;
 	void drawGroundEntity(sf::RenderTarget& render_target, const Entity& entity) const;
