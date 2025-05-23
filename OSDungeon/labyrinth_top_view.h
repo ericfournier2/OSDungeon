@@ -14,6 +14,9 @@ public:
 
 	CoordF getMapCoord(float screen_x, float screen_y) const;
 	void render(sf::RenderTarget& target, float mouse_x, float mouse_y) const;
+	float getSpacing() const { return grid_spacing; }
+	void setSpacing(float spacing) { grid_spacing = spacing; }
+	void incrementSpacing(float increment) { grid_spacing += increment; }
 private:
 	sf::Color groundDrawColor(GroundId id) const;
 	CoordF getGroundScreenSize() const;
@@ -34,7 +37,7 @@ private:
 	const Brush* brush;
 	const Databases& db;
 	float grid_spacing = 20.0f;
-	float grid_origin_x = 10.0f;
-	float grid_origin_y = 10.0f;
+	float grid_origin_x = 20.0f;
+	float grid_origin_y = 30.0f;
 	float ground_inset = 1.0;
 };
