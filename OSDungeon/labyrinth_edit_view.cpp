@@ -4,14 +4,16 @@
 #include "labyrinth_edit_view.h"
 
 
-LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, LabyrinthBackground& background_init, Databases& db_init)
+LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, LabyrinthBackground& background_init, Databases& db_init, OnePointPerspective& perspective_init)
 	: labyrinth(labyrinth_init), background(background_init),
 	  window(sf::VideoMode({ 1600, 900 }), "Edit maze"),
+	  perspective(perspective_init),
 	  db(db_init), 
 	  brush(),
 	  brush_editor(brush, db),
 	  top_view(labyrinth, labyrinth.getEntityManager(), db, &brush),
 	  db_editor(db),
+	  perspective_editor(perspective),
 	  entity_editor(db),
 	  sprite_editor(db)
 {
@@ -76,7 +78,9 @@ void LabyrinthEditView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) 
 		db.edb.readFromFile("assets/saves/entities.db");
 	} else if (keyPressed->scancode == sf::Keyboard::Scancode::R) {
 		if (!runner) {
-			runner = std::make_shared<Runner>(labyrinth, background, db);
+			OnePointPerspective pers(perspective);
+			pers.setBaseSize(1200);
+			runner = std::make_shared<Runner>(labyrinth, background, db, pers);
 		}
 	}
 }

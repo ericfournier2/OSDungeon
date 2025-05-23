@@ -16,7 +16,7 @@
 class LabyrinthEditView
 {
 public:
-	LabyrinthEditView(Labyrinth& labyrinth, LabyrinthBackground& background, Databases& db);
+	LabyrinthEditView(Labyrinth& labyrinth, LabyrinthBackground& background, Databases& db, OnePointPerspective& perspective);
 	~LabyrinthEditView();
 
 	void render();
@@ -34,6 +34,7 @@ private:
 	Labyrinth& labyrinth;
 	LabyrinthBackground& background;
 	sf::RenderWindow window;
+	OnePointPerspective& perspective;
 	float mouse_x = 0.0f;
 	float mouse_y = 0.0f;
 	sf::Clock deltaClock;

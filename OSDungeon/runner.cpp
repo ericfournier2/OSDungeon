@@ -1,13 +1,13 @@
 #include <cstdlib>
 #include "runner.h"
 
-Runner::Runner(const Labyrinth& labyrinth_init, const LabyrinthBackground& background_init, const Databases& db_init)
+Runner::Runner(const Labyrinth& labyrinth_init, const LabyrinthBackground& background_init, const Databases& db_init, const OnePointPerspective& perspective_init)
 	: labyrinth(labyrinth_init), background(background_init), 
 	  entities(labyrinth.getEntityManager()),
 	  pov(labyrinth, entities),
 	  db(db_init),
-	  window(sf::VideoMode({ window_width, window_height }), "Maze 1st person view", sf::Style::Close),
-	  perspective(lv_width, lv_height),
+	  perspective(perspective_init),
+      window(sf::VideoMode({ static_cast<unsigned int>(perspective.getSizeX()), static_cast<unsigned int>(perspective.getSizeY())}), "Maze 1st person view", sf::Style::Close),
 	  lv(pov, background, db, window, perspective)
 {
 	window.setPosition({ 2000, 100 });

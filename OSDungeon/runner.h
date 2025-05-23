@@ -8,7 +8,7 @@
 
 class Runner {
 public:
-	Runner(const Labyrinth& labyrinth, const LabyrinthBackground& background, const Databases& db);
+	Runner(const Labyrinth& labyrinth, const LabyrinthBackground& background, const Databases& db, const OnePointPerspective& perspective);
 
 	void render();
 	
@@ -44,8 +44,8 @@ private:
 	EntityManager entities;
 	LabyrinthPOV pov;
 	const Databases& db;
-	sf::RenderWindow window;
 	OnePointPerspective perspective;
+	sf::RenderWindow window;
 	LabyrinthView lv;
 
 	sf::SoundBuffer footsteps_buffer = sf::SoundBuffer("assets/sounds/footstep.wav");

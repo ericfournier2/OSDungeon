@@ -11,6 +11,7 @@
 #include "entity.h"
 #include "databases.h"
 #include "runner.h"
+#include "one_point_perspective.h"
 
 
 
@@ -172,9 +173,16 @@ int main()
         }
     }
 
+    OnePointPerspective perspective;
+    perspective.setCameraDistance(0.7f);
+    perspective.setMaxDepth(5);
+    perspective.setVanishingPoint({ 0.5f, 1.0f / 3 });
+    perspective.setScaleX(1.0f);
+    perspective.setScaleY(1.0f);
+
     //test.loadFromFile("current.labyrinth");
     //Runner runner = Runner(test, db);
-    LabyrinthEditView lve = LabyrinthEditView(test, background, db);
+    LabyrinthEditView lve = LabyrinthEditView(test, background, db, perspective);
     bool closed = false;
     sf::Clock fps_clock;
     while (!closed)

@@ -2,18 +2,26 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
 
-PerspectiveEditor::PerspectiveEditor()
-	: db({ gdb, wdb, tdb, edb, sdb })
+PerspectiveEditor::PerspectiveEditor(OnePointPerspective& perspective_)
+	: perspective(perspective_), db({ gdb, wdb, tdb, edb, sdb })
 {
+	camera_distance = perspective.getCameraDistance();
+	aspect_ratio = perspective.getAspectRatio();
+	vanish_point = perspective.getVanishingPoint();
+	max_depth = perspective.getMaxDepth();
+	x_tiles_per_screen = perspective.getScaleX();
+	y_tiles_per_screen = perspective.getScaleY();
+	perspective.setBaseSize(base_size);
+
 	db.gdb.addElement(GroundInfo({ 1, sf::Color::Green, sf::Color::Blue, 0 }));
 	db.wdb.addElement(WallInfo({ 1, sf::Color::White, 0 }));
 
-	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(1), db, size_x, size_y));
-	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(2), db, size_x, size_y));
-	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(3), db, size_x, size_y));
-	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(4), db, size_x, size_y));
-	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(5), db, size_x, size_y));
-	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildSquareLabyrinth(10), db, size_x, size_y));
+	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(1), db, perspective.getSizeX(), perspective.getSizeY()));
+	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(2), db, perspective.getSizeX(), perspective.getSizeY()));
+	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(3), db, perspective.getSizeX(), perspective.getSizeY()));
+	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(4), db, perspective.getSizeX(), perspective.getSizeY()));
+	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(5), db, perspective.getSizeX(), perspective.getSizeY()));
+	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildSquareLabyrinth(10), db, perspective.getSizeX(), perspective.getSizeY()));
 
 	refreshViews();
 }
@@ -74,22 +82,17 @@ bool PerspectiveEditor::renderWidgets() {
 }
 
 void PerspectiveEditor::refreshViews(sf::Color clear_color) {
-	size_x = (unsigned int)(base_size * aspect_ratio);
-	size_y = (unsigned int)(base_size / aspect_ratio);
-
-	OnePointPerspective perspective;
 	perspective.setCameraDistance(camera_distance);
 	perspective.setVanishingPoint(vanish_point);
 	perspective.setMaxDepth(max_depth);
-	perspective.setSizeX(size_x);
-	perspective.setSizeY(size_y);
+	perspective.setAspectRatio(aspect_ratio);
 	perspective.setScaleX(x_tiles_per_screen);
 	perspective.setScaleY(y_tiles_per_screen);
 
 
 	for (int c = 0; c < perspectives.size(); ++c) {
 		perspectives[c]->view.setPerspective(perspective);
-		perspectives[c]->texture.resize({ size_x, size_y });
+		perspectives[c]->texture.resize({ static_cast<unsigned int>(perspective.getSizeX()), static_cast<unsigned int>(perspective.getSizeY())});
 
 		perspectives[c]->texture.clear(clear_color);
 		perspectives[c]->view.render();
@@ -105,7 +108,7 @@ void PerspectiveEditor::render() {
 		}
 
 		for (int c = 0; c < perspectives.size(); ++c) {
-			ImGui::Image(perspectives[c]->texture, { (float)size_x, (float)size_y });
+			ImGui::Image(perspectives[c]->texture, { (float)perspective.getSizeX(), (float)perspective.getSizeY() });
 			if (c % 3 < 2) {
 				ImGui::SameLine();
 			}
