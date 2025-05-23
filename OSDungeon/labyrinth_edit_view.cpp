@@ -161,11 +161,15 @@ bool LabyrinthEditView::processEvents()
 				handleMouseRightUp(mouseButtonReleased);
 			}
 		}
+		else if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
+			mouse_x = static_cast<float>(mouseMoved->position.x);
+			mouse_y = static_cast<float>(mouseMoved->position.y);
+			if (painting_ground) {
+				applyBrush();
+			}
+		}
 		else if (const auto* mouseWheel = event->getIf<sf::Event::MouseWheelScrolled>()) {
 			top_view.incrementSpacing((mouseWheel->delta)*3);
-		}
-		else if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
-
 		}
 	}
 
