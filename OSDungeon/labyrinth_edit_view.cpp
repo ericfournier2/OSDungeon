@@ -128,12 +128,20 @@ void LabyrinthEditView::handleMouseRightDown(const sf::Event::MouseButtonPressed
 	applyBrush();
 }
 
+void LabyrinthEditView::handleMouseMiddleDown(const sf::Event::MouseButtonPressed* mouseButtonPressed) {
+	panning = true;
+}
+
 void LabyrinthEditView::handleMouseLeftUp(const sf::Event::MouseButtonReleased* mouseButtonReleased) {
 
 }
 
 void LabyrinthEditView::handleMouseRightUp(const sf::Event::MouseButtonReleased* mouseButtonReleased) {
 	painting_ground = false;
+}
+
+void LabyrinthEditView::handleMouseMiddleUp(const sf::Event::MouseButtonReleased* mouseButtonReleased) {
+	panning = false;
 }
 
 bool LabyrinthEditView::processEvents()
@@ -152,6 +160,8 @@ bool LabyrinthEditView::processEvents()
 				handleMouseLeftDown(mouseButtonPressed);
 			} else if (mouseButtonPressed->button == sf::Mouse::Button::Right) {
 				handleMouseRightDown(mouseButtonPressed);
+			} else if (mouseButtonPressed->button == sf::Mouse::Button::Middle) {
+				handleMouseMiddleDown(mouseButtonPressed);
 			}
 		}
 		else if (const auto* mouseButtonReleased = event->getIf<sf::Event::MouseButtonReleased>()) {
@@ -159,14 +169,24 @@ bool LabyrinthEditView::processEvents()
 				handleMouseLeftUp(mouseButtonReleased);
 			} else if (mouseButtonReleased->button == sf::Mouse::Button::Right) {
 				handleMouseRightUp(mouseButtonReleased);
+			} else if (mouseButtonReleased->button == sf::Mouse::Button::Middle) {
+				handleMouseMiddleUp(mouseButtonReleased);
 			}
 		}
 		else if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
+			auto old_mouse_x = mouse_x;
+			auto old_mouse_y = mouse_y;
 			mouse_x = static_cast<float>(mouseMoved->position.x);
 			mouse_y = static_cast<float>(mouseMoved->position.y);
+
+			if (panning) {
+				top_view.incrementOrigin({ static_cast<float>(mouse_x - old_mouse_x), static_cast<float> (mouse_y - old_mouse_y) });
+			}
+
 			if (painting_ground) {
 				applyBrush();
 			}
+
 		}
 		else if (const auto* mouseWheel = event->getIf<sf::Event::MouseWheelScrolled>()) {
 			top_view.incrementSpacing((mouseWheel->delta)*3);

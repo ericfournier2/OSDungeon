@@ -27,8 +27,10 @@ private:
 	void handleMouseLeftDown(const sf::Event::MouseButtonPressed* mouseButtonPressed);
 	void applyBrush();
 	void handleMouseRightDown(const sf::Event::MouseButtonPressed* mouseButtonPressed);
+	void handleMouseMiddleDown(const sf::Event::MouseButtonPressed* mouseButtonPressed);
 	void handleMouseLeftUp(const sf::Event::MouseButtonReleased* mouseButtonReleased);
 	void handleMouseRightUp(const sf::Event::MouseButtonReleased* mouseButtonReleased);
+	void handleMouseMiddleUp(const sf::Event::MouseButtonReleased* mouseButtonReleased);
 	void drawWallBrushInfo();
 	void renderMenu();
 	void runProject();
@@ -42,6 +44,7 @@ private:
 	sf::Clock deltaClock;
 	Databases& db;
 	bool painting_ground = false;
+	bool panning = false;
 	Brush brush;
 	BrushEditor brush_editor;
 	LabyrinthTopView top_view;

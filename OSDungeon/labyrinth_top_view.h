@@ -17,6 +17,9 @@ public:
 	float getSpacing() const { return grid_spacing; }
 	void setSpacing(float spacing) { grid_spacing = spacing; }
 	void incrementSpacing(float increment) { grid_spacing += increment; }
+	CoordF getOrigin() const { return { grid_origin_x, grid_origin_y }; }
+	void setOrigin(CoordF origin) { grid_origin_x = origin.x; grid_origin_y = origin.y; }
+	void incrementOrigin(CoordF increment) { grid_origin_x += increment.x; grid_origin_y += increment.y; }
 private:
 	sf::Color groundDrawColor(GroundId id) const;
 	CoordF getGroundScreenSize() const;
