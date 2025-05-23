@@ -177,8 +177,8 @@ int main()
     perspective.setCameraDistance(0.7f);
     perspective.setMaxDepth(5);
     perspective.setVanishingPoint({ 0.5f, 1.0f / 3 });
-    perspective.setScaleX(1.0f);
-    perspective.setScaleY(1.0f);
+    perspective.setScaleX(1.2);
+    perspective.setScaleY(0.9f);
 
     //test.loadFromFile("current.labyrinth");
     //Runner runner = Runner(test, db);

@@ -30,18 +30,77 @@ void LabyrinthEditView::drawWallBrushInfo() {
 	brush_editor.render();
 }
 
+void LabyrinthEditView::runProject() {
+	if (!runner) {
+		OnePointPerspective pers(perspective);
+		pers.setBaseSize(1200);
+		runner = std::make_shared<Runner>(labyrinth, background, db, pers);
+	}
+}
+
+void LabyrinthEditView::renderMenu() {
+	if (ImGui::BeginMainMenuBar()) {
+		if (ImGui::BeginMenu("File")) {
+			if (ImGui::MenuItem("Create")) {
+			}
+			if (ImGui::MenuItem("Load", "Ctrl+L")) {
+				labyrinth.loadFromFile("assets/saves/current.labyrinth");
+				db.gdb.readFromFile("assets/saves/ground.db");
+				db.wdb.readFromFile("assets/saves/wall.db");
+				db.tdb.readFromFile("assets/saves/texture.db");
+				db.edb.readFromFile("assets/saves/entities.db");
+			}
+			if (ImGui::MenuItem("Save", "Ctrl+S")) {
+				labyrinth.writeToFile("assets/saves/current.labyrinth");
+				db.gdb.writeToFile("assets/saves/ground.db");
+				db.wdb.writeToFile("assets/saves/wall.db");
+				db.tdb.writeToFile("assets/saves/texture.db");
+				db.edb.writeToFile("assets/saves/entities.db");
+			}
+			if (ImGui::MenuItem("Save as..")) {
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Windows")) {
+			ImGui::MenuItem("Sprite Editor", NULL, &show_sprite_editor);
+			ImGui::MenuItem("Entity Template editor", NULL, &show_entity_editor);
+			ImGui::MenuItem("Databases editor", NULL, &show_db_editor);
+			ImGui::MenuItem("Perspective editor", NULL, &show_perspective_editor);
+			ImGui::MenuItem("Imgui demo", NULL, &show_imgui_demo);
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Tools")) {
+			if (ImGui::MenuItem("Run project")) {
+				runProject();
+			}
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
+	}
+}
+
 void LabyrinthEditView::render() {
 	ImGui::SFML::Update(window, deltaClock.restart());
-
-	ImGui::ShowDemoWindow();
-
 	window.clear();
+	renderMenu();
+	if (show_imgui_demo) {
+		ImGui::ShowDemoWindow();
+	}
+
 	top_view.render(window, mouse_x, mouse_y);
 	drawWallBrushInfo();
-	db_editor.render();
-	perspective_editor.render();
-	entity_editor.render();
-	sprite_editor.render();
+	if (show_db_editor) {
+		db_editor.render();
+	}
+	if (show_perspective_editor) {
+		perspective_editor.render();
+	}
+	if (show_entity_editor) {
+		entity_editor.render();
+	}
+	if (show_sprite_editor) {
+		sprite_editor.render();
+	}
 	if (runner) {
 		runner->render();
 	}
@@ -50,38 +109,8 @@ void LabyrinthEditView::render() {
 }
 
 void LabyrinthEditView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) {
-	/*if (keyPressed->scancode == sf::Keyboard::Scancode::Left) {
-		labyrinth.turnPovRel(LEFT);
-	}
-	else if (keyPressed->scancode == sf::Keyboard::Scancode::Up) {
-		labyrinth.advance();
-	}
-	else if (keyPressed->scancode == sf::Keyboard::Scancode::Right) {
-		labyrinth.turnPovRel(RIGHT);
-	}
-	else if (keyPressed->scancode == sf::Keyboard::Scancode::Down) {
-		labyrinth.moveBack();
-	}
-	else*/ if (keyPressed->scancode == sf::Keyboard::Scancode::S) {
-		labyrinth.writeToFile("assets/saves/current.labyrinth");
-		db.gdb.writeToFile("assets/saves/ground.db");
-		db.wdb.writeToFile("assets/saves/wall.db");
-		db.tdb.writeToFile("assets/saves/texture.db");
-		db.edb.writeToFile("assets/saves/entities.db");
-
-	}
-	else if (keyPressed->scancode == sf::Keyboard::Scancode::L) {
-		labyrinth.loadFromFile("assets/saves/current.labyrinth");
-		db.gdb.readFromFile("assets/saves/ground.db");
-		db.wdb.readFromFile("assets/saves/wall.db");
-		db.tdb.readFromFile("assets/saves/texture.db");
-		db.edb.readFromFile("assets/saves/entities.db");
-	} else if (keyPressed->scancode == sf::Keyboard::Scancode::R) {
-		if (!runner) {
-			OnePointPerspective pers(perspective);
-			pers.setBaseSize(1200);
-			runner = std::make_shared<Runner>(labyrinth, background, db, pers);
-		}
+	if (keyPressed->scancode == sf::Keyboard::Scancode::R) {
+		runProject();
 	}
 }
 

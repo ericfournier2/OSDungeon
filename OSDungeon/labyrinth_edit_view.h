@@ -30,6 +30,8 @@ private:
 	void handleMouseLeftUp(const sf::Event::MouseButtonReleased* mouseButtonReleased);
 	void handleMouseRightUp(const sf::Event::MouseButtonReleased* mouseButtonReleased);
 	void drawWallBrushInfo();
+	void renderMenu();
+	void runProject();
 
 	Labyrinth& labyrinth;
 	LabyrinthBackground& background;
@@ -48,5 +50,11 @@ private:
 	PerspectiveEditor perspective_editor;
 	EntityEditor entity_editor;
 	SpriteEditor sprite_editor;
+
+	bool show_imgui_demo = false;
+	bool show_sprite_editor = false;
+	bool show_db_editor = false;
+	bool show_entity_editor = false;
+	bool show_perspective_editor = false;
 };
 
