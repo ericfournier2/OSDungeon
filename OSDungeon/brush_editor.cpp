@@ -94,7 +94,9 @@ void BrushEditor::render() {
 	if (ImGui::RadioButton("Entity##Fill", fill == BrushFill::BRUSH_FILL_ENTITY)) {
 		brush.setBrushFill(BrushFill::BRUSH_FILL_ENTITY);
 	}
-
+	if (ImGui::RadioButton("Entity (Fixed)##Fill", fill == BrushFill::BRUSH_FILL_ENTITY_FIXED)) {
+		brush.setBrushFill(BrushFill::BRUSH_FILL_ENTITY_FIXED);
+	}
 
 	ImGui::SeparatorText("Wall");
 	WallId wall_id = brush.getWallId();

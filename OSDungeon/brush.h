@@ -18,13 +18,20 @@ enum BrushFill {
 	BRUSH_FILL_GROUND,
 	BRUSH_FILL_WALL,
 	BRUSH_FILL_AREA,
-	BRUSH_FILL_ENTITY
+	BRUSH_FILL_ENTITY,
+	BRUSH_FILL_ENTITY_FIXED
+};
+
+struct PositionnedEntity {
+	EntityTemplateId id = 0;
+	bool fixed = false;
+	CoordF sub_position = { 0.0f, 0.0f };
 };
 
 struct BrushPreview {
 	std::map<Coord, GroundId> grounds;
 	std::map<WallCoord, WallId> walls;
-	std::map<Coord, EntityTemplateId> entities;
+	std::map<Coord, PositionnedEntity> entities;
 };
 
 class Brush {

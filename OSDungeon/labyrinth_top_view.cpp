@@ -75,7 +75,10 @@ void LabyrinthTopView::drawBrush(sf::RenderTarget& render_target, float mouse_x,
 			info.x = key.x;
 			info.y = key.y;
 			info.direction = CardinalDirection::NORTH;
-			info.template_id = val;
+			info.template_id = val.id;
+			info.fixed_position = val.fixed;
+			info.x_sub = val.sub_position.x;
+			info.y_sub = val.sub_position.y;
 			Entity entity(info, db);
 			drawGroundEntity(render_target, entity);
 		}

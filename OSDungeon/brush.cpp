@@ -39,14 +39,15 @@ void Brush::applyPreview(Labyrinth& labyrinth, const BrushPreview& brush_preview
 	}
 
 	for (auto const& [key, val] : brush_preview.entities) {
-		if (val == 0) {
+		if (val.id == 0) {
 			EntityVec entities = labyrinth.getEntityManager().getEntityAbs(key.x, key.y);
 			for (auto const& entity : entities) {
 				labyrinth.getEntityManager().removeEntity(entity.getState().id);
 			}
 		} else {
 			//labyrinth.addWall(key.x, key.y, key.o, val);
-			labyrinth.getEntityManager().addEntity(val, key.x, key.y, CardinalDirection::NORTH);
+			EntityState new_state(0, val.id, key.x, key.y, CardinalDirection::NORTH, val.fixed, val.sub_position.x, val.sub_position.y);
+			labyrinth.getEntityManager().addEntity(new_state);
 		}
 	}
 }
@@ -64,13 +65,21 @@ BrushPreview Brush::pointPreview(const Labyrinth& labyrinth, float x, float y) c
 		}
 	}
 
-	if (brush_fill == BrushFill::BRUSH_FILL_ENTITY) {
+	if (brush_fill == BrushFill::BRUSH_FILL_ENTITY || brush_fill == BrushFill::BRUSH_FILL_ENTITY_FIXED) {
 		if (brush_action == BrushAction::BRUSH_ACTION_DRAW) {
-			retval.entities[base_coord] = entity_id;
+			PositionnedEntity new_entity({ entity_id, false, {0.0f, 0.0f} });
+			if (brush_fill == BrushFill::BRUSH_FILL_ENTITY_FIXED) {
+				new_entity.fixed = true;
+				new_entity.sub_position.x = x - floorf(x);
+				new_entity.sub_position.y = y - floorf(y);
+			}
+			retval.entities[base_coord] = new_entity;
 		} else {
-			retval.entities[base_coord] = 0;
+			retval.entities[base_coord] = PositionnedEntity();
 		}
 	}
+
+
 
 	if (brush_fill == BrushFill::BRUSH_FILL_WALL || brush_fill == BrushFill::BRUSH_FILL_AREA) {
 		enclosingWall(retval, labyrinth, base_coord, CardinalDirection::NORTH);
