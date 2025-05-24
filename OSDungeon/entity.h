@@ -56,8 +56,8 @@ protected:
 	sf::Clock animation_clock;
 };
 
-typedef std::vector<Entity> EntityVec;
-typedef std::map<EntityId, Entity> EntityMap;
+typedef std::vector<std::shared_ptr<Entity>> EntityVec;
+typedef std::map<EntityId, std::shared_ptr<Entity>> EntityMap;
 
 // Manages a list of shallow entities used to initialize a labyrinth.
 class EntityManager {
@@ -68,7 +68,7 @@ public:
 	bool updateEntity(const Entity& entity);
 	void removeEntity(EntityId id);
 
-	Entity getEntity(EntityId id) const;
+	std::shared_ptr<Entity> getEntity(EntityId id) const;
 	EntityVec getEntityAbs(int x, int y) const;
 	EntityMap& getAllEntities() { return entities; }
 	const EntityMap& getAllEntities() const { return entities; }

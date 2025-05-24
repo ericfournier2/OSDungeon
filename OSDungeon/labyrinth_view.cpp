@@ -264,19 +264,19 @@ void LabyrinthView::drawEntity(const Entity& entity, int x_offset, int y_offset,
 class ZComparer {
 public:
 	ZComparer(CardinalDirection d_) : d(d_) {}
-	bool operator()(const EntityState& a, const EntityState& b) {
+	bool operator()(const std::shared_ptr<Entity>&  a, const std::shared_ptr<Entity>& b) {
 		switch (d) {
 		case CardinalDirection::NORTH:
-			return a.y_sub > b.y_sub;
+			return a->getState().y_sub > b->getState().y_sub;
 			break;
 		case CardinalDirection::EAST:
-			return a.x_sub > b.x_sub;
+			return a->getState().x_sub > b->getState().x_sub;
 			break;
 		case CardinalDirection::SOUTH:
-			return b.y_sub > a.y_sub;
+			return b->getState().y_sub > a->getState().y_sub;
 			break;
 		case CardinalDirection::WEST:
-			return b.x_sub > a.x_sub;
+			return b->getState().x_sub > a->getState().x_sub;
 			break;
 		}
 
@@ -324,15 +324,15 @@ bool LabyrinthView::renderGround(RenderStep step) {
 
 	int n_free_entities = 0;
 	for (const auto& entity : entities) {
-		if (!entity.getState().fixed_position) {
+		if (!entity->getState().fixed_position) {
 			++n_free_entities;
 		}
 	}
 
 	int free_entity_index = 0;
 	for (const auto& entity : entities) {
-		drawEntity(entity, step.x_offset, step.y_offset, n_free_entities, free_entity_index);
-		if (!entity.getState().fixed_position) {
+		drawEntity(*entity, step.x_offset, step.y_offset, n_free_entities, free_entity_index);
+		if (!entity->getState().fixed_position) {
 			++free_entity_index;
 		}
 	}

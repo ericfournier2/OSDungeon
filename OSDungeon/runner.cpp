@@ -97,7 +97,7 @@ bool Runner::processEvents()
 			if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
 				EntityId hit = lv.mouseHit({ (float)mouseButtonPressed->position.x, (float)mouseButtonPressed->position.y });
 				if (hit) {
-					gs.showDialog(entities.getEntity(hit).getTemplate().name);
+					gs.showDialog(entities.getEntity(hit)->getTemplate().name);
 				}
 			}
 		}
@@ -109,12 +109,11 @@ bool Runner::processEvents()
 void Runner::tick()
 {
 	std::set<EntityId> to_remove;
-	for (auto& [id, dummy_entity] : entities.getAllEntities()) {
-		Entity ent = entities.getEntity(id);
-		ent.move(labyrinth, gs);
-		if (ent.getX() == pov.getPov().x && ent.getY() == pov.getPov().y) {
-			if (ent.collide(labyrinth, gs)) {
-				to_remove.insert(ent.getId());
+	for (auto& [id, entity] : entities.getAllEntities()) {
+		entity->move(labyrinth, gs);
+		if (entity->getX() == pov.getPov().x && entity->getY() == pov.getPov().y) {
+			if (entity->collide(labyrinth, gs)) {
+				to_remove.insert(entity->getId());
 				coin.play();
 			}
 		}

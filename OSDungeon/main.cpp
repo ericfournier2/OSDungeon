@@ -136,8 +136,8 @@ int main()
     EntityState bunny3 = EntityState(7, big_bunny_template, 2, 0, CardinalDirection::NORTH);
     EntityState bunny_chest = EntityState(8, bunny_chest_template, 2, 2, CardinalDirection::SOUTH);
     EntityState bunny4 = EntityState(9, big_bunny_template, 2, 0, CardinalDirection::NORTH);
-    EntityState shrub_1 = EntityState(10, shrub_template, 4, 0, CardinalDirection::NORTH, true, 0.75f, 0.75f);
-    EntityState shrub_2 = EntityState(11, shrub_template, 4, 0, CardinalDirection::SOUTH, true, 0.25f, 0.75f);
+    EntityState shrub_1 = EntityState(10, shrub_template, 4, 1, CardinalDirection::NORTH, true, 0.75f, 0.75f);
+    EntityState shrub_2 = EntityState(11, shrub_template, 4, 1, CardinalDirection::SOUTH, true, 0.25f, 0.75f);
     EntityState flower_1 = EntityState(10, flower_template, 4, 1, CardinalDirection::NORTH, true, 0.33f, 0.58f);
     EntityState flower_2 = EntityState(11, flower_template, 4, 1, CardinalDirection::SOUTH, true, 0.25f, 0.25f);
 
@@ -149,13 +149,16 @@ int main()
     //test.getEntityManager().addEntity(bunny1);
     //test.getEntityManager().addEntity(bunny2);
     test.getEntityManager().addEntity(bunny3);
+    test.getEntityManager().addEntity(flower_2);
+    test.getEntityManager().addEntity(shrub_1);
+    test.getEntityManager().addEntity(shrub_2);
     ////test.getEntityManager().addEntity(bunny_chest);
     //test.getEntityManager().addEntity(bunny4);//
     //test.getEntityManager().addEntity(shrub_1);
     //test.getEntityManager().addEntity(shrub_2);
     //test.getEntityManager().addEntity(flower_1);
     //test.getEntityManager().addEntity(flower_2);
-
+    
     for (int x = 0; x < test.getSizeX(); ++x) {
         for (int y = 0; y < test.getSizeY(); ++y) {
             int n_entities = rand() % 5;
@@ -172,7 +175,7 @@ int main()
             }
         }
     }
-
+    
     OnePointPerspective perspective;
     perspective.setCameraDistance(0.7f);
     perspective.setMaxDepth(5);

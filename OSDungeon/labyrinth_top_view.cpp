@@ -124,7 +124,7 @@ void LabyrinthTopView::drawGroundEntity(sf::RenderTarget& render_target, const E
 void LabyrinthTopView::drawGroundEntities(sf::RenderTarget& render_target) const {
 	const EntityMap& entities_map = entities.getAllEntities();
 	for (auto const& [id, entity] : entities_map) {
-		drawGroundEntity(render_target, entity);
+		drawGroundEntity(render_target, *entity);
 	}
 }
 

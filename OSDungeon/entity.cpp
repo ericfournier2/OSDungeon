@@ -99,16 +99,16 @@ EntityId EntityManager::addEntity(const EntityState& entity) {
 		EntityState new_info = entity;
 		new_info.id = new_id;
 		if (db) {
-			entities.emplace(new_id, Entity(new_info, *db));
+			entities.emplace(new_id, std::make_shared<Entity>(new_info, *db));
 		} else {
-			entities.emplace(new_id, Entity(new_info));
+			entities.emplace(new_id, std::make_shared<Entity>(new_info));
 		}
 		return new_id;
 	} else {
 		if (db) {
-			entities.emplace(entity.id, Entity(entity, *db));
+			entities.emplace(entity.id, std::make_shared<Entity>(entity, *db));
 		} else {
-			entities.emplace(entity.id, Entity(entity));
+			entities.emplace(entity.id, std::make_shared<Entity>(entity));
 		}
 		return entity.id;
 	}
@@ -118,16 +118,16 @@ EntityId EntityManager::addEntity(EntityTemplateId template_id, int x, int y, Ca
 	EntityId id = findFreeId();
 	EntityState state(id, template_id, x, y, d);
 	if (db) {
-		entities.emplace(id, Entity(state, *db));
+		entities.emplace(id, std::make_shared<Entity>(state, *db));
 	} else {
-		entities.emplace(id, Entity(state));
+		entities.emplace(id, std::make_shared<Entity>(state));
 	}
 	return id;
 }
 
 bool EntityManager::updateEntity(const Entity& entity) {
 	if (entities.contains(entity.getId())) {
-		entities[entity.getId()] = entity;
+		entities[entity.getId()] = std::make_shared<Entity>(entity);
 		return true;
 	}
 
@@ -138,18 +138,18 @@ void EntityManager::removeEntity(EntityId id) {
 	entities.erase(id);
 }
 
-Entity EntityManager::getEntity(EntityId id) const {
+std::shared_ptr<Entity> EntityManager::getEntity(EntityId id) const {
 	if (entities.contains(id)) {
 		return entities.at(id);
 	} else {
-		return Entity();
+		return nullptr;
 	}
 }
 
 EntityVec EntityManager::getEntityAbs(int x, int y) const {
 	EntityVec retval;
 	for (auto const& [key, val] : entities) {
-		if (val.getState().x == x && val.getState().y == y) {
+		if (val->getState().x == x && val->getState().y == y) {
 			retval.push_back(val);
 		}
 	}
@@ -161,7 +161,7 @@ bool EntityManager::writeToStream(std::ofstream& stream) const {
 	auto db_size = entities.size();
 	stream.write(reinterpret_cast<char*>(&db_size), sizeof(db_size));
 	for (const auto& [key, value] : entities) {
-		EntityState state = value.getState();
+		EntityState state = value->getState();
 		stream.write(reinterpret_cast<const char*>(&state), sizeof(state));
 	}
 	return !stream.fail();
@@ -176,9 +176,9 @@ bool EntityManager::readFromStream(std::ifstream& stream) {
 		EntityState info;
 		stream.read(reinterpret_cast<char*>(&info), sizeof(EntityState));
 		if (db) {
-			entities.emplace(info.id, Entity(info, *db));
+			entities.emplace(info.id, std::make_shared<Entity>(info, *db));
 		} else {
-			entities.emplace(info.id, Entity(info));
+			entities.emplace(info.id, std::make_shared<Entity>(info));
 		}
 	}
 	return !stream.fail();
