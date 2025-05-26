@@ -120,7 +120,7 @@ bool TextureDb::writeToFile(const std::string& filename) const {
 	return success;
 }
 
-void writeTileVec(TileVec tiles, std::ofstream& stream) {
+void writeTileVec(const TileVec& tiles, std::ofstream& stream) {
 	auto vec_size = tiles.size();
 	stream.write(reinterpret_cast<const char*>(&vec_size), sizeof(vec_size));
 	for (const auto& tile : tiles) {
@@ -129,9 +129,9 @@ void writeTileVec(TileVec tiles, std::ofstream& stream) {
 }
 
 bool SpriteInfo::write(std::ofstream& stream) const {
-	stream.write(reinterpret_cast<const char*>(&id), sizeof(SpriteId));
-	stream << name << "\0";
-	stream.write(reinterpret_cast<const char*>(&texture), sizeof(TextureId));
+	stream.write(reinterpret_cast<const char*>(&id), sizeof(id));
+	stream << name << '\0';
+	stream.write(reinterpret_cast<const char*>(&texture), sizeof(texture));
 
 	writeTileVec(front, stream);
 	writeTileVec(back, stream);
@@ -142,11 +142,11 @@ bool SpriteInfo::write(std::ofstream& stream) const {
 }
 
 bool EntityTemplateInfo::write(std::ofstream& stream) const {
-	stream.write(reinterpret_cast<const char*>(&id), sizeof(EntityTemplateId));
-	stream.write(reinterpret_cast<const char*>(&sprite_id), sizeof(SpriteId));
-	stream << name << "\0";
-	stream.write(reinterpret_cast<const char*>(&movement), sizeof(MovementType));
-	stream.write(reinterpret_cast<const char*>(&collision), sizeof(CollisionType));
+	stream.write(reinterpret_cast<const char*>(&id), sizeof(id));
+	stream.write(reinterpret_cast<const char*>(&sprite_id), sizeof(sprite_id));
+	stream << name << '\0';
+	stream.write(reinterpret_cast<const char*>(&movement), sizeof(movement));
+	stream.write(reinterpret_cast<const char*>(&collision), sizeof(collision));
 	stream.write(reinterpret_cast<const char*>(&x_size), sizeof(float));
 	stream.write(reinterpret_cast<const char*>(&y_size), sizeof(float));
 	stream.write(reinterpret_cast<const char*>(&cast_shadow), sizeof(bool));
@@ -159,6 +159,9 @@ TileVec readTileVec(std::ifstream& stream) {
 	auto vec_size = retval.size();
 
 	stream.read(reinterpret_cast<char*>(&vec_size), sizeof(vec_size));
+	if (vec_size > 50) {
+		throw;
+	}
 	for (int c = 0; c < vec_size; ++c) {
 		TileId tile_id;
 		stream.read(reinterpret_cast<char*>(&tile_id), sizeof(tile_id));
@@ -181,11 +184,11 @@ bool SpriteInfo::read(std::ifstream& stream) {
 }
 
 bool EntityTemplateInfo::read(std::ifstream& stream) {
-	stream.read(reinterpret_cast<char*>(&id), sizeof(EntityTemplateId));
-	stream.read(reinterpret_cast<char*>(&sprite_id), sizeof(SpriteId));
+	stream.read(reinterpret_cast<char*>(&id), sizeof(id));
+	stream.read(reinterpret_cast<char*>(&sprite_id), sizeof(sprite_id));
 	std::getline(stream, name, '\0');
-	stream.read(reinterpret_cast<char*>(&movement), sizeof(MovementType));
-	stream.read(reinterpret_cast<char*>(&collision), sizeof(CollisionType));
+	stream.read(reinterpret_cast<char*>(&movement), sizeof(movement));
+	stream.read(reinterpret_cast<char*>(&collision), sizeof(collision));
 	stream.read(reinterpret_cast<char*>(&x_size), sizeof(float));
 	stream.read(reinterpret_cast<char*>(&y_size), sizeof(float));
 	stream.read(reinterpret_cast<char*>(&cast_shadow), sizeof(bool));

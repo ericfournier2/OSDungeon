@@ -49,6 +49,7 @@ void LabyrinthEditView::renderMenu() {
 				db.wdb.readFromFile("assets/saves/wall.db");
 				db.tdb.readFromFile("assets/saves/texture.db");
 				db.edb.readFromFile("assets/saves/entities.db");
+				db.sdb.readFromFile("assets/saves/sprites.db");
 			}
 			if (ImGui::MenuItem("Save", "Ctrl+S")) {
 				labyrinth.writeToFile("assets/saves/current.labyrinth");
@@ -56,6 +57,7 @@ void LabyrinthEditView::renderMenu() {
 				db.wdb.writeToFile("assets/saves/wall.db");
 				db.tdb.writeToFile("assets/saves/texture.db");
 				db.edb.writeToFile("assets/saves/entities.db");
+				db.sdb.writeToFile("assets/saves/sprites.db");
 			}
 			if (ImGui::MenuItem("Save as..")) {
 			}

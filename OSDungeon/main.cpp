@@ -57,14 +57,15 @@ int main()
 
     GroundDb ground_db;
     //ground_db.addElement(GroundInfo({ 0, sf::Color::White, 0 }));
-    ground_db.addElement(GroundInfo({ 1, sf::Color::White, sf::Color::Blue, bg_plaine_texture, false }));
-    ground_db.addElement(GroundInfo({ 2, sf::Color::Green, sf::Color::Blue, 4, false }));
-    ground_db.addElement(GroundInfo({ 3, sf::Color::Red, sf::Color::Blue, 4, false }));
-    ground_db.addElement(GroundInfo({ 4, sf::Color::White, sf::Color::White, 10, false }));
+    ground_db.addElement(GroundInfo({ 1, "Plaine", sf::Color::White, sf::Color::Blue, bg_plaine_texture, false}));
+    ground_db.addElement(GroundInfo({ 2, "Briques vertes", sf::Color::Green, sf::Color::Blue, ground2_texture, false}));
+    ground_db.addElement(GroundInfo({ 3, "Briques rouges", sf::Color::Red, sf::Color::Blue, ground2_texture, false}));
+    ground_db.addElement(GroundInfo({ 4, "Crayon", sf::Color::White, sf::Color::White, crayon_texture, false}));
 
     WallDb wall_db;
     //wall_db.addElement(WallInfo({ 0, sf::Color::White, 0 }));
     wall_db.addElement(WallInfo({ 1,
+                                  "Foret",
                                   sf::Color::White,
                                   {fc_front, {0}},
                                   {fc_partial, {0}},

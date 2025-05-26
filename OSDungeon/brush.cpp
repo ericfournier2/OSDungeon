@@ -79,8 +79,6 @@ BrushPreview Brush::pointPreview(const Labyrinth& labyrinth, float x, float y) c
 		}
 	}
 
-
-
 	if (brush_fill == BrushFill::BRUSH_FILL_WALL || brush_fill == BrushFill::BRUSH_FILL_AREA) {
 		enclosingWall(retval, labyrinth, base_coord, CardinalDirection::NORTH);
 		enclosingWall(retval, labyrinth, base_coord, CardinalDirection::EAST);

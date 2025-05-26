@@ -13,8 +13,8 @@ PerspectiveEditor::PerspectiveEditor(OnePointPerspective& perspective_)
 	y_tiles_per_screen = perspective.getScaleY();
 	perspective.setBaseSize(base_size);
 
-	db.gdb.addElement(GroundInfo({ 1, sf::Color::Green, sf::Color::Blue, 0 }));
-	db.wdb.addElement(WallInfo({ 1, sf::Color::White, 0 }));
+	db.gdb.addElement(GroundInfo({ 1, "Test ground", sf::Color::Green, sf::Color::Blue, 0}));
+	db.wdb.addElement(WallInfo({ 1, "Test wall", sf::Color::White, 0}));
 
 	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(1), db, perspective.getSizeX(), perspective.getSizeY()));
 	perspectives.push_back(std::make_shared<StaticView>(Labyrinth::buildTriangleLabyrinth(2), db, perspective.getSizeX(), perspective.getSizeY()));
