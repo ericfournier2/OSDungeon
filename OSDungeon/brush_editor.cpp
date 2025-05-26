@@ -19,16 +19,26 @@ sf::Color getTextureButtonColor(EntityTemplateInfo info) {
 	return sf::Color::White;
 }
 
-TextureInfo getTextureFromInfo(const GroundInfo& info, const TextureDb& texture_db, const SpriteDb& sprite_db) {
-	return texture_db.getTexture(info.texture);
+sf::Sprite getSpriteFromInfo(const GroundInfo& info, const TextureDb& texture_db, const SpriteDb& sprite_db) {
+	return sf::Sprite(*texture_db.getTexture(info.texture).texture.get());
 }
 
-TextureInfo getTextureFromInfo(const WallInfo& info, const TextureDb& texture_db, const SpriteDb& sprite_db) {
-	return texture_db.getTexture(info.front.texture);
+sf::Sprite getSpriteFromInfo(const WallInfo& info, const TextureDb& texture_db, const SpriteDb& sprite_db) {
+	return sf::Sprite(*texture_db.getTexture(info.front.texture).texture.get());
 }
 
-TextureInfo getTextureFromInfo(const EntityTemplateInfo& info, const TextureDb& texture_db, const SpriteDb& sprite_db) {
-	return texture_db.getTexture(sprite_db.getElement(info.sprite_id).texture);
+sf::Sprite getSpriteFromInfo(const EntityTemplateInfo& info, const TextureDb& texture_db, const SpriteDb& sprite_db) {
+	SpriteInfo sprite = sprite_db.getElement(info.sprite_id);
+	TextureInfo tex_info = texture_db.getTexture(sprite.texture);
+	TileVec tiles = sprite.front;
+
+	sf::Sprite entity_sprite(*tex_info.texture);
+	if (sprite.front.size() > 0) {
+		return sf::Sprite(*tex_info.texture.get(), tex_info.getTextureRect(sprite.front[0]));
+	} else {
+		return sf::Sprite(*tex_info.texture.get());
+		
+	}
 }
 
 template <typename TDb>
@@ -36,9 +46,9 @@ auto brushPopUp(const std::string& popup_label, typename TDb::IdType* id, const 
 	typename TDb::InfoType info = db.getElement(*id);
 	std::string texture_label = popup_label;
 	texture_label.append("_texture");
-	TextureInfo tex_info = getTextureFromInfo(info, texture_db, sprite_db);
+	sf::Sprite sprite = getSpriteFromInfo(info, texture_db, sprite_db);
 	sf::Vector2f tex_size = { 100.0f, 100.0f };
-	if (ImGui::ImageButton(texture_label.c_str(), *(tex_info.texture.get()), tex_size, sf::Color::Black, getTextureButtonColor(info))) {
+	if (ImGui::ImageButton(texture_label.c_str(), sprite, tex_size, sf::Color::Black, getTextureButtonColor(info))) {
 		ImGui::OpenPopup(popup_label.c_str());
 	}
 
