@@ -104,3 +104,25 @@ bool entityTemplateSelectionWidget(EntityTemplateId* id, EntityTemplateDb& edb, 
 bool spriteSelectionWidget(SpriteId* id, SpriteDb& sdb, bool add_button) {
 	return selectionWidget<SpriteId, SpriteInfo, SpriteDb>(id, sdb, "sprite", add_button);
 }
+
+sf::Sprite getSpriteFromInfo(const GroundInfo& info, const TextureDb& texture_db, const SpriteDb& sprite_db) {
+	return sf::Sprite(*texture_db.getTexture(info.texture).texture.get());
+}
+
+sf::Sprite getSpriteFromInfo(const WallInfo& info, const TextureDb& texture_db, const SpriteDb& sprite_db) {
+	return sf::Sprite(*texture_db.getTexture(info.front.texture).texture.get());
+}
+
+sf::Sprite getSpriteFromInfo(const EntityTemplateInfo& info, const TextureDb& texture_db, const SpriteDb& sprite_db) {
+	SpriteInfo sprite = sprite_db.getElement(info.sprite_id);
+	TextureInfo tex_info = texture_db.getTexture(sprite.texture);
+	TileVec tiles = sprite.front;
+
+	sf::Sprite entity_sprite(*tex_info.texture);
+	if (sprite.front.size() > 0) {
+		return sf::Sprite(*tex_info.texture.get(), tex_info.getTextureRect(sprite.front[0]));
+	} else {
+		return sf::Sprite(*tex_info.texture.get());
+
+	}
+}

@@ -132,6 +132,21 @@
     <ClCompile Include="one_point_perspective.cpp">
       <Filter>Fichiers sources\Views</Filter>
     </ClCompile>
+    <ClCompile Include="wall.cpp">
+      <Filter>Fichiers sources\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Fichiers sources\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="ground.cpp">
+      <Filter>Fichiers sources\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="sprite.cpp">
+      <Filter>Fichiers sources\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="entity_template.cpp">
+      <Filter>Fichiers sources\Logic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="entity.h">
@@ -211,6 +226,21 @@
     </ClInclude>
     <ClInclude Include="one_point_perspective.h">
       <Filter>Fichiers d%27en-tête\Views</Filter>
+    </ClInclude>
+    <ClInclude Include="wall.h">
+      <Filter>Fichiers d%27en-tête\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Fichiers d%27en-tête\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="ground.h">
+      <Filter>Fichiers d%27en-tête\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite.h">
+      <Filter>Fichiers d%27en-tête\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="entity_template.h">
+      <Filter>Fichiers d%27en-tête\Logic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

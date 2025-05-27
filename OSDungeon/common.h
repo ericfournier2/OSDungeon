@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
+typedef sf::Color ColorUInt8;
+
 struct Coord {
 	int x;
 	int y;
