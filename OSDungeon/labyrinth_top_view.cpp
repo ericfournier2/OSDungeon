@@ -1,8 +1,4 @@
-#include <SFML/System/Clock.hpp>
-#include "imgui/imgui.h"
-#include "imgui/imgui-SFML.h"
 #include "labyrinth_top_view.h"
-#include "shallow_entities.h"
 
 LabyrinthTopView::LabyrinthTopView(const Labyrinth& labyrinth_init, const EntityManager& entities_init, const Databases& db_init, const Brush* brush_init)
 	: labyrinth(labyrinth_init), entities(entities_init), brush(brush_init), db(db_init)

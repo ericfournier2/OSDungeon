@@ -454,7 +454,7 @@ bool LabyrinthView::render() {
 }
 
 EntityId LabyrinthView::mouseHit(CoordF coord) const {
-	for (int c = sprites_on_screen.size() - 1; c >= 0; --c) {
+	for (int c = static_cast<int>(sprites_on_screen.size()) - 1; c >= 0; --c) {
 		auto sprite_rect = sprites_on_screen[c].second.getGlobalBounds();
 		if (sprite_rect.contains(coord)) {
 			return sprites_on_screen[c].first;

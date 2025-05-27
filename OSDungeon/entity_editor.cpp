@@ -15,7 +15,7 @@ bool enumSlider(std::string label, int* value, std::vector<std::string> enum_nam
 		display_name = std::string(enum_names[*value]);
 	}
 
-	return ImGui::SliderInt(label.c_str(), value, 0, enum_names.size() - 1, display_name.c_str(), ImGuiSliderFlags_NoInput); // Use ImGuiSliderFlags_NoInput flag to disable CTRL+Click here.
+	return ImGui::SliderInt(label.c_str(), value, 0, static_cast<int>(enum_names.size() - 1), display_name.c_str(), ImGuiSliderFlags_NoInput); // Use ImGuiSliderFlags_NoInput flag to disable CTRL+Click here.
 }
 
 std::string tileVecToString(const TileVec& tiles) {
@@ -43,7 +43,7 @@ TileVec stringToTileVec(const std::string& str) {
 			int next_frame = std::stoi(last_element);
 			retval.push_back(next_frame);
 
-		} catch (std::invalid_argument const& ex) {
+		} catch (std::invalid_argument const&) {
 			retval.push_back(0);
 		}
 	}

@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "common.h"
 #include "databases.h"
-#include "shallow_entities.h"
+#include "entity_state.h"
 #include "game_state.h"
 
 class Labyrinth;

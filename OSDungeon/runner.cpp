@@ -11,7 +11,10 @@ Runner::Runner(const Labyrinth& labyrinth_init, const LabyrinthBackground& backg
 	  lv(pov, background, db, window, perspective)
 {
 	window.setPosition({ 2000, 100 });
-	font.openFromFile("assets/DkCoolCrayon-xJyV.ttf");
+	if (!font.openFromFile("assets/DkCoolCrayon-xJyV.ttf")) {
+		// TODO: Log error?
+		throw;
+	}
 }
 
 void Runner::tickBackground() {

@@ -1,10 +1,10 @@
 #include <SFML/System/Clock.hpp>
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
-#include "labyrinth_edit_view.h"
+#include "labyrinth_editor.h"
 
 
-LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, LabyrinthBackground& background_init, Databases& db_init, OnePointPerspective& perspective_init)
+LabyrinthEditor::LabyrinthEditor(Labyrinth& labyrinth_init, LabyrinthBackground& background_init, Databases& db_init, OnePointPerspective& perspective_init)
 	: labyrinth(labyrinth_init), background(background_init),
 	  window(sf::VideoMode({ 1600, 900 }), "Edit maze"),
 	  perspective(perspective_init),
@@ -17,20 +17,22 @@ LabyrinthEditView::LabyrinthEditView(Labyrinth& labyrinth_init, LabyrinthBackgro
 	  entity_editor(db),
 	  sprite_editor(db)
 {
-	ImGui::SFML::Init(window);
+	if (!ImGui::SFML::Init(window)) {
+		throw;
+	}
 	window.setPosition({ 0,0 });
 }
 
-LabyrinthEditView::~LabyrinthEditView()
+LabyrinthEditor::~LabyrinthEditor()
 {
 	ImGui::SFML::Shutdown();
 }
 
-void LabyrinthEditView::drawWallBrushInfo() {
+void LabyrinthEditor::drawWallBrushInfo() {
 	brush_editor.render();
 }
 
-void LabyrinthEditView::runProject() {
+void LabyrinthEditor::runProject() {
 	if (!runner) {
 		OnePointPerspective pers(perspective);
 		pers.setBaseSize(1200);
@@ -38,7 +40,7 @@ void LabyrinthEditView::runProject() {
 	}
 }
 
-void LabyrinthEditView::renderMenu() {
+void LabyrinthEditor::renderMenu() {
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
 			if (ImGui::MenuItem("Create")) {
@@ -81,7 +83,7 @@ void LabyrinthEditView::renderMenu() {
 	}
 }
 
-void LabyrinthEditView::render() {
+void LabyrinthEditor::render() {
 	ImGui::SFML::Update(window, deltaClock.restart());
 	window.clear();
 	renderMenu();
@@ -110,43 +112,43 @@ void LabyrinthEditView::render() {
 	window.display();
 }
 
-void LabyrinthEditView::handleKeyPress(const sf::Event::KeyPressed* keyPressed) {
+void LabyrinthEditor::handleKeyPress(const sf::Event::KeyPressed* keyPressed) {
 	if (keyPressed->scancode == sf::Keyboard::Scancode::R) {
 		runProject();
 	}
 }
 
-void LabyrinthEditView::handleMouseLeftDown(const sf::Event::MouseButtonPressed* mouseButtonPressed) {
+void LabyrinthEditor::handleMouseLeftDown(const sf::Event::MouseButtonPressed* mouseButtonPressed) {
 	
 }
 
-void LabyrinthEditView::applyBrush() {
+void LabyrinthEditor::applyBrush() {
 	CoordF map_coord = top_view.getMapCoord(mouse_x, mouse_y);
 	brush.apply(labyrinth, map_coord.x, map_coord.y);
 }
 
-void LabyrinthEditView::handleMouseRightDown(const sf::Event::MouseButtonPressed* mouseButtonPressed) {
+void LabyrinthEditor::handleMouseRightDown(const sf::Event::MouseButtonPressed* mouseButtonPressed) {
 	painting_ground = true;
 	applyBrush();
 }
 
-void LabyrinthEditView::handleMouseMiddleDown(const sf::Event::MouseButtonPressed* mouseButtonPressed) {
+void LabyrinthEditor::handleMouseMiddleDown(const sf::Event::MouseButtonPressed* mouseButtonPressed) {
 	panning = true;
 }
 
-void LabyrinthEditView::handleMouseLeftUp(const sf::Event::MouseButtonReleased* mouseButtonReleased) {
+void LabyrinthEditor::handleMouseLeftUp(const sf::Event::MouseButtonReleased* mouseButtonReleased) {
 
 }
 
-void LabyrinthEditView::handleMouseRightUp(const sf::Event::MouseButtonReleased* mouseButtonReleased) {
+void LabyrinthEditor::handleMouseRightUp(const sf::Event::MouseButtonReleased* mouseButtonReleased) {
 	painting_ground = false;
 }
 
-void LabyrinthEditView::handleMouseMiddleUp(const sf::Event::MouseButtonReleased* mouseButtonReleased) {
+void LabyrinthEditor::handleMouseMiddleUp(const sf::Event::MouseButtonReleased* mouseButtonReleased) {
 	panning = false;
 }
 
-bool LabyrinthEditView::processEvents()
+bool LabyrinthEditor::processEvents()
 {
 	while (const std::optional event = window.pollEvent()) {
 		ImGui::SFML::ProcessEvent(window, *event);

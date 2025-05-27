@@ -7,7 +7,7 @@
 #include "common.h"
 #include "labyrinth_background.h"
 #include "labyrinth.h"
-#include "labyrinth_edit_view.h"
+#include "labyrinth_editor.h"
 #include "entity.h"
 #include "databases.h"
 #include "runner.h"
@@ -181,12 +181,12 @@ int main()
     perspective.setCameraDistance(0.7f);
     perspective.setMaxDepth(5);
     perspective.setVanishingPoint({ 0.5f, 1.0f / 3 });
-    perspective.setScaleX(1.2);
+    perspective.setScaleX(1.2f);
     perspective.setScaleY(0.9f);
 
     //test.loadFromFile("current.labyrinth");
     //Runner runner = Runner(test, db);
-    LabyrinthEditView lve = LabyrinthEditView(test, background, db, perspective);
+    LabyrinthEditor lve = LabyrinthEditor(test, background, db, perspective);
     bool closed = false;
     sf::Clock fps_clock;
     while (!closed)

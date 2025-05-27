@@ -13,11 +13,11 @@
 #include "entity_editor.h"
 
 #pragma once
-class LabyrinthEditView
+class LabyrinthEditor
 {
 public:
-	LabyrinthEditView(Labyrinth& labyrinth, LabyrinthBackground& background, Databases& db, OnePointPerspective& perspective);
-	~LabyrinthEditView();
+	LabyrinthEditor(Labyrinth& labyrinth, LabyrinthBackground& background, Databases& db, OnePointPerspective& perspective);
+	~LabyrinthEditor();
 
 	void render();
 	

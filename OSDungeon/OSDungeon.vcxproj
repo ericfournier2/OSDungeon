@@ -153,7 +153,7 @@
     <ClCompile Include="labyrinth_pov.cpp" />
     <ClCompile Include="labyrinth_print.cpp" />
     <ClCompile Include="labyrinth_top_view.cpp" />
-    <ClCompile Include="labyrinth_edit_view.cpp" />
+    <ClCompile Include="labyrinth_editor.cpp" />
     <ClCompile Include="labyrinth_test.cpp" />
     <ClCompile Include="labyrinth_view.cpp" />
     <ClCompile Include="main.cpp" />
@@ -162,7 +162,7 @@
     <ClCompile Include="one_point_perspective.cpp" />
     <ClCompile Include="perspective_editor.cpp" />
     <ClCompile Include="runner.cpp" />
-    <ClCompile Include="shallow_entities.cpp" />
+    <ClCompile Include="entity_state.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="static_view.cpp" />
     <ClCompile Include="texture.cpp" />
@@ -185,7 +185,7 @@
     <ClInclude Include="imgui_utils.h" />
     <ClInclude Include="labyrinth.h" />
     <ClInclude Include="labyrinth_background.h" />
-    <ClInclude Include="labyrinth_edit_view.h" />
+    <ClInclude Include="labyrinth_editor.h" />
     <ClInclude Include="labyrinth_pov.h" />
     <ClInclude Include="labyrinth_print.h" />
     <ClInclude Include="labyrinth_top_view.h" />
@@ -195,7 +195,7 @@
     <ClInclude Include="one_point_perspective.h" />
     <ClInclude Include="perspective_editor.h" />
     <ClInclude Include="runner.h" />
-    <ClInclude Include="shallow_entities.h" />
+    <ClInclude Include="entity_state.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="static_view.h" />
     <ClInclude Include="texture.h" />

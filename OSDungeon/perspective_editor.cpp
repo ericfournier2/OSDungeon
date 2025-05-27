@@ -45,7 +45,9 @@ void PerspectiveEditor::saveImagesToFile() {
 
 	for (int c = 0; c < perspectives.size(); ++c) {
 		sf::Image i = perspectives[c]->texture.getTexture().copyToImage();
-		i.saveToFile(std::string("Perspective ") + std::to_string(c) + std::string(".png"));
+		if(!i.saveToFile(std::string("Perspective ") + std::to_string(c) + std::string(".png"))) {
+			// TODO: Error message?
+		}
 	}
 
 	// Restore colors and sizes and re-render.
@@ -92,7 +94,13 @@ void PerspectiveEditor::refreshViews(sf::Color clear_color) {
 
 	for (int c = 0; c < perspectives.size(); ++c) {
 		perspectives[c]->view.setPerspective(perspective);
-		perspectives[c]->texture.resize({ static_cast<unsigned int>(perspective.getSizeX()), static_cast<unsigned int>(perspective.getSizeY())});
+		unsigned int x = static_cast<unsigned int>(perspective.getSizeX());
+		unsigned int y = static_cast<unsigned int>(perspective.getSizeY());
+		
+		if (!perspectives[c]->texture.resize({ x, y })) {
+			// TODO: Show an error message?
+			throw;
+		}
 
 		perspectives[c]->texture.clear(clear_color);
 		perspectives[c]->view.render();

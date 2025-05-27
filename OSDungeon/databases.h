@@ -1,9 +1,7 @@
 #pragma once
 
 #include <map>
-#include <optional>
 #include <fstream>
-#include <memory>
 #include <vector>
 
 #include "common.h"
