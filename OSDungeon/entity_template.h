@@ -25,8 +25,6 @@ enum class InteractionType {
 	DIALOG
 };
 
-
-
 struct EntityTemplateInfo {
 	EntityTemplateId id;
 	SpriteId sprite_id;

@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="background_view.cpp" />
     <ClCompile Include="brush.cpp" />
     <ClCompile Include="brush_editor.cpp" />
     <ClCompile Include="common.cpp" />
@@ -170,6 +171,7 @@
     <ClCompile Include="wall.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="background_view.h" />
     <ClInclude Include="brush.h" />
     <ClInclude Include="brush_editor.h" />
     <ClInclude Include="common.h" />

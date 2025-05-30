@@ -8,6 +8,7 @@
 #include "common.h"
 #include "labyrinth_background.h"
 #include "one_point_perspective.h"
+#include "background_view.h"
 
 struct RenderStep {
 	int x_offset;
