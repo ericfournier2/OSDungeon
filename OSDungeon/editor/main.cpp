@@ -40,7 +40,7 @@ int main()
     auto soleil_paint_texture = texture_db.loadNewTexture(11, "assets/textures/soleil paint.png", "Soleil paint", 200, 200);
     auto nuage_paint_texture = texture_db.loadNewTexture(12, "assets/textures/nuage paint.png", "Nuage paint", 200, 150);
     auto montagne_paint_texture = texture_db.loadNewTexture(13, "assets/textures/montagne paint.png", "Montagne paint");
-    auto bleu_degrade_texture = texture_db.loadNewTexture(14, "assets/textures/bleu degrade.png", "Bleu degrade");
+    //auto bleu_degrade_texture = texture_db.loadNewTexture(14, "assets/textures/bleu degrade.png", "Bleu degrade");
     auto soleil_cire_texture = texture_db.loadNewTexture(15, "assets/textures/soleil cire.png", "Soleil cire", 212, 222);
     auto nuage_cire_texture = texture_db.loadNewTexture(16, "assets/textures/nuage cire.png", "Nuage cire", 233, 152);
     auto montagne_cire_texture = texture_db.loadNewTexture(17, "assets/textures/montagne cire.png", "Montagne cire");

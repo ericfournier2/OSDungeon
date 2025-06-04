@@ -37,7 +37,7 @@ public:
 	TextureId getTexture() const { return getSpriteInfo().texture; }
 	TileVec getTiles(RelativeDirection d) const { return getSpriteInfo().getTileVec(d); };
 
-	sf::Sprite getSprite(RelativeDirection d) const;
+	//sf::Sprite getSprite(RelativeDirection d) const;
 
 	void refresh(const Databases& db);
 	void update(Databases& db) const;

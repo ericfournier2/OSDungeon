@@ -1,5 +1,4 @@
 #include "entity.h"
-#include "view_utils.h"
 #include "labyrinth.h"
 
 Entity::Entity() {
@@ -27,9 +26,9 @@ void Entity::update(Databases& db) const {
 	db.sdb.updateElement(sprite_info);
 }
 
-sf::Sprite Entity::getSprite(RelativeDirection d) const {
-	return getAnimationSprite(sprite_info, texture, d, animation_clock);
-}
+//sf::Sprite Entity::getSprite(RelativeDirection d) const {
+//	return getAnimationSprite(sprite_info, texture, d, animation_clock);
+//}
 
 bool Entity::moveCardinal(const Labyrinth& labyrinth, CardinalDirection d) {
 	if (labyrinth.canMove(getX(), getY(), d)) {
