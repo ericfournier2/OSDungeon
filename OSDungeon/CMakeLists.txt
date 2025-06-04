@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.0.2) 
+cmake_minimum_required(VERSION 3.31) 
 project(OSDungeon LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -28,5 +28,22 @@ target_link_libraries(${PROJECT_NAME}_editor PUBLIC
 	"sfml-audio"
 	${PROJECT_NAME}LOGIC
 )
+
+# Does not seem to work?
+set_target_properties(${PROJECT_NAME}_editor PROPERTIES  
+    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+
+#set(link_src "${CMAKE_SOURCE_DIR}/assets")
+#if(UNIX AND NOT APPLE) 
+#    set(link_dst "${CMAKE_CURRENT_BINARY_DIR}/assets") 
+#else() 
+#    set(link_dst "${CMAKE_CURRENT_BINARY_DIR}/assets") 
+#endif() 
+#add_custom_command( 
+#    TARGET ${PROJECT_NAME}_editor
+#    POST_BUILD COMMAND ${CMAKE_COMMAND} 
+#        -E create_symlink ${link_src} ${link_dst} 
+#    COMMENT "symbolic link ${link_src} => ${link_dst}" 
+#)
 
 #add_executable(${PROJECT_NAME} ${SRC_FILES})
