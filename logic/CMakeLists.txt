@@ -21,3 +21,6 @@ target_link_libraries(${PROJECT_NAME}LOGIC PUBLIC
 
 add_executable(${PROJECT_NAME}LOGIC_TEST tests/main.cpp tests/labyrinth_test.cpp)
 target_link_libraries(${PROJECT_NAME}LOGIC_TEST PUBLIC ${PROJECT_NAME}LOGIC)
+
+include(CTest)
+add_test(NAME UnitTest COMMAND ${PROJECT_NAME}LOGIC_TEST)
