@@ -131,7 +131,6 @@ bool testDbSave() {
     return true;
 }
 
-
 int main() {
 	assert(testReadWriteLabyrinth());
 	assert(testLOS());

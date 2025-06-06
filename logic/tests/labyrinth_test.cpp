@@ -197,7 +197,11 @@ bool testReadWriteLabyrinth() {
 
 	assert(test.getSizeX() == test_read.getSizeX());
 	assert(test.getSizeY() == test_read.getSizeY());
-	
+	assert(test.getPovX() == test_read.getPovX());
+	assert(test.getPovY() == test_read.getPovY());
+	assert(test.getPovDirection() == test_read.getPovDirection());
+
+
 	for (int x = 0; x < test.getSizeX(); ++x) {
 		for (int y = 0; y < test.getSizeY(); ++y) {
 			assert(test.getWallAbs(x, y, WallOrientation::HORIZONTAL) == test_read.getWallAbs(x, y, WallOrientation::HORIZONTAL));
