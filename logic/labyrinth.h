@@ -25,6 +25,9 @@ public:
 	Labyrinth(int x_size, int y_size, WallVec initWalls, GroundVec initGround,
 		      int pov_x_init = 0, int pov_y_init = 0, CardinalDirection pov_direction_init = NORTH);
 
+	std::string getName() const { return name; }
+	void setName(const std::string& name_) { name = name_; }
+
 	bool setPov(int x, int y, CardinalDirection direction);
 	int getPovX() const { return pov_x; }
 	int getPovY() const { return pov_y; }
@@ -61,6 +64,7 @@ private:
 	bool setWall(int x, int y, WallOrientation d, WallId id);
 	bool slopeInterceptLOS(int ind1, int dep1, int ind2, int dep2, CardinalDirection d) const;
 
+	std::string name;
 	int x_size = 0;
 	int y_size = 0;
 	WallVec walls = {};

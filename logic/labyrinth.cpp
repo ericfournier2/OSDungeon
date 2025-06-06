@@ -5,8 +5,16 @@
 #include <set>
 
 void Labyrinth::resize(int size_x, int size_y) {
-	if (size_x < 0 || size_y < 0 || size_x >= MAX_SIZE || size_y >= MAX_SIZE) {
+	if (size_x < 0 || size_y < 0) {
 		return;
+	}
+
+	if (size_x >= MAX_SIZE) {
+		size_x = MAX_SIZE;
+	}
+	
+	if (size_y >= MAX_SIZE) {
+		size_y = MAX_SIZE;
 	}
 
 	Labyrinth temporary(size_x, size_y);

@@ -11,6 +11,7 @@
 #include "runner.h"
 #include "perspective_editor.h"
 #include "entity_editor.h"
+#include "labyrinth_properties_editor.h"
 
 #pragma once
 class LabyrinthEditor
@@ -53,7 +54,7 @@ private:
 	PerspectiveEditor perspective_editor;
 	EntityEditor entity_editor;
 	SpriteEditor sprite_editor;
-
+	LabyrinthPropertiesEditor labyrinth_properties_editor;
 	bool show_imgui_demo = false;
 	bool show_sprite_editor = false;
 	bool show_db_editor = false;

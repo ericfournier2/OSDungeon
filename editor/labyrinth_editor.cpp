@@ -2,7 +2,7 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
 #include "labyrinth_editor.h"
-
+#include "labyrinth_properties_editor.h"
 
 LabyrinthEditor::LabyrinthEditor(Labyrinth& labyrinth_init, LabyrinthBackground& background_init, Databases& db_init, OnePointPerspective& perspective_init)
 	: labyrinth(labyrinth_init), background(background_init),
@@ -84,6 +84,7 @@ void LabyrinthEditor::render() {
 	}
 
 	top_view.render(window, mouse_x, mouse_y);
+	labyrinth_properties_editor.render(labyrinth);
 	drawWallBrushInfo();
 	if (show_db_editor) {
 		db_editor.render();
