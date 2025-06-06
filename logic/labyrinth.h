@@ -32,6 +32,7 @@ public:
 
 	int getSizeX() const { return x_size; }
 	int getSizeY() const { return y_size; }
+	void resize(int size_x, int size_y);
 
 	GroundId getGroundAbs(int x, int y) const;
 	WallId getWallAbs(int x, int y, WallOrientation d) const;

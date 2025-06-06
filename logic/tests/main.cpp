@@ -7,6 +7,7 @@ void labyrinthTestAssymmetric();
 bool testReadWriteLabyrinth();
 bool testPathFinding();
 bool testLOS();
+bool testLabyrinthResize();
 
 template <typename TDb>
 bool compareDb(const TDb& db1, const TDb& db2) {
@@ -136,5 +137,5 @@ int main() {
 	assert(testLOS());
 	assert(testPathFinding());
 	assert(testDbSave());
-
+    assert(testLabyrinthResize());
 }

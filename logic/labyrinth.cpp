@@ -4,6 +4,34 @@
 #include <queue>
 #include <set>
 
+void Labyrinth::resize(int size_x, int size_y) {
+	if (size_x < 0 || size_y < 0 || size_x >= MAX_SIZE || size_y >= MAX_SIZE) {
+		return;
+	}
+
+	Labyrinth temporary(size_x, size_y);
+	for (int x = 0; x < getSizeX() + 1; ++x) {
+		for (int y = 0; y < getSizeY() + 1; ++y) {
+			temporary.setGround(x, y, getGroundAbs(x, y));
+			temporary.setWall(x, y, WallOrientation::HORIZONTAL, getWallAbs(x, y, WallOrientation::HORIZONTAL));
+			temporary.setWall(x, y, WallOrientation::VERTICAL, getWallAbs(x, y, WallOrientation::VERTICAL));
+		}
+	}
+
+	ground = temporary.ground;
+	walls = temporary.walls;
+	x_size = size_x;
+	y_size = size_y;
+
+	if (pov_x > getSizeX() - 1) {
+		pov_x = getSizeX() - 1;
+	}
+	
+	if (pov_y > getSizeY() - 1) {
+		pov_y = getSizeY() - 1;
+	}
+}
+
 bool Labyrinth::setWall(int x, int y, WallOrientation d, WallId id)
 {
 	// Determine if it is out of bound

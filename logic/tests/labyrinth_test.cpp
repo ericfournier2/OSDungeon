@@ -247,3 +247,65 @@ bool testLOS() {
 
 	return true;
 }
+
+bool testLabyrinthResize() {
+	Labyrinth test = getTestLabyrinth();
+	Labyrinth test_resized = getTestLabyrinth();
+
+	// Increase size by 1. All information should be kept. An additional row/column of
+	// empty tiles/walls should be present. Those will return an id of 0, which should
+	// also be the result for the original labyrinth.
+	test_resized.resize(test.getSizeX() + 1, test.getSizeY() + 1);
+	assert(test_resized.getSizeX() == test.getSizeX() + 1);
+	assert(test_resized.getSizeY() == test.getSizeY() + 1);
+
+	for (int x = 0; x < test.getSizeX() + 1; ++x) {
+		for (int y = 0; y < test.getSizeY() + 1; ++y) {
+			assert(test.getGroundAbs(x, y) == test_resized.getGroundAbs(x, y));
+			assert(test.getWallAbs(x, y, WallOrientation::HORIZONTAL) == test_resized.getWallAbs(x, y, WallOrientation::HORIZONTAL));
+			assert(test.getWallAbs(x, y, WallOrientation::VERTICAL) == test_resized.getWallAbs(x, y, WallOrientation::VERTICAL));
+		}
+	}
+
+	// Return to the original size. Everything should be identical.
+	test_resized.resize(test.getSizeX(), test.getSizeY());
+	assert(test_resized.getSizeX() == test.getSizeX());
+	assert(test_resized.getSizeY() == test.getSizeY());
+
+	for (int x = 0; x < test.getSizeX(); ++x) {
+		for (int y = 0; y < test.getSizeY(); ++y) {
+			assert(test.getGroundAbs(x, y) == test_resized.getGroundAbs(x, y));
+			assert(test.getWallAbs(x, y, WallOrientation::HORIZONTAL) == test_resized.getWallAbs(x, y, WallOrientation::HORIZONTAL));
+			assert(test.getWallAbs(x, y, WallOrientation::VERTICAL) == test_resized.getWallAbs(x, y, WallOrientation::VERTICAL));
+		}
+	}
+
+	// Decrease size by 1. The kept part should be identical.
+	test_resized.resize(test.getSizeX() - 1, test.getSizeY() - 1);
+	assert(test_resized.getSizeX() == test.getSizeX() - 1);
+	assert(test_resized.getSizeY() == test.getSizeY() - 1);
+
+	// We need to use 3 different loops since the bounds for ground, h-walls and v-walls differ.
+	// Test ground.
+	for (int x = 0; x < test_resized.getSizeX(); ++x) {
+		for (int y = 0; y < test_resized.getSizeY(); ++y) {
+			assert(test.getGroundAbs(x, y) == test_resized.getGroundAbs(x, y));
+		}
+	}
+
+	// Test horizontal walls.
+	for (int x = 0; x < test_resized.getSizeX() - 1; ++x) {
+		for (int y = 0; y < test_resized.getSizeY(); ++y) {
+			assert(test.getWallAbs(x, y, WallOrientation::HORIZONTAL) == test_resized.getWallAbs(x, y, WallOrientation::HORIZONTAL));
+		}
+	}
+
+	// Test vertical walls.
+	for (int x = 0; x < test_resized.getSizeX(); ++x) {
+		for (int y = 0; y < test_resized.getSizeY() - 1; ++y) {
+			assert(test.getWallAbs(x, y, WallOrientation::VERTICAL) == test_resized.getWallAbs(x, y, WallOrientation::VERTICAL));
+		}
+	}
+
+	return true;
+}
