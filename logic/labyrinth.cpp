@@ -274,6 +274,9 @@ bool Labyrinth::writeToFile(const std::string& filename) const {
 		stream.write(reinterpret_cast<const char*>(&y_size), sizeof(y_size));
 		stream.write(reinterpret_cast<const char*>(walls.data()), walls.size() * sizeof(WallId));
 		stream.write(reinterpret_cast<const char*>(ground.data()), ground.size() * sizeof(GroundId));
+		stream.write(reinterpret_cast<const char*>(&pov_x), sizeof(pov_x));
+		stream.write(reinterpret_cast<const char*>(&pov_y), sizeof(pov_y));
+		stream.write(reinterpret_cast<const char*>(&pov_direction), sizeof(pov_direction));
 		entities.writeToStream(stream);
 	}
 
@@ -297,6 +300,9 @@ bool Labyrinth::loadFromFile(const std::string& filename) {
 
 				stream.read(reinterpret_cast<char*>(walls_read.data()), walls_read.size() * sizeof(WallId));
 				stream.read(reinterpret_cast<char*>(ground_read.data()), ground_read.size() * sizeof(GroundId));
+				stream.read(reinterpret_cast<char*>(&pov_x), sizeof(pov_x));
+				stream.read(reinterpret_cast<char*>(&pov_y), sizeof(pov_y));
+				stream.read(reinterpret_cast<char*>(&pov_direction), sizeof(pov_direction));
 				entities.readFromStream(stream);
 
 				if (!stream.fail()) {
