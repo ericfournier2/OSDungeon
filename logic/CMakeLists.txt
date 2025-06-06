@@ -4,6 +4,7 @@ project(OSDungeon LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+include(CTest)
 include(FetchContent)
 FetchContent_Declare(SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
@@ -21,6 +22,4 @@ target_link_libraries(${PROJECT_NAME}LOGIC PUBLIC
 
 add_executable(${PROJECT_NAME}LOGIC_TEST tests/main.cpp tests/labyrinth_test.cpp)
 target_link_libraries(${PROJECT_NAME}LOGIC_TEST PUBLIC ${PROJECT_NAME}LOGIC)
-
-include(CTest)
 add_test(NAME UnitTest COMMAND ${PROJECT_NAME}LOGIC_TEST)
