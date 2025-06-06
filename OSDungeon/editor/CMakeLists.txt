@@ -15,7 +15,7 @@ FetchContent_MakeAvailable(SFML)
 
 file(GLOB IMGUI_FILES "imgui/*.cpp")
 
-add_executable(${PROJECT_NAME}_editor ${IMGUI_FILES} background_view.cpp  background_view.h  brush_editor.cpp  brush_editor.h  db_editor.cpp  db_editor.h  entity_editor.cpp  entity_editor.h  imgui_utils.cpp  imgui_utils.h  labyrinth_editor.cpp  labyrinth_editor.h  labyrinth_print.cpp  labyrinth_print.h  labyrinth_test.cpp  labyrinth_top_view.cpp  labyrinth_top_view.h  labyrinth_view.cpp  labyrinth_view.h  main.cpp  one_point_perspective.cpp  one_point_perspective.h  perspective_editor.cpp  perspective_editor.h  runner.cpp static_view.cpp  static_view.h  view_utils.cpp  view_utils.h  )
+add_executable(${PROJECT_NAME}_editor ${IMGUI_FILES} background_view.cpp  background_view.h  brush_editor.cpp  brush_editor.h  db_editor.cpp  db_editor.h  entity_editor.cpp  entity_editor.h  imgui_utils.cpp  imgui_utils.h  labyrinth_editor.cpp  labyrinth_editor.h  labyrinth_top_view.cpp  labyrinth_top_view.h  labyrinth_view.cpp  labyrinth_view.h  main.cpp  one_point_perspective.cpp  one_point_perspective.h  perspective_editor.cpp  perspective_editor.h  runner.cpp static_view.cpp  static_view.h  view_utils.cpp  view_utils.h  )
 
 target_include_directories(${PROJECT_NAME}_editor PUBLIC "../logic")
 

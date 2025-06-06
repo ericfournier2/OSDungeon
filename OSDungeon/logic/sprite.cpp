@@ -25,6 +25,16 @@ bool SpriteInfo::read(std::ifstream& stream) {
 	return !stream.fail();
 }
 
+bool SpriteInfo::operator==(const SpriteInfo& info) const {
+	return id == info.id &&
+		texture == info.texture &&
+		name == info.name &&
+		front == info.front &&
+		back == info.back &&
+		left == info.left &&
+		right == info.right;
+}
+
 TileVec SpriteInfo::getTileVec(RelativeDirection d) const {
 	switch (d) {
 	case RelativeDirection::FRONT:

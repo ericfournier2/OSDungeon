@@ -16,12 +16,15 @@ struct WallTexture {
 
 		return !stream.fail();
 	}
+	
 	bool read(std::ifstream& stream) {
 		stream.read(reinterpret_cast<char*>(&texture), sizeof(TextureId));
 		tiles = readTileVec(stream);
 
 		return !stream.fail();
 	}
+
+	bool operator==(const WallTexture& wt) const;
 };
 
 typedef std::map<int, WallTexture> WallTextureMap;
@@ -36,4 +39,5 @@ struct WallInfo {
 
 	bool write(std::ofstream& stream) const;
 	bool read(std::ifstream& stream);
+	bool operator==(const WallInfo& info) const;
 };

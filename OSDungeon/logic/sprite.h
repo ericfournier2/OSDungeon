@@ -17,4 +17,5 @@ struct SpriteInfo {
 	bool write(std::ofstream& stream) const;
 	bool read(std::ifstream& stream);
 	TileVec getTileVec(RelativeDirection d) const;
+	bool operator==(const SpriteInfo& info) const;
 };

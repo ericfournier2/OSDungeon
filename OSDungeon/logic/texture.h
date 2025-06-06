@@ -20,4 +20,5 @@ struct TextureInfo {
 	std::shared_ptr<sf::Texture> texture;
 
 	sf::IntRect getTextureRect(int index) const;
+	bool operator==(const TextureInfo& info) const;
 };

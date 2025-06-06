@@ -38,5 +38,6 @@ struct EntityTemplateInfo {
 
 	bool write(std::ofstream& stream) const;
 	bool read(std::ifstream& stream);
+	bool operator==(const EntityTemplateInfo& info) const;
 };
 

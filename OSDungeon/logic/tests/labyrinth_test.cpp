@@ -1,6 +1,5 @@
-#include "labyrinth.h"
-#include "labyrinth_view.h"
-#include "labyrinth_print.h"
+#include "../labyrinth.h"
+#include "../labyrinth_print.h"
 #include <iostream>
 #include <cassert>
 
@@ -184,13 +183,14 @@ Labyrinth getTestLabyrinth() {
 	return Labyrinth(4, 3, testWalls, testGround);
 }
 
-void testReadWrite() {
+bool testReadWriteLabyrinth() {
 	Labyrinth test = getTestLabyrinth();
 
 	test.writeToFile("test.labyrinth");
 
 	Labyrinth test_read = Labyrinth(0,0);
 	bool read_success = test_read.loadFromFile("test.labyrinth");
+	assert(read_success);
 
 	std::cout << printToString(test);
 	std::cout << printToString(test_read);
@@ -206,9 +206,10 @@ void testReadWrite() {
 		}
 	}
 
+	return true;
 }
 
-void testPathFinding() {
+bool testPathFinding() {
 	Labyrinth test = getTestLabyrinth();
 	std::optional<Path> test_path_possible = test.findPath(0, 0, 3, 1);
 	if (test_path_possible) {
@@ -220,9 +221,11 @@ void testPathFinding() {
 
 	std::optional<Path> test_path_impossible = test.findPath(0, 0, 1, 1);
 	assert(!test_path_impossible);
+
+	return true;
 }
 
-void testLOS() {
+bool testLOS() {
 	Labyrinth test = getTestLabyrinth();
 	assert(test.hasLOS(0,0,0,0));
 	assert(test.hasLOS(0, 0, 2, 0));
@@ -237,4 +240,6 @@ void testLOS() {
 	assert(!test.hasLOS(2, 2, 0, 0));
 	assert(test.hasLOS(2, 0, 3, 2));
 	assert(test.hasLOS(3, 2, 2, 0));
+
+	return true;
 }

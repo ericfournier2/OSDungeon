@@ -1,5 +1,10 @@
 #include "wall.h"
 
+bool WallTexture::operator==(const WallTexture& wt) const {
+	return texture == wt.texture &&
+		tiles == wt.tiles;
+}
+
 bool WallInfo::write(std::ofstream& stream) const {
 	stream.write(reinterpret_cast<const char*>(&id), sizeof(id));
 	stream << name << '\0';
@@ -15,6 +20,7 @@ bool WallInfo::write(std::ofstream& stream) const {
 
 	return !stream.fail();
 }
+
 bool WallInfo::read(std::ifstream& stream) {
 	stream.read(reinterpret_cast<char*>(&id), sizeof(id));
 	std::getline(stream, name, '\0');
@@ -36,4 +42,13 @@ bool WallInfo::read(std::ifstream& stream) {
 	}
 
 	return !stream.fail();
+}
+
+bool WallInfo::operator==(const WallInfo& info) const {
+	return id == info.id &&
+		name == info.name &&
+		color == info.color &&
+		front == info.front &&
+		partial == info.partial &&
+		depth_map == info.depth_map;
 }

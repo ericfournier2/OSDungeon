@@ -20,3 +20,12 @@ bool GroundInfo::read(std::ifstream& stream) {
 	stream.read(reinterpret_cast<char*>(&draw_ceiling), sizeof(draw_ceiling));
 	return !stream.fail();
 }
+
+bool GroundInfo::operator==(const GroundInfo& info) const {
+	return id == info.id &&
+		name == info.name &&
+		ground_color == info.ground_color &&
+		ceiling_color == info.ceiling_color &&
+		texture == info.texture &&
+		draw_ceiling == info.draw_ceiling;
+}

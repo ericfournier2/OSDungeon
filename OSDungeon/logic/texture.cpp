@@ -53,3 +53,11 @@ sf::IntRect TextureInfo::getTextureRect(int index) const {
 
 	return sf::IntRect({ pos_x, pos_y }, { tile_size_x, tile_size_y });
 }
+
+bool TextureInfo::operator==(const TextureInfo& info) const {
+	return id == info.id &&
+		tile_size_x == info.tile_size_x &&
+		tile_size_y == info.tile_size_y &&
+		texture_filename == info.texture_filename &&
+		name == info.name;
+}

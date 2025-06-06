@@ -1,4 +1,5 @@
 #include <memory>
+#include <iostream>
 #include "databases.h"
 
 TextureDb::TextureDb() {
@@ -10,10 +11,24 @@ TextureDb::TextureDb() {
 TextureId TextureDb::loadNewTexture(TextureId id, const std::string& filename, const std::string& name, int tile_size_x, int tile_size_y) {
 	std::string full_filename("assets\\textures\\");
 	full_filename.append(filename);
-	auto ptr = std::make_shared<sf::Texture>(filename);
+	std::shared_ptr<sf::Texture> ptr;
+	try {
+		ptr = std::make_shared<sf::Texture>(filename);
+	}
+	catch (sf::Exception e) {
+		std::cerr << "Texture failed to load: " << full_filename << std::endl;
+		std::cerr << "What: " << e.what() << std::endl;
+		ptr = nullptr;
+	}
+	
 	if (tile_size_x == 0) {
-		tile_size_x = ptr->getSize().x;
-		tile_size_y = ptr->getSize().y;
+		if (ptr) {
+			tile_size_x = ptr->getSize().x;
+			tile_size_y = ptr->getSize().y;
+		} else {
+			tile_size_x = 0;
+			tile_size_y = 0;
+		}
 	}
 	TextureInfo info = TextureInfo({ id, tile_size_x, tile_size_y, filename, name, ptr });
 	texture_map.emplace(id, info);
@@ -91,4 +106,35 @@ bool TextureDb::writeToFile(const std::string& filename) const {
 	return success;
 }
 
+bool Databases::save(const std::string filename_prefix, const std::filesystem::path path) {
+	if (!std::filesystem::exists(path) || !std::filesystem::is_directory(path)) {
+		return false;
+	}
 
+	std::string fullpath = (path.string() / std::filesystem::path(filename_prefix)).string();
+	return gdb.writeToFile(fullpath + ".gdb") &&
+	    wdb.writeToFile(fullpath + ".wdb") &&
+	    tdb.writeToFile(fullpath + ".tdb") &&
+	    edb.writeToFile(fullpath + ".edb") &&
+	    sdb.writeToFile(fullpath + ".sdb");
+}
+
+bool Databases::load(const std::string filename_prefix, const std::filesystem::path path) {
+	std::string fullpath = (path.string() / std::filesystem::path(filename_prefix)).string();
+	if (!std::filesystem::exists(path) ||
+		!std::filesystem::is_directory(path) ||
+		!std::filesystem::exists(fullpath + ".gdb") ||
+		!std::filesystem::exists(fullpath + ".wdb") ||
+		!std::filesystem::exists(fullpath + ".tdb") ||
+		!std::filesystem::exists(fullpath + ".edb") ||
+		!std::filesystem::exists(fullpath + ".sdb")) 
+	{
+		return false;
+    }
+
+    return gdb.readFromFile(fullpath + ".gdb") &&
+           wdb.readFromFile(fullpath + ".wdb") &&
+           tdb.readFromFile(fullpath + ".tdb") &&
+           edb.readFromFile(fullpath + ".edb") &&
+           sdb.readFromFile(fullpath + ".sdb");
+}

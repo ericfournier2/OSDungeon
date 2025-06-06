@@ -15,5 +15,6 @@ struct GroundInfo {
 
 	bool write(std::ofstream& stream) const;
 	bool read(std::ifstream& stream);
+	bool operator==(const GroundInfo& info) const;
 };
 

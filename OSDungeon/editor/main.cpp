@@ -13,19 +13,8 @@
 #include "runner.h"
 #include "one_point_perspective.h"
 
-
-
-void labyrinthTestSymmetric();
-void labyrinthTestAssymmetric();
-Labyrinth getTestLabyrinth();
-void testReadWrite();
-void testPathFinding();
-void testLOS();
-
 int main()
 {
-    testLOS();
-
     TextureDb texture_db;
     auto volcan_texture = texture_db.loadNewTexture(1, "assets/textures/Elora.png", "Volcan");
     auto colored_wall_texture = texture_db.loadNewTexture(2, "assets/textures/Coralie.png", "Mur colore");

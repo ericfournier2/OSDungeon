@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <map>
 #include <fstream>
 #include <vector>
@@ -80,6 +81,10 @@ public:
 		return i;
 	}
 	
+	bool hasElement(TId id) const {
+		return db_map.contains(id);
+	}
+
 	bool updateElement(TInfo info) {
 		if (db_map.contains(info.id)) {
 			db_map[info.id] = info;
@@ -120,6 +125,8 @@ public:
 	TextureDb();
 	TextureId loadNewTexture(TextureId id, const std::string& filename, const std::string& name, int tile_size_x = 0, int tile_size_y = 0);
 	TextureInfo getTexture(TextureId id) const;
+	TextureInfo getElement(TextureId id) const { return getTexture(id);	}
+	bool hasElement(TextureId id) const { return texture_map.contains(id); }
 	std::vector<TextureId> getIds() const;
 	bool writeToFile(const std::string& filename) const;
 	bool readFromFile(const std::string& filename);
@@ -137,4 +144,7 @@ struct Databases {
 	TextureDb& tdb;
 	EntityTemplateDb& edb;
 	SpriteDb& sdb;
+
+	bool save(const std::string filename_prefix, const std::filesystem::path path = ".");
+	bool load(const std::string filename_prefix, const std::filesystem::path path = ".");
 };

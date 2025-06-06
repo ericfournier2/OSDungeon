@@ -47,19 +47,11 @@ void LabyrinthEditor::renderMenu() {
 			}
 			if (ImGui::MenuItem("Load", "Ctrl+L")) {
 				labyrinth.loadFromFile("assets/saves/current.labyrinth");
-				db.gdb.readFromFile("assets/saves/ground.db");
-				db.wdb.readFromFile("assets/saves/wall.db");
-				db.tdb.readFromFile("assets/saves/texture.db");
-				db.edb.readFromFile("assets/saves/entities.db");
-				db.sdb.readFromFile("assets/saves/sprites.db");
+				db.load("database", "assets/saves");
 			}
 			if (ImGui::MenuItem("Save", "Ctrl+S")) {
 				labyrinth.writeToFile("assets/saves/current.labyrinth");
-				db.gdb.writeToFile("assets/saves/ground.db");
-				db.wdb.writeToFile("assets/saves/wall.db");
-				db.tdb.writeToFile("assets/saves/texture.db");
-				db.edb.writeToFile("assets/saves/entities.db");
-				db.sdb.writeToFile("assets/saves/sprites.db");
+				db.save("database", "assets/saves");
 			}
 			if (ImGui::MenuItem("Save as..")) {
 			}
